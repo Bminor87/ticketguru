@@ -22,7 +22,7 @@ export default function TicketSales() {
   };
 
   return (
-    <>
+    <div className="bg-white dark:bg-gray-800 text-gray-500 dark:text-white">
       <Stack direction="row" spacing={2}>
         <Box sx={{ m: 1, width: 500 }}>
           <EventDropDown
@@ -47,6 +47,6 @@ export default function TicketSales() {
         />
         <SoldTicketsList soldTicketsData={soldTicketsData} />
       </Stack>
-    </>
+    </div>
   );
 }

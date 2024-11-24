@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-
+import { createTheme, ThemeProvider } from "@mui/material/styles";
 import Button from "@mui/material/Button";
 import { Add, DeleteForever, Remove } from "@mui/icons-material";
 import { AgGridReact } from "ag-grid-react";
@@ -19,7 +19,7 @@ export default function Basket({
 }) {
   const { basket, setBasket, removeFromBasket, plusOneTicket, minusOneTicket } =
     useBasket();
-  const settings = useSettings();
+  const { darkMode, url } = useSettings(); // Access darkMode from settings
 
   const [columnDefs, setColumnDefs] = useState([
     { field: "eventName" },
@@ -40,7 +40,7 @@ export default function Basket({
             <Add />
           </Button>
           <Button
-            color={params.data.quantity != 1 ? "primary" : "gray"}
+            color={params.data.quantity !== 1 ? "primary" : "inherit"}
             onClick={() => minusOneTicket(params.data)}
           >
             <Remove />
@@ -60,7 +60,7 @@ export default function Basket({
   const handleConfirmSale = async () => {
     if (!basket || basket.length === 0) return;
     try {
-      const response = await postBasketItems(settings, basket);
+      const response = await postBasketItems({ url }, basket);
       if (response.status === 201) {
         setSoldTicketsData(response.data);
         handleClearBasket();
@@ -82,9 +82,32 @@ export default function Basket({
       .toFixed(2);
   }, [basket]);
 
+  // Define Material UI themes
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: darkMode ? "dark" : "light",
+          primary: { main: darkMode ? "#90caf9" : "#1976d2" },
+          secondary: { main: darkMode ? "#f48fb1" : "#d32f2f" },
+          background: {
+            default: darkMode ? "#303030" : "#fafafa",
+            paper: darkMode ? "#424242" : "#ffffff",
+          },
+          text: {
+            primary: darkMode ? "#ffffff" : "#000000",
+          },
+        },
+      }),
+    [darkMode]
+  );
+
   return (
-    <>
-      <div className="ag-theme-material" style={{ height: "100%" }}>
+    <ThemeProvider theme={theme}>
+      <div
+        className={darkMode ? "ag-theme-material-dark" : "ag-theme-material"}
+        style={{ height: "100%" }}
+      >
         <AgGridReact
           rowData={basket}
           columnDefs={columnDefs}
@@ -99,6 +122,7 @@ export default function Basket({
           marginTop: "10px",
           fontWeight: "bold",
           fontFamily: "Roboto",
+          color: darkMode ? theme.palette.text.primary : "inherit",
         }}
       >
         Grand Total: {grandTotal}€
@@ -109,6 +133,6 @@ export default function Basket({
       <Button color="error" onClick={handleClearBasket}>
         Clear basket
       </Button>
-    </>
+    </ThemeProvider>
   );
 }

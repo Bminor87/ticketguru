@@ -17,26 +17,25 @@ import { fetchEvents } from "../../util/api";
 import { formatDateTime } from "../../util/helperfunctions";
 
 export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
-  const settings = useSettings(); // url and auth header information
+  const { url } = useSettings(); // No need to access darkMode here
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const fetchedEvents = await fetchEvents(settings);
+        const fetchedEvents = await fetchEvents({ url });
         setEvents(fetchedEvents);
       } catch (error) {
         console.error(error);
       }
     };
     getEvents();
-  }, []);
+  }, [url]);
 
   useEffect(() => {
-    // eventId passed from TicketSales
     if (selectedEventId !== 0) {
-      const event = events.find((event) => event.id === selectedEventId);
+      const event = events?.find((event) => event.id === selectedEventId);
       setSelectedEvent(event || null);
     } else {
       setSelectedEvent(null);
@@ -48,7 +47,6 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
     setSelectedEventId(eventId);
   };
 
-  // also pass the event name to TicketSales
   useEffect(() => {
     if (selectedEvent) {
       setSelectedEventId(selectedEventId, selectedEvent.name);
@@ -66,14 +64,14 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
           label="Event"
         >
           <MenuItem value={0}>Select an event</MenuItem>
-          {events.map((event) => (
+          {events?.map((event) => (
             <MenuItem key={event.id} value={event.id}>
               {event.name}
             </MenuItem>
           ))}
         </Select>
       </FormControl>
-      <Table size="small">
+      <Table size="small" sx={{ mt: 2 }}>
         <TableBody>
           <TableRow>
             <TableCell>Event name</TableCell>

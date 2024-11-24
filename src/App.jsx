@@ -16,6 +16,7 @@ import {
 import { Container, CssBaseline } from "@mui/material";
 
 import { SettingsProvider } from "./SettingsContext";
+import { ThemeProvider } from "./ThemeContext";
 import { ApiProvider } from "./service/ApiProvider";
 import { BasketProvider } from "./apps/TicketSales/BasketContext";
 import Navigation from "./Navigation";
@@ -30,29 +31,31 @@ function App() {
   return (
     <Router>
       <SettingsProvider>
-        <ApiProvider>
-          <BasketProvider>
-            <CssBaseline />
-            <Navigation />
-            <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
-              <Routes>
-                <Route path="/" element={<div>Awesome app</div>} />
-                {menu.map((category) =>
-                  category.sections.flatMap((item) => (
-                    <Route
-                      key={item.name}
-                      path={item.href}
-                      element={React.createElement(
-                        componentMap[item.component]
-                      )} // Dynamically render component
-                    />
-                  ))
-                )}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Container>
-          </BasketProvider>
-        </ApiProvider>
+        <ThemeProvider>
+          <ApiProvider>
+            <BasketProvider>
+              <CssBaseline />
+              <Navigation />
+              <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
+                <Routes>
+                  <Route path="/" element={<div>Awesome app</div>} />
+                  {menu.map((category) =>
+                    category.sections.flatMap((item) => (
+                      <Route
+                        key={item.name}
+                        path={item.href}
+                        element={React.createElement(
+                          componentMap[item.component]
+                        )} // Dynamically render component
+                      />
+                    ))
+                  )}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Container>
+            </BasketProvider>
+          </ApiProvider>
+        </ThemeProvider>
       </SettingsProvider>
     </Router>
   );
