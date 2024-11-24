@@ -1,34 +1,60 @@
+import React from "react";
+
 import "./App.css";
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
 import "@fontsource/roboto/700.css";
 
-import { AppBar, Toolbar, Typography, Container } from "@mui/material";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+
+import { Container, CssBaseline } from "@mui/material";
 
 import { SettingsProvider } from "./SettingsContext";
 import { ApiProvider } from "./service/ApiProvider";
 import { BasketProvider } from "./apps/TicketSales/BasketContext";
-import TicketScanner from "./apps/TicketScanner/TicketScanner";
-import TicketSales from "./apps/TicketSales/TicketSales";
+import Navigation from "./Navigation";
+
+import { componentMap } from "./util/componentMap";
+
+import menuJson from "./menu.json";
 
 function App() {
+  const menu = menuJson.menu;
+
   return (
-    <SettingsProvider>
-      <ApiProvider>
-        <BasketProvider>
-          <AppBar position="static">
-            <Toolbar>
-              <Typography variant="h6">TicketGuru</Typography>
-            </Toolbar>
-          </AppBar>
-          <Container maxWidth="xl" sx={{ mt: 3, mb: 1 }}>
-            {/** Add routing here */}
-            <TicketSales />
-          </Container>
-        </BasketProvider>
-      </ApiProvider>
-    </SettingsProvider>
+    <Router>
+      <SettingsProvider>
+        <ApiProvider>
+          <BasketProvider>
+            <CssBaseline />
+            <Navigation />
+            <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
+              <Routes>
+                <Route path="/" element={<div>Awesome app</div>} />
+                {menu.map((category) =>
+                  category.sections.flatMap((item) => (
+                    <Route
+                      key={item.name}
+                      path={item.href}
+                      element={React.createElement(
+                        componentMap[item.component]
+                      )} // Dynamically render component
+                    />
+                  ))
+                )}
+                <Route path="*" element={<Navigate to="/" replace />} />
+              </Routes>
+            </Container>
+          </BasketProvider>
+        </ApiProvider>
+      </SettingsProvider>
+    </Router>
   );
 }
 

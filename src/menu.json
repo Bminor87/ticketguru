@@ -1,0 +1,23 @@
+{
+  "menu": [
+    {
+      "title": "Apps",
+      "sections": [
+        {
+          "name": "Ticket Sales",
+          "description": "Sell and print tickets",
+          "href": "/sales",
+          "icon": "CurrencyDollarIcon",
+          "component": "TicketSales"
+        },
+        {
+          "name": "Ticket Scanner",
+          "description": "Scan tickets during events",
+          "href": "/scanner",
+          "icon": "BanknotesIcon",
+          "component": "TicketScanner"
+        }
+      ]
+    }
+  ]
+}
