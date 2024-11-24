@@ -5,21 +5,19 @@ import { useSettings } from "../SettingsContext";
 // Create the ApiContext
 const ApiContext = createContext();
 
-// Define the ApiProvider component
 export const ApiProvider = ({ children }) => {
   const settings = useSettings();
   const [errorMessage, setErrorMessage] = useState("");
 
-  // Set authorization header
-  const setAuthHeader = () => {
-    console.log("Setting auth header for user:", settings.userName);
-    const authToken = btoa(`${settings.userName}:${settings.userPass}`);
-    axios.defaults.headers.common["Authorization"] = `Basic ${authToken}`;
-  };
-
+  // Set up Axios authorization header
   useEffect(() => {
+    const setAuthHeader = () => {
+      console.log("Setting auth header for user:", settings.userName);
+      const authToken = btoa(`${settings.userName}:${settings.userPass}`);
+      axios.defaults.headers.common["Authorization"] = `Basic ${authToken}`;
+    };
     setAuthHeader();
-  }, []);
+  }, [settings]);
 
   // Error handling function
   const handleApiError = (error) => {
@@ -37,85 +35,123 @@ export const ApiProvider = ({ children }) => {
     setErrorMessage("");
   };
 
-  // API service functions
-  const fetchExampleTicket = async () => {
-    try {
-      const response = await axios.get(`${settings.url}/api/tickets`);
-      return response.data[0];
-    } catch (error) {
-      console.error("Error fetching example ticket data:", error);
-      handleApiError(error);
-    }
-  };
+  // Generalized API request function for reusable logic
+  const makeApiCall = async (method, endpoint, data = {}, params = {}) => {
+    const url = `${settings.url}${
+      endpoint.startsWith("/") ? endpoint : `/${endpoint}`
+    }`;
+    console.log("Making API call to:", url);
 
-  const fetchTicket = async (barcode) => {
     try {
-      const response = await axios.get(
-        `${settings.url}/api/tickets/${settings.barcodeProperty}/${barcode}`
-      );
-      return response;
-    } catch (error) {
-      console.error("Error fetching ticket data:", error);
-      handleApiError(error);
-    }
-  };
-
-  const fetchEvent = async (eventId) => {
-    try {
-      const response = await axios.get(`${settings.url}/api/events/${eventId}`);
+      const response = await axios({
+        method,
+        url, // Use the properly constructed URL
+        data,
+        params,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("Successfully fetched Data: ", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error fetching event:", error);
+      console.error(`Error during API call to ${endpoint}:`, error);
       handleApiError(error);
+      throw error; // Re-throw to handle further if needed
     }
   };
 
+  // Specific API service functions
   const fetchEvents = async () => {
     try {
-      const response = await axios.get(`${settings.url}/api/events`);
-      return response.data.map((event) => ({
+      const data = await makeApiCall("get", "/api/events");
+      return data.map((event) => ({
         eventId: event.id,
         eventName: event.name,
       }));
     } catch (error) {
       console.error("Error fetching events:", error);
-      handleApiError(error);
+    }
+  };
+
+  const fetchEvent = async (eventId) => {
+    try {
+      return await makeApiCall("get", `/api/events/${eventId}`);
+    } catch (error) {
+      console.error("Error fetching event:", error);
+    }
+  };
+
+  const fetchTicket = async (barcode) => {
+    try {
+      return await makeApiCall(
+        "get",
+        `/api/tickets/${settings.barcodeProperty}/${barcode}`
+      );
+    } catch (error) {
+      console.error("Error fetching ticket:", error);
+    }
+  };
+
+  const fetchTickets = async (ticketIds) => {
+    try {
+      return await makeApiCall("get", `/api/tickets`, {}, { ids: ticketIds });
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
     }
   };
 
   const fetchTicketType = async (ticketTypeId) => {
     try {
-      const response = await axios.get(
-        `${settings.url}/api/ticket-types/${ticketTypeId}`
-      );
-      return response.data;
+      return await makeApiCall("get", `/api/tickettypes/${ticketTypeId}`);
     } catch (error) {
       console.error("Error fetching ticket type:", error);
-      handleApiError(error);
+    }
+  };
+
+  const fetchExampleTicket = async () => {
+    try {
+      const tickets = await makeApiCall("get", "/api/tickets");
+      return tickets[0]; // Return the first ticket
+    } catch (error) {
+      console.error("Error fetching example ticket:", error);
     }
   };
 
   const consumeTicket = async (barcode) => {
     try {
-      const response = await axios.put(
-        `${settings.url}/api/tickets/use/${barcode}`
-      );
-      return response.data;
+      return await makeApiCall("put", `/api/tickets/use/${barcode}`);
     } catch (error) {
       console.error("Error consuming ticket:", error);
-      handleApiError(error);
     }
   };
 
   const releaseTicket = async (barcode) => {
     try {
-      const response = await axios.put(
-        `${settings.url}/api/tickets/use/${barcode}?used=false`
-      );
-      return response.data;
+      return await makeApiCall("put", `/api/tickets/use/${barcode}?used=false`);
     } catch (error) {
       console.error("Error releasing ticket:", error);
-      handleApiError(error);
+    }
+  };
+
+  const postBasketItems = async (basket) => {
+    try {
+      const ticketItems = basket.map((item) => ({
+        ticketTypeId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
+    } catch (error) {
+      console.error("Error posting basket items:", error);
+    }
+  };
+
+  const fetchTicketTypes = async (params) => {
+    try {
+      return await makeApiCall("get", "/api/tickettypes/search", {}, params);
+    } catch (error) {
+      console.error("Error fetching ticket types:", error);
     }
   };
 
@@ -126,11 +162,14 @@ export const ApiProvider = ({ children }) => {
         clearErrorMessage,
         fetchExampleTicket,
         fetchTicket,
+        fetchTickets,
         fetchEvent,
         fetchEvents,
         fetchTicketType,
         consumeTicket,
         releaseTicket,
+        postBasketItems,
+        fetchTicketTypes,
       }}
     >
       {children}

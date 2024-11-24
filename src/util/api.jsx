@@ -2,14 +2,21 @@ import axios from "axios";
 
 const fetchEvents = async ({ url, userName, userPass }) => {
   try {
-    const response = await axios.get(`${url}/events`, {
+    const response = await fetch(url + "/events", {
       headers: {
         Authorization: `Basic ${btoa(`${userName}:${userPass}`)}`,
       },
     });
-    return response.data;
+
+    if (!response.ok) {
+      console.error("API error:", response.status, response.statusText);
+      throw new Error("Failed to fetch events");
+    }
+
+    return await response.json();
   } catch (error) {
-    console.log("Error fetching events: ", error);
+    console.error("Error fetching events:", error);
+    throw error;
   }
 };
 

@@ -29,24 +29,29 @@ export default function TicketScanner() {
   });
 
   useEffect(() => {
-    // Fetch an example ticket on load
-    fetchExampleTicket().then((data) => setExample(data));
-  }, []);
+    let isMounted = true;
+    const getExampleTicket = async () => {
+      try {
+        const data = await fetchExampleTicket();
+        if (isMounted) setExample(data);
+      } catch (error) {
+        console.error("Error fetching example ticket:", error);
+      }
+    };
+    getExampleTicket();
+    return () => {
+      isMounted = false;
+    };
+  }, [fetchExampleTicket]);
 
   useEffect(() => {
     if (ticketData != null) {
-      if (ticketData.eventId) {
-        setEventIdInTicket(ticketData.eventId);
-      } else {
-        setEventIdInTicket(ticketData.event?.id);
-      }
-      clearErrorMessage(); // Clear any error once data is fetched
+      setEventIdInTicket(ticketData.eventId || ticketData.event?.id || 0);
+      clearErrorMessage();
     }
-  }, [ticketData]);
+  }, [ticketData, clearErrorMessage]);
 
-  const handleChange = (event) => {
-    setBarcode(event.target.value);
-  };
+  const handleChange = (event) => setBarcode(event.target.value);
 
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -58,20 +63,22 @@ export default function TicketScanner() {
   const fetchTicketData = async (barcode) => {
     try {
       const response = await fetchTicket(barcode);
-      setTicketData(response.data);
-      await fetchAdditionalData(response.data);
+      const ticket = response.data;
+      if (!ticket) throw new Error("Ticket data is empty");
+      setTicketData(ticket);
+      await fetchAdditionalData(ticket);
     } catch (error) {
       console.error("Error fetching ticket data:", error);
+      clearErrorMessage();
     }
   };
 
   const fetchAdditionalData = async (ticket) => {
-    console.log("Fetching additional data for ticket", ticket);
     try {
       const event = {
-        name: ticket.event?.name,
-        time: ticket.event?.beginsAt,
-        location: ticket.venue?.name,
+        name: ticket.event?.name || "Unknown Event",
+        time: ticket.event?.beginsAt || "Unknown Time",
+        location: ticket.venue?.name || "Unknown Location",
       };
       const ticketType = ticket.ticketType?.name || "N/A";
       setAdditionalData({ event, ticketType });
@@ -130,25 +137,14 @@ export default function TicketScanner() {
           error={errorMessage}
           errorCode={settings.ticketUsedErrorCode}
         />
-        {ticketData && isCorrectEvent && !ticketData.used && (
+        {ticketData && isCorrectEvent && (
           <div className="mt-5">
             <Ticket ticketData={ticketData} additionalData={additionalData} />
             <button
-              onClick={markTicketAsUsed}
+              onClick={ticketData.used ? markTicketAsUnused : markTicketAsUsed}
               className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             >
-              Mark as Used
-            </button>
-          </div>
-        )}
-        {ticketData && isCorrectEvent && ticketData.used && (
-          <div className="mt-5">
-            <Ticket ticketData={ticketData} additionalData={additionalData} />
-            <button
-              onClick={markTicketAsUnused}
-              className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-            >
-              Mark as Unused
+              {ticketData.used ? "Mark as Unused" : "Mark as Used"}
             </button>
           </div>
         )}

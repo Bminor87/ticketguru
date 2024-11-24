@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import axios from "axios";
 import MockAdapter from "axios-mock-adapter";
-import { fetchTickets } from "../../src/util/api.jsx";
+import { useApiService } from "../../src/service/ApiProvider";
 
 describe("API helper methods", () => {
   const mock = new MockAdapter(axios);
@@ -9,6 +9,8 @@ describe("API helper methods", () => {
   const userName = "salesperson@test.com";
   const userPass = "salesperson";
   //const authHeader = `Basic ${btoa(`${userName}:${userPass}`)}`;
+
+  const { fetchTickets } = useApiService();
 
   afterEach(() => {
     mock.reset();

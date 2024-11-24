@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 import { PDFViewer } from "@react-pdf/renderer";
 
-import { fetchTickets } from "../../util/api";
+import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 
 import Ticket from "./Ticket";
@@ -19,6 +19,8 @@ import Ticket from "./Ticket";
 export default function SoldTicketsList({ soldTicketsData }) {
   const [tickets, setTickets] = useState([]);
   const settings = useSettings();
+
+  const { fetchTickets } = useApiService();
 
   useEffect(() => {
     if (!soldTicketsData) return;

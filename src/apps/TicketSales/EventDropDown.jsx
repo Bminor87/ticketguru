@@ -11,31 +11,31 @@ import {
 } from "@mui/material";
 
 import { useEffect, useState } from "react";
-import { useSettings } from "../../SettingsContext";
 
-import { fetchEvents } from "../../util/api";
+import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 
 export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
-  const { url } = useSettings(); // No need to access darkMode here
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
+
+  const { fetchEvents } = useApiService();
 
   useEffect(() => {
     const getEvents = async () => {
       try {
-        const fetchedEvents = await fetchEvents({ url });
+        const fetchedEvents = await fetchEvents();
         setEvents(fetchedEvents);
       } catch (error) {
         console.error(error);
       }
     };
     getEvents();
-  }, [url]);
+  }, []);
 
   useEffect(() => {
     if (selectedEventId !== 0) {
-      const event = events?.find((event) => event.id === selectedEventId);
+      const event = events?.find((event) => event.eventId === selectedEventId); // Use eventId
       setSelectedEvent(event || null);
     } else {
       setSelectedEvent(null);
@@ -65,8 +65,8 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
         >
           <MenuItem value={0}>Select an event</MenuItem>
           {events?.map((event) => (
-            <MenuItem key={event.id} value={event.id}>
-              {event.name}
+            <MenuItem key={event.eventId} value={event.eventId}>
+              {event.eventName}
             </MenuItem>
           ))}
         </Select>
@@ -75,7 +75,8 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
         <TableBody>
           <TableRow>
             <TableCell>Event name</TableCell>
-            <TableCell>{selectedEvent?.name || ""}</TableCell>
+            <TableCell>{selectedEvent?.eventName || ""}</TableCell>{" "}
+            {/* Use eventName */}
           </TableRow>
           <TableRow>
             <TableCell>Description</TableCell>

@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 
 const SettingsContext = createContext();
 
@@ -7,43 +7,25 @@ export const useSettings = () => {
 };
 
 export const SettingsProvider = ({ children }) => {
-  // Initialize dark mode state from localStorage or default to false
-  const [darkMode, setDarkMode] = useState(() => {
-    // Get initial value from localStorage
-    const storedDarkMode = localStorage.getItem("darkMode");
-    return storedDarkMode === "true"; // Convert string to boolean
-  });
+  const [darkMode, setDarkMode] = useState(false);
 
-  // Function to toggle dark mode
   const toggleDarkMode = () => {
-    const newDarkMode = !darkMode;
-    setDarkMode(newDarkMode);
-    localStorage.setItem("darkMode", newDarkMode); // Persist to localStorage
-
-    if (newDarkMode) {
-      document.documentElement.classList.add("dark"); // Add Tailwind's 'dark' class
-    } else {
-      document.documentElement.classList.remove("dark"); // Remove Tailwind's 'dark' class
-    }
-  };
-
-  // Sync dark mode with Tailwind's class on initial render
-  useEffect(() => {
-    if (darkMode) {
+    setDarkMode(!darkMode);
+    if (!darkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
-  }, [darkMode]);
+  };
 
   const settings = {
-    url: "https://ticketguru.hellmanstudios.fi/api",
+    url: "https://ticketguru.hellmanstudios.fi", // Ensure this is correct
     userName: "admin@test.com",
     userPass: "admin",
     ticketUsedErrorCode: "ERR_BAD_REQUEST",
     barcodeProperty: "barcode",
-    darkMode, // Include darkMode in settings
-    toggleDarkMode, // Include toggle function
+    darkMode,
+    toggleDarkMode,
   };
 
   return (
