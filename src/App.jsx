@@ -1,23 +1,34 @@
 import "./App.css";
-import AppContext from "./AppContext";
-import { ApiProvider } from "./service/ApiProvider";
-import TicketScanner from "./apps/TicketScanner/TicketScanner";
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
 
-const settings = {
-  url: "https://ticketguru.hellmanstudios.fi",
-  ticketUsedErrorCode: "ERR_BAD_REQUEST",
-  barcodeProperty: "barcode",
-  username: "admin@test.com",
-  password: "admin",
-};
+import { AppBar, Toolbar, Typography, Container } from "@mui/material";
+
+import { SettingsProvider } from "./SettingsContext";
+import { ApiProvider } from "./service/ApiProvider";
+import { BasketProvider } from "./apps/TicketSales/BasketContext";
+import TicketScanner from "./apps/TicketScanner/TicketScanner";
+import TicketSales from "./apps/TicketSales/TicketSales";
 
 function App() {
   return (
-    <AppContext.Provider value={{ settings }}>
+    <SettingsProvider>
       <ApiProvider>
-        <TicketScanner />
+        <BasketProvider>
+          <AppBar position="static">
+            <Toolbar>
+              <Typography variant="h6">TicketGuru</Typography>
+            </Toolbar>
+          </AppBar>
+          <Container maxWidth="xl" sx={{ mt: 3, mb: 1 }}>
+            {/** Add routing here */}
+            <TicketSales />
+          </Container>
+        </BasketProvider>
       </ApiProvider>
-    </AppContext.Provider>
+    </SettingsProvider>
   );
 }
 

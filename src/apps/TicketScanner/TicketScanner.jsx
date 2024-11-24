@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
-import { useAppContext } from "../../AppContext";
+import { useSettings } from "../../SettingsContext";
 import EventDropDown from "./EventDropDown";
 import Ticket from "../../common/Ticket";
 import CorrectEventChecker from "../../common/CorrectEventChecker";
@@ -9,7 +9,7 @@ import ErrorMessage from "../../common/ErrorMessage";
 import ExampleBarcode from "./ExampleBarcode";
 
 export default function TicketScanner() {
-  const { settings } = useAppContext();
+  const settings = useSettings();
   const [example, setExample] = useState(null);
   const [barcode, setBarcode] = useState("");
   const {

@@ -1,19 +1,19 @@
 import axios from "axios";
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { useAppContext } from "../AppContext";
+import { useSettings } from "../SettingsContext";
 
 // Create the ApiContext
 const ApiContext = createContext();
 
 // Define the ApiProvider component
 export const ApiProvider = ({ children }) => {
-  const { settings } = useAppContext();
+  const settings = useSettings();
   const [errorMessage, setErrorMessage] = useState("");
 
   // Set authorization header
   const setAuthHeader = () => {
-    console.log("Setting auth header for user:", settings.username);
-    const authToken = btoa(`${settings.username}:${settings.password}`);
+    console.log("Setting auth header for user:", settings.userName);
+    const authToken = btoa(`${settings.userName}:${settings.userPass}`);
     axios.defaults.headers.common["Authorization"] = `Basic ${authToken}`;
   };
 
