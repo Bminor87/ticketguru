@@ -1,5 +1,7 @@
 import { useState, useMemo } from "react";
 import { AgGridReact } from "ag-grid-react";
+import { Button } from "@mui/material";
+import { Add, DeleteForever, Remove } from "@mui/icons-material";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -32,30 +34,20 @@ export default function Basket({
     {
       headerName: "",
       cellRenderer: (params) => (
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => plusOneTicket(params.data)}
-            className="px-2 py-1 text-white bg-indigo-500 hover:bg-indigo-600 rounded-md"
-          >
-            +
-          </button>
-          <button
+        <>
+          <Button color="primary" onClick={() => plusOneTicket(params.data)}>
+            <Add />
+          </Button>
+          <Button
+            color={params.data.quantity != 1 ? "primary" : "gray"}
             onClick={() => minusOneTicket(params.data)}
-            className={`px-2 py-1 rounded-md ${
-              params.data.quantity > 1
-                ? "bg-indigo-500 hover:bg-indigo-600 text-white"
-                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-            }`}
           >
-            -
-          </button>
-          <button
-            onClick={() => removeFromBasket(params.data)}
-            className="px-2 py-1 text-white bg-red-500 hover:bg-red-600 rounded-md"
-          >
-            Remove
-          </button>
-        </div>
+            <Remove />
+          </Button>
+          <Button color="error" onClick={() => removeFromBasket(params.data)}>
+            <DeleteForever />
+          </Button>
+        </>
       ),
     },
   ]);

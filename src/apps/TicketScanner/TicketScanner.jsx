@@ -7,6 +7,7 @@ import CorrectEventChecker from "../../common/CorrectEventChecker";
 import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import ExampleBarcode from "./ExampleBarcode";
+import PopupMessage from "../../common/PopupMessage";
 import { Button } from "@mui/material";
 
 export default function TicketScanner() {
@@ -32,6 +33,11 @@ export default function TicketScanner() {
     event: null,
     ticketType: null,
   });
+
+  const [popupOpened, setPopupOpened] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
+  const [popupTitle, setPopupTitle] = useState("");
+  const [popupType, setPopupType] = useState("success");
 
   useEffect(() => {
     let isMounted = true;
@@ -111,6 +117,10 @@ export default function TicketScanner() {
   const markTicketAsUsed = async () => {
     try {
       await consumeTicket(barcode);
+      setPopupOpened(true);
+      setPopupType("success");
+      setPopupTitle("Ticket Used");
+      setPopupMessage("The ticket has been successfully marked as used.");
       resetState();
     } catch (error) {
       console.error("Error marking ticket as used:", error);
@@ -120,6 +130,10 @@ export default function TicketScanner() {
   const markTicketAsUnused = async () => {
     try {
       await releaseTicket(barcode);
+      setPopupOpened(true);
+      setPopupType("success");
+      setPopupTitle("Ticket Unused");
+      setPopupMessage("The ticket has been successfully marked as unused.");
       resetState();
     } catch (error) {
       console.error("Error marking ticket as unused:", error);
@@ -160,6 +174,12 @@ export default function TicketScanner() {
           eventIdInTicket={eventIdInTicket}
           isCorrectEvent={isCorrectEvent}
         />
+        <PopupMessage
+          type={popupType}
+          title={popupTitle}
+          message={popupMessage}
+          opened={popupOpened}
+        />
         <ErrorMessage
           error={errorMessage}
           errorCode={settings.ticketUsedErrorCode}
@@ -168,10 +188,12 @@ export default function TicketScanner() {
           <div className="mt-5">
             <Ticket ticketData={ticketData} additionalData={additionalData} />
             <button
-              onClick={ticketData.used ? markTicketAsUnused : markTicketAsUsed}
+              onClick={
+                ticketData.usedAt ? markTicketAsUnused : markTicketAsUsed
+              }
               className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
             >
-              {ticketData.used ? "Mark as Unused" : "Mark as Used"}
+              {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
             </button>
           </div>
         )}

@@ -52,7 +52,10 @@ export const ApiProvider = ({ children }) => {
           "Content-Type": "application/json",
         },
       });
-      console.log("Successfully fetched Data: ", response.data);
+      console.log(
+        `API call to ${endpoint} with params ${params} successful:`,
+        response.data
+      );
       return response.data;
     } catch (error) {
       console.error(`Error during API call to ${endpoint}:`, error);

@@ -2,7 +2,6 @@ import Button from "@mui/material/Button";
 
 import { useEffect, useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
-import { useSettings } from "../../SettingsContext";
 import { useBasket } from "./BasketContext";
 import {
   FormControl,
@@ -24,7 +23,6 @@ export default function TicketOrderControl({
   selectedTicketTypeId,
   setSelectedTicketTypeId,
 }) {
-  const settings = useSettings(); // url and auth header info
   const { fetchTicketTypes } = useApiService();
 
   const [ticketTypes, setTicketTypes] = useState([]);
@@ -39,10 +37,11 @@ export default function TicketOrderControl({
     setSelectedTicketTypeId(0); // clear tickettype selection when selectedEventId changes
     const getTicketTypes = async () => {
       try {
-        const fetchedTicketTypes = await fetchTicketTypes(settings, params); // pass settings and query params to api
+        console.log("Trying to fetch Ticket types for event", selectedEventId);
+        const fetchedTicketTypes = await fetchTicketTypes(params);
         setTicketTypes(fetchedTicketTypes);
       } catch (error) {
-        console.error(error);
+        console.error("Error fetching ticket types", error);
       }
     };
     getTicketTypes();
