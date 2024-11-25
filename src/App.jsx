@@ -13,16 +13,15 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { Container, CssBaseline } from "@mui/material";
+import { CssBaseline } from "@mui/material";
 
 import { SettingsProvider } from "./SettingsContext";
 import { ThemeProvider } from "./ThemeContext";
 import { ApiProvider } from "./service/ApiProvider";
 import { BasketProvider } from "./apps/TicketSales/BasketContext";
-import Navigation from "./Navigation";
+import Layout from "./Layout";
 
 import { componentMap } from "./util/componentMap";
-
 import menuJson from "./menu.json";
 
 function App() {
@@ -35,10 +34,10 @@ function App() {
           <ApiProvider>
             <BasketProvider>
               <CssBaseline />
-              <Navigation />
-              <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
-                <Routes>
-                  <Route path="/" element={<div>Awesome app</div>} />
+
+              <Routes>
+                <Route path="/" element={<Layout />}>
+                  <Route index element={<div>Awesome app</div>} />
                   {menu.map((category) =>
                     category.sections.flatMap((item) => (
                       <Route
@@ -46,13 +45,13 @@ function App() {
                         path={item.href}
                         element={React.createElement(
                           componentMap[item.component]
-                        )} // Dynamically render component
+                        )}
                       />
                     ))
                   )}
                   <Route path="*" element={<Navigate to="/" replace />} />
-                </Routes>
-              </Container>
+                </Route>
+              </Routes>
             </BasketProvider>
           </ApiProvider>
         </ThemeProvider>
