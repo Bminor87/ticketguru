@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSettings } from "../../SettingsContext";
 
 import {
   Box,
@@ -18,7 +17,6 @@ import Ticket from "./Ticket";
 
 export default function SoldTicketsList({ soldTicketsData }) {
   const [tickets, setTickets] = useState([]);
-  const settings = useSettings();
 
   const { fetchTickets } = useApiService();
 
@@ -27,7 +25,7 @@ export default function SoldTicketsList({ soldTicketsData }) {
     const getTickets = async () => {
       try {
         const ticketIds = soldTicketsData.ticketIds.toString();
-        const fetchedTickets = await fetchTickets(settings, ticketIds);
+        const fetchedTickets = await fetchTickets(ticketIds);
         setTickets(fetchedTickets);
       } catch (error) {
         console.error(error);
@@ -50,7 +48,7 @@ export default function SoldTicketsList({ soldTicketsData }) {
             <strong>Sold by user: {soldTicketsData.userId}</strong>
             <br />
           </Box>
-          {/* <Table size="small">
+          <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Event</TableCell>
@@ -61,20 +59,20 @@ export default function SoldTicketsList({ soldTicketsData }) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {tickets.map((ticket, index) => (
+              {tickets?.map((ticket, index) => (
                 <TableRow key={index}>
-                  <TableCell>{ticket.event.name}</TableCell>
-                  <TableCell>{ticket.ticketType.name}</TableCell>
-                  <TableCell>{ticket.venue.name}</TableCell>
-                  <TableCell>{ticket.price.toFixed(2)}</TableCell>
+                  <TableCell>{ticket.event?.name}</TableCell>
+                  <TableCell>{ticket.ticketType?.name}</TableCell>
+                  <TableCell>{ticket.venue?.name}</TableCell>
+                  <TableCell>{ticket.price?.toFixed(2)}</TableCell>
                   <TableCell>{ticket.barcode}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
-          </Table> */}
-          <PDFViewer width="100%" height="600px">
+          </Table>
+          {/* <PDFViewer width="100%" height="600px">
             <Ticket tickets={tickets} />
-          </PDFViewer>
+          </PDFViewer> */}
         </>
       )}
     </>

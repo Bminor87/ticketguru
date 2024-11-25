@@ -17,7 +17,7 @@ export default function Basket({
 }) {
   const { basket, setBasket, removeFromBasket, plusOneTicket, minusOneTicket } =
     useBasket();
-  const { darkMode, url } = useSettings(); // Access darkMode and API URL from settings
+  const { darkMode } = useSettings(); // Access darkMode and API URL from settings
   const { postBasketItems } = useApiService();
 
   const [columnDefs, setColumnDefs] = useState([
@@ -59,9 +59,9 @@ export default function Basket({
   const handleConfirmSale = async () => {
     if (!basket || basket.length === 0) return;
     try {
-      const response = await postBasketItems({ url }, basket);
-      if (response.status === 201) {
-        setSoldTicketsData(response.data);
+      const response = await postBasketItems(basket);
+      if (response) {
+        setSoldTicketsData(response);
         handleClearBasket();
         setSelectedEventId(0);
         setSelectedTicketTypeId(0);

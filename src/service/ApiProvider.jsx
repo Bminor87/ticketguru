@@ -136,8 +136,9 @@ export const ApiProvider = ({ children }) => {
   };
 
   const postBasketItems = async (basket) => {
+    console.log("Posting basket items:", basket);
     try {
-      const ticketItems = basket.map((item) => ({
+      const ticketItems = basket.flatMap((item) => ({
         ticketTypeId: item.id,
         quantity: item.quantity,
         price: item.price,
