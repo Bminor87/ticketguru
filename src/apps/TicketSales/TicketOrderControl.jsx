@@ -126,7 +126,7 @@ export default function TicketOrderControl({
           ))}
         </Select>
       </FormControl>
-      <Table size="small">
+      <Table size="small" className={selectedTicketTypeId ? "" : "hidden"}>
         <TableBody>
           <TableRow>
             <TableCell>Ticket type</TableCell>
@@ -185,6 +185,7 @@ export default function TicketOrderControl({
 
       <Button
         color="primary"
+        className={selectedTicketTypeId ? "" : "hidden"}
         variant="contained"
         onClick={() =>
           handleAddToBasket(

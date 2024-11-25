@@ -15,3 +15,7 @@
 .testButtonsRow button {
   margin: 0 10px;
 }
+
+#TicketSales .hidden {
+  visibility: hidden;
+}

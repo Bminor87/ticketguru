@@ -71,7 +71,11 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
           ))}
         </Select>
       </FormControl>
-      <Table size="small" sx={{ mt: 2 }}>
+      <Table
+        size="small"
+        sx={{ mt: 2 }}
+        className={selectedEventId ? "" : "hidden"}
+      >
         <TableBody>
           <TableRow>
             <TableCell>Event name</TableCell>

@@ -22,7 +22,7 @@ export default function TicketSales() {
   };
 
   return (
-    <div className="text-gray-500 dark:text-white">
+    <div id="TicketSales" className="text-gray-500 dark:text-white">
       <Stack direction="row" spacing={2}>
         <Box sx={{ m: 1, width: 500 }}>
           <EventDropDown

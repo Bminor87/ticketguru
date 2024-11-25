@@ -46,7 +46,8 @@ export default function TicketScanner() {
 
   useEffect(() => {
     if (ticketData != null) {
-      setEventIdInTicket(ticketData.eventId || ticketData.event?.id || 0);
+      console.log("Ticket data:", ticketData);
+      setEventIdInTicket(ticketData.event?.id || 0);
       clearErrorMessage();
     }
   }, [ticketData, clearErrorMessage]);
