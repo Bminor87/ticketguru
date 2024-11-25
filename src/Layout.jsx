@@ -2,6 +2,10 @@
 
 import { useState } from "react";
 import {
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuItems,
   Dialog,
   DialogBackdrop,
   DialogPanel,
@@ -10,6 +14,8 @@ import {
 import {
   Bars3Icon,
   ChevronDownIcon,
+  MagnifyingGlassIcon,
+  BellIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import menuJson from "./menu.json"; // Import JSON file
@@ -65,11 +71,7 @@ export default function Layout({ children }) {
               <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4 ring-1 ring-white/10">
                 <div className="flex h-16 shrink-0 items-center">
                   <Link to="/" onClick={() => setSidebarOpen(false)}>
-                    <img
-                      alt="Your Company"
-                      src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                      className="h-8 w-auto"
-                    />
+                    <span className="text-white text-2xl">TicketGuru</span>
                   </Link>
                 </div>
                 <nav className="flex flex-1 flex-col">
@@ -120,11 +122,7 @@ export default function Layout({ children }) {
           <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
             <div className="flex h-16 shrink-0 items-center">
               <Link to="/">
-                <img
-                  alt="Your Company"
-                  src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500"
-                  className="h-8 w-auto"
-                />
+                <span className="text-white text-2xl">TicketGuru</span>
               </Link>
             </div>
             <nav className="flex flex-1 flex-col">
@@ -183,7 +181,7 @@ export default function Layout({ children }) {
                 <label htmlFor="search-field" className="sr-only">
                   Search
                 </label>
-                <ChevronDownIcon
+                <MagnifyingGlassIcon
                   aria-hidden="true"
                   className="pointer-events-none absolute inset-y-0 left-0 h-full w-5 text-gray-400"
                 />
@@ -195,6 +193,58 @@ export default function Layout({ children }) {
                   className="block size-full border-0 py-0 pl-8 pr-0 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
                 />
               </form>
+              <div className="flex items-center gap-x-4 lg:gap-x-6">
+                <button
+                  type="button"
+                  className="-m-2.5 p-2.5 text-gray-400 hover:text-gray-500"
+                >
+                  <span className="sr-only">View notifications</span>
+                  <BellIcon aria-hidden="true" className="size-6" />
+                </button>
+
+                {/* Separator */}
+                <div
+                  aria-hidden="true"
+                  className="hidden lg:block lg:h-6 lg:w-px lg:bg-gray-900/10"
+                />
+
+                {/* Profile dropdown */}
+                <Menu as="div" className="relative">
+                  <MenuButton className="-m-1.5 flex items-center p-1.5">
+                    <span className="sr-only">Open user menu</span>
+                    <img
+                      alt=""
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      className="size-8 rounded-full bg-gray-50"
+                    />
+                    <span className="hidden lg:flex lg:items-center">
+                      <span
+                        aria-hidden="true"
+                        className="ml-4 text-sm/6 font-semibold text-gray-900"
+                      >
+                        Seppo Lipunmyyjä
+                      </span>
+                      <ChevronDownIcon
+                        aria-hidden="true"
+                        className="ml-2 size-5 text-gray-400"
+                      />
+                    </span>
+                  </MenuButton>
+                  <MenuItems
+                    transition
+                    className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
+                  >
+                    <MenuItem key="uniqueKey">
+                      <a
+                        href="#"
+                        className="block px-3 py-1 text-sm/6 text-gray-900 data-[focus]:bg-gray-50 data-[focus]:outline-none"
+                      >
+                        Log Out
+                      </a>
+                    </MenuItem>
+                  </MenuItems>
+                </Menu>
+              </div>
             </div>
           </div>
 
