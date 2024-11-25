@@ -19,7 +19,7 @@ export const ThemeProvider = ({ children }) => {
         palette: {
           mode: darkMode ? "dark" : "light",
           background: {
-            default: darkMode ? "#303030" : "#fafafa",
+            default: darkMode ? "#101010" : "#fafafa",
             paper: darkMode ? "#424242" : "#ffffff",
           },
           text: {

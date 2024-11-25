@@ -114,7 +114,7 @@ export default function TicketScanner() {
   const isCorrectEvent = selectedEventId === eventIdInTicket;
 
   return (
-    <div className="bg-white dark:bg-gray-800 shadow sm:rounded-lg">
+    <div className="sm:rounded-lg">
       <div className="px-4 py-5 sm:p-6">
         <p className="text-sm text-gray-500 dark:text-white">
           Scan tickets for the selected event.

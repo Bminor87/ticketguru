@@ -16,6 +16,34 @@
           "href": "/scanner",
           "icon": "BanknotesIcon",
           "component": "TicketScanner"
+        },
+        {
+          "name": "Events",
+          "description": "Manage events",
+          "href": "/events",
+          "icon": "CalendarIcon",
+          "component": "Events"
+        },
+        {
+          "name": "Venues",
+          "description": "Manage venues",
+          "href": "/venues",
+          "icon": "BuildingLibraryIcon",
+          "component": "Venues"
+        },
+        {
+          "name": "Sales Reports",
+          "description": "View sales reports",
+          "href": "/sales-reports",
+          "icon": "ChartBarIcon",
+          "component": "SalesReports"
+        },
+        {
+          "name": "User Management",
+          "description": "Manage users",
+          "href": "/user-management",
+          "icon": "UserGroupIcon",
+          "component": "UserManagement"
         }
       ]
     }

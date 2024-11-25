@@ -13,15 +13,18 @@ import {
   Navigate,
 } from "react-router-dom";
 
-import { CssBaseline } from "@mui/material";
+import { Container, CssBaseline } from "@mui/material";
 
 import { SettingsProvider } from "./SettingsContext";
 import { ThemeProvider } from "./ThemeContext";
 import { ApiProvider } from "./service/ApiProvider";
 import { BasketProvider } from "./apps/TicketSales/BasketContext";
-import Layout from "./Layout";
 
+import Layout from "./Layout";
+import Login from "./Login";
+import FrontPage from "./apps/FrontPage/FrontPage";
 import { componentMap } from "./util/componentMap";
+
 import menuJson from "./menu.json";
 
 function App() {
@@ -34,23 +37,38 @@ function App() {
           <ApiProvider>
             <BasketProvider>
               <CssBaseline />
-
               <Routes>
-                <Route path="/" element={<Layout />}>
-                  <Route index element={<div>Awesome app</div>} />
-                  {menu.map((category) =>
-                    category.sections.flatMap((item) => (
-                      <Route
-                        key={item.name}
-                        path={item.href}
-                        element={React.createElement(
-                          componentMap[item.component]
-                        )}
-                      />
-                    ))
-                  )}
-                  <Route path="*" element={<Navigate to="/" replace />} />
-                </Route>
+                {/* Login Route */}
+                <Route path="/login" element={<Login />} />
+
+                {/* All other routes with Layout */}
+                <Route
+                  path="*"
+                  element={
+                    <Layout>
+                      <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
+                        <Routes>
+                          <Route path="/" element={<FrontPage />} />
+                          {menu.map((category) =>
+                            category.sections.flatMap((item) => (
+                              <Route
+                                key={item.name}
+                                path={item.href}
+                                element={React.createElement(
+                                  componentMap[item.component]
+                                )} // Dynamically render component
+                              />
+                            ))
+                          )}
+                          <Route
+                            path="*"
+                            element={<Navigate to="/" replace />}
+                          />
+                        </Routes>
+                      </Container>
+                    </Layout>
+                  }
+                />
               </Routes>
             </BasketProvider>
           </ApiProvider>
