@@ -65,10 +65,7 @@ export const ApiProvider = ({ children }) => {
   const fetchEvents = async () => {
     try {
       const data = await makeApiCall("get", "/api/events");
-      return data.map((event) => ({
-        eventId: event.id,
-        eventName: event.name,
-      }));
+      return data;
     } catch (error) {
       console.error("Error fetching events:", error);
     }
@@ -84,10 +81,11 @@ export const ApiProvider = ({ children }) => {
 
   const fetchTicket = async (barcode) => {
     try {
-      return await makeApiCall(
+      const ticketData = await makeApiCall(
         "get",
-        `/api/tickets/${settings.barcodeProperty}/${barcode}`
+        `/api/tickets/barcode/${barcode}`
       );
+      return ticketData;
     } catch (error) {
       console.error("Error fetching ticket:", error);
     }
@@ -149,7 +147,14 @@ export const ApiProvider = ({ children }) => {
 
   const fetchTicketTypes = async (params) => {
     try {
-      return await makeApiCall("get", "/api/tickettypes/search", {}, params);
+      const ticketTypes = await makeApiCall(
+        "get",
+        "/api/tickettypes/search",
+        {},
+        params
+      );
+      console.log("Ticket types:", ticketTypes);
+      return ticketTypes;
     } catch (error) {
       console.error("Error fetching ticket types:", error);
     }

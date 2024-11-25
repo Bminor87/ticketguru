@@ -23,7 +23,6 @@ export const SettingsProvider = ({ children }) => {
     userName: "admin@test.com",
     userPass: "admin",
     ticketUsedErrorCode: "ERR_BAD_REQUEST",
-    barcodeProperty: "barcode",
     darkMode,
     toggleDarkMode,
   };

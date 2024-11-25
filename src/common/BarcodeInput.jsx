@@ -1,4 +1,5 @@
 import { useRef, useEffect } from "react";
+import { Input } from "@mui/material";
 
 export default function BarcodeInput({
   barcode,
@@ -12,20 +13,16 @@ export default function BarcodeInput({
   }, []);
 
   return (
-    <div className="mt-5 sm:flex sm:items-center">
-      <label htmlFor="barcode" className="sr-only">
-        Barcode
-      </label>
-      <input
+    <div className="mt-5 sm:flex sm:items-center col-span-2">
+      <Input
         ref={inputRef}
         id="barcode"
-        type="text"
-        placeholder="Enter/Read ticket number here"
+        style={{ width: "100%" }}
         value={barcode}
         onChange={handleChange}
         onKeyDown={handleKeyPress}
+        placeholder="Enter/Read ticket number here"
         autoFocus
-        className="block w-full pl-4 rounded-md border-0 py-1.5 text-gray-900 dark:text-white dark:bg-gray-600 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:max-w-xs"
       />
     </div>
   );

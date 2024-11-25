@@ -1,7 +1,6 @@
 import { useState } from "react";
-import { Stack, Box } from "@mui/material";
 
-import EventDropDown from "./EventDropDown";
+import EventControl from "./EventControl";
 import TicketOrderControl from "./TicketOrderControl";
 import Basket from "./Basket";
 import SoldTicketsList from "./SoldTicketsList";
@@ -23,30 +22,37 @@ export default function TicketSales() {
 
   return (
     <div id="TicketSales" className="text-gray-500 dark:text-white">
-      <Stack direction="row" spacing={2}>
-        <Box sx={{ m: 1, width: 500 }}>
-          <EventDropDown
+      {/* Responsive container for the dropdowns */}
+      <div className="flex flex-wrap gap-4">
+        <div className="flex-1 min-w-[320px] max-w-[500px]">
+          <EventControl
             selectedEventId={selectedEventId}
             setSelectedEventId={handleEventSelect}
           />
-        </Box>
-        <Box sx={{ m: 1, width: 500 }}>
+        </div>
+        <div className="flex-1 min-w-[320px] max-w-[500px]">
           <TicketOrderControl
             selectedEventId={selectedEventId}
             selectedEventName={selectedEventName}
             selectedTicketTypeId={selectedTicketTypeId}
             setSelectedTicketTypeId={setSelectedTicketTypeId}
           />
-        </Box>
-      </Stack>
-      <Stack direction="column" spacing={2} width={1020}>
-        <Basket
-          setSoldTicketsData={handleSetSoldTicketsData}
-          setSelectedEventId={setSelectedEventId}
-          setSelectedTicketTypeId={setSelectedTicketTypeId}
-        />
-        <SoldTicketsList soldTicketsData={soldTicketsData} />
-      </Stack>
+        </div>
+      </div>
+
+      {/* Responsive container for the basket and sold tickets list */}
+      <div className="mt-6 flex flex-col gap-6">
+        <div>
+          <Basket
+            setSoldTicketsData={handleSetSoldTicketsData}
+            setSelectedEventId={setSelectedEventId}
+            setSelectedTicketTypeId={setSelectedTicketTypeId}
+          />
+        </div>
+        <div>
+          <SoldTicketsList soldTicketsData={soldTicketsData} />
+        </div>
+      </div>
     </div>
   );
 }

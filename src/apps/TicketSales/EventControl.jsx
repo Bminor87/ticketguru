@@ -15,7 +15,9 @@ import { useEffect, useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 
-export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
+import EventDropDown from "../../common/EventDropDown";
+
+export default function EventControl({ selectedEventId, setSelectedEventId }) {
   const [events, setEvents] = useState([]);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
@@ -35,7 +37,7 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
 
   useEffect(() => {
     if (selectedEventId !== 0) {
-      const event = events?.find((event) => event.eventId === selectedEventId); // Use eventId
+      const event = events?.find((event) => event.id === selectedEventId); // Use eventId
       setSelectedEvent(event || null);
     } else {
       setSelectedEvent(null);
@@ -55,22 +57,11 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
 
   return (
     <Stack>
-      <FormControl fullWidth>
-        <InputLabel>Event</InputLabel>
-        <Select
-          id="eventSelect"
-          value={selectedEventId}
-          onChange={handleChange}
-          label="Event"
-        >
-          <MenuItem value={0}>Select an event</MenuItem>
-          {events?.map((event) => (
-            <MenuItem key={event.eventId} value={event.eventId}>
-              {event.eventName}
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
+      <EventDropDown
+        selectedEventId={selectedEventId}
+        setSelectedEventId={setSelectedEventId}
+        events={events}
+      />
       <Table
         size="small"
         sx={{ mt: 2 }}
@@ -79,7 +70,7 @@ export default function EventDropDown({ selectedEventId, setSelectedEventId }) {
         <TableBody>
           <TableRow>
             <TableCell>Event name</TableCell>
-            <TableCell>{selectedEvent?.eventName || ""}</TableCell>{" "}
+            <TableCell>{selectedEvent?.name || ""}</TableCell>{" "}
             {/* Use eventName */}
           </TableRow>
           <TableRow>

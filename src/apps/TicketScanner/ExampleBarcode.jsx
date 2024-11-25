@@ -1,13 +1,12 @@
 export default function ExampleBarcode({
   example,
-  barcodeProperty,
   setBarcode,
   fetchTicketData,
 }) {
   if (!example) return null;
 
   const handleExampleClick = () => {
-    const exampleBarcode = example[barcodeProperty];
+    const exampleBarcode = example?.barcode;
     setBarcode(exampleBarcode);
     fetchTicketData(exampleBarcode);
   };
@@ -20,7 +19,7 @@ export default function ExampleBarcode({
           onClick={handleExampleClick}
           className="text-indigo-600 hover:underline"
         >
-          {example[barcodeProperty]}
+          {example?.barcode}
         </button>
       </p>
     </div>

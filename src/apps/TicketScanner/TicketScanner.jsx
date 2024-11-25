@@ -1,17 +1,19 @@
 import { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { useSettings } from "../../SettingsContext";
-import EventDropDown from "./EventDropDown";
+import EventDropDown from "../../common/EventDropDown";
 import Ticket from "../../common/Ticket";
 import CorrectEventChecker from "../../common/CorrectEventChecker";
 import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import ExampleBarcode from "./ExampleBarcode";
+import { Button } from "@mui/material";
 
 export default function TicketScanner() {
   const settings = useSettings();
   const [example, setExample] = useState(null);
   const [barcode, setBarcode] = useState("");
+
   const {
     fetchExampleTicket,
     fetchTicket,
@@ -19,7 +21,10 @@ export default function TicketScanner() {
     releaseTicket,
     errorMessage,
     clearErrorMessage,
+    fetchEvents,
   } = useApiService();
+
+  const [events, setEvents] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(0);
   const [eventIdInTicket, setEventIdInTicket] = useState(0);
   const [ticketData, setTicketData] = useState(null);
@@ -45,6 +50,20 @@ export default function TicketScanner() {
   }, [fetchExampleTicket]);
 
   useEffect(() => {
+    const getEvents = async () => {
+      try {
+        console.log("Fetching events...");
+        const fetchedEvents = await fetchEvents();
+        console.log("Fetched events:", fetchedEvents); // Log fetched events
+        setEvents(fetchedEvents);
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
+    };
+    getEvents();
+  }, []); // Fetch events on component mount
+
+  useEffect(() => {
     if (ticketData != null) {
       console.log("Ticket data:", ticketData);
       setEventIdInTicket(ticketData.event?.id || 0);
@@ -64,7 +83,8 @@ export default function TicketScanner() {
   const fetchTicketData = async (barcode) => {
     try {
       const response = await fetchTicket(barcode);
-      const ticket = response.data;
+      const ticket = response;
+      console.log("Fetched ticket DATATATATATATAAA:", ticket);
       if (!ticket) throw new Error("Ticket data is empty");
       setTicketData(ticket);
       await fetchAdditionalData(ticket);
@@ -117,18 +137,24 @@ export default function TicketScanner() {
   return (
     <div className="sm:rounded-lg">
       <div className="px-4 py-5 sm:p-6">
-        <p className="text-sm text-gray-500 dark:text-white">
+        <p className="text-sm mb-4 text-gray-500 dark:text-white">
           Scan tickets for the selected event.
         </p>
-        <EventDropDown
-          selectedEventId={selectedEventId}
-          setSelectedEventId={setSelectedEventId}
-        />
-        <BarcodeInput
-          barcode={barcode}
-          handleChange={handleChange}
-          handleKeyPress={handleKeyPress}
-        />
+        <div className="grid grid-cols-4 gap-4">
+          <EventDropDown
+            selectedEventId={selectedEventId}
+            setSelectedEventId={setSelectedEventId}
+            events={events}
+          />
+          <BarcodeInput
+            barcode={barcode}
+            handleChange={handleChange}
+            handleKeyPress={handleKeyPress}
+          />
+          <Button variant="contained" onClick={() => fetchTicketData(barcode)}>
+            Fetch Ticket
+          </Button>
+        </div>
         <CorrectEventChecker
           selectedEventId={selectedEventId}
           eventIdInTicket={eventIdInTicket}
@@ -151,7 +177,6 @@ export default function TicketScanner() {
         )}
         <ExampleBarcode
           example={example}
-          barcodeProperty={settings.barcodeProperty}
           setBarcode={setBarcode}
           fetchTicketData={fetchTicketData}
         />
