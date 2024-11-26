@@ -8,8 +8,9 @@ import "ag-grid-community/styles/ag-theme-material.css";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [loading, setLoading] = useState(true);
-  const { fetchEvents } = useApiService();
+  const { fetchEvents, fetchVenues } = useApiService();
   const [columnDefs, setColumnDefs] = useState([
     { field: "name", headerName: "Name" },
     { field: "description", headerName: "Description" },
@@ -29,7 +30,13 @@ export default function Events() {
       headerName: "Ticket sale begins",
       valueFormatter: (params) => formatDateTime(params.value),
     },
-    { field: "venueId", headerName: "Venue" },
+    {
+      headerName: "Venue",
+      valueGetter: (params) => {
+        const venue = params.context.venues.find((v) => v.id === params.data.venueId);
+        return venue.name;
+      },
+    },
   ]);
 
   // Fetch events data from an API or database
@@ -45,9 +52,19 @@ export default function Events() {
     }
   };
 
+  const getVenues = async () => {
+    try {
+      const fetchedVenues = await fetchVenues();
+      setVenues(fetchedVenues);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   useEffect(() => {
-    // Fetch events the first time the component mounts
+    // Fetch events and venues the first time the component mounts
     getEvents();
+    getVenues();
   }, []);
 
   return (
@@ -57,7 +74,7 @@ export default function Events() {
       <div
         className='ag-theme-material'
         style={{ height: "500px", width: "100%" }}>
-        <AgGridReact rowData={events} columnDefs={columnDefs} />
+        <AgGridReact rowData={events} columnDefs={columnDefs} context={{venues}}/>
       </div>
     </div>
   );
