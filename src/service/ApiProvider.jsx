@@ -61,7 +61,7 @@ export const ApiProvider = ({ children }) => {
       throw error;
     }
   };
-  
+
   // Specific API service functions
 
   const fetchEvent = async (eventId) => {
@@ -155,22 +155,25 @@ export const ApiProvider = ({ children }) => {
   };
 
   const fetchEvents = async (forceRefresh = false) => {
-    if (!events || forceRefresh) {
-      try {
-        const data = await makeApiCall("get", "/api/events");
-        setEvents(data); // Update the cache
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
+  if (!events || forceRefresh) {
+    try {
+      const data = await makeApiCall("get", "/api/events");
+      setEvents(data); // Cache events
+      return data;
+    } catch (error) {
+      console.error("Error fetching events:", error);
     }
-    return events;
-  };
+  }
+  return events;
+};
+
   
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
         const data = await makeApiCall("get", "/api/venues");
         setVenues(data); // Update the cache
+        return data;
       } catch (error) {
         console.error("Error fetching venues:", error);
       }

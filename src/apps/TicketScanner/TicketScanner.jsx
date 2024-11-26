@@ -34,10 +34,22 @@ export default function TicketScanner() {
     ticketType: null,
   });
 
+  const [isLoading, setIsLoading] = useState(true);
+
   const [popupOpened, setPopupOpened] = useState(false);
   const [popupMessage, setPopupMessage] = useState("");
   const [popupTitle, setPopupTitle] = useState("");
   const [popupType, setPopupType] = useState("success");
+
+  useEffect(() => {
+    const loadEvents = async () => {
+      setIsLoading(true);
+      const fetchedEvents = await fetchEvents();
+      setEvents(fetchedEvents || []);
+      setIsLoading(false);
+    };
+    loadEvents();
+  }, [fetchEvents]);
 
   useEffect(() => {
     let isMounted = true;
@@ -54,20 +66,6 @@ export default function TicketScanner() {
       isMounted = false;
     };
   }, [fetchExampleTicket]);
-
-  useEffect(() => {
-    const getEvents = async () => {
-      try {
-        console.log("Fetching events...");
-        const fetchedEvents = await fetchEvents();
-        console.log("Fetched events:", fetchedEvents); // Log fetched events
-        setEvents(fetchedEvents);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      }
-    };
-    getEvents();
-  }, []); // Fetch events on component mount
 
   useEffect(() => {
     if (ticketData != null) {
@@ -155,11 +153,12 @@ export default function TicketScanner() {
           Scan tickets for the selected event.
         </p>
         <div className="grid grid-cols-4 gap-4">
-          <EventDropDown
+          {isLoading ? (<p>Loading events...</p>):
+          (<EventDropDown
             selectedEventId={selectedEventId}
             setSelectedEventId={setSelectedEventId}
             events={events}
-          />
+            />)}
           <BarcodeInput
             barcode={barcode}
             handleChange={handleChange}

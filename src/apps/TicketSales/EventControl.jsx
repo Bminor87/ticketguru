@@ -18,22 +18,21 @@ import { formatDateTime } from "../../util/helperfunctions";
 import EventDropDown from "../../common/EventDropDown";
 
 export default function EventControl({ selectedEventId, setSelectedEventId }) {
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
 
   const { fetchEvents } = useApiService();
+  const [events, setEvents] = useState([]);
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    const getEvents = async () => {
-      try {
-        const fetchedEvents = await fetchEvents();
-        setEvents(fetchedEvents);
-      } catch (error) {
-        console.error(error);
-      }
+    const loadEvents = async () => {
+      setIsLoading(true);
+      const fetchedEvents = await fetchEvents();
+      setEvents(fetchedEvents || []);
+      setIsLoading(false);
     };
-    getEvents();
-  }, []);
+    loadEvents();
+  }, [fetchEvents]);
 
   useEffect(() => {
     if (selectedEventId !== 0) {
@@ -57,11 +56,14 @@ export default function EventControl({ selectedEventId, setSelectedEventId }) {
 
   return (
     <Stack>
-      <EventDropDown
+      { isLoading ? (<p>Loading events...</p>) : (
+        <EventDropDown
         selectedEventId={selectedEventId}
         setSelectedEventId={setSelectedEventId}
         events={events}
       />
+      )}
+      
       <Table
         size="small"
         sx={{ mt: 2 }}
