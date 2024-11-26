@@ -164,6 +164,23 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  const fetchVenues = async () => {
+    try {
+      const data = await makeApiCall("get", "/api/venues");
+      return data;
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
+
+  const fetchVenue = async (venueId) => {
+    try {
+      return await makeApiCall("get", `/api/venues/${venueId}`);
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
+
   return (
     <ApiContext.Provider
       value={{
@@ -179,8 +196,9 @@ export const ApiProvider = ({ children }) => {
         releaseTicket,
         postBasketItems,
         fetchTicketTypes,
-      }}
-    >
+        fetchVenues,
+        fetchVenue,
+      }}>
       {children}
     </ApiContext.Provider>
   );
