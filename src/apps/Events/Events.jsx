@@ -34,7 +34,7 @@ export default function Events() {
       headerName: "Venue",
       valueGetter: (params) => {
         const venue = params.context.venues.find((v) => v.id === params.data.venueId);
-        return venue.name;
+        return venue?.name;
       },
     },
   ]);

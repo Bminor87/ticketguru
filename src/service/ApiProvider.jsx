@@ -8,8 +8,9 @@ const ApiContext = createContext();
 export const ApiProvider = ({ children }) => {
   const settings = useSettings();
   const [errorMessage, setErrorMessage] = useState("");
+  const [events, setEvents] = useState(null); // State for events
+  const [venues, setVenues] = useState(null); // State for venues
 
-  // Set up Axios authorization header
   useEffect(() => {
     const setAuthHeader = () => {
       console.log("Setting auth header for user:", settings.userName);
@@ -19,7 +20,6 @@ export const ApiProvider = ({ children }) => {
     setAuthHeader();
   }, [settings]);
 
-  // Error handling function
   const handleApiError = (error) => {
     if (error.response) {
       setErrorMessage(error.response.data.message);
@@ -30,12 +30,10 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  // Function to clear the error message
   const clearErrorMessage = () => {
     setErrorMessage("");
   };
 
-  // Generalized API request function for reusable logic
   const makeApiCall = async (method, endpoint, data = {}, params = {}) => {
     const url = `${settings.url}${
       endpoint.startsWith("/") ? endpoint : `/${endpoint}`
@@ -45,7 +43,7 @@ export const ApiProvider = ({ children }) => {
     try {
       const response = await axios({
         method,
-        url, // Use the properly constructed URL
+        url,
         data,
         params,
         headers: {
@@ -60,19 +58,11 @@ export const ApiProvider = ({ children }) => {
     } catch (error) {
       console.error(`Error during API call to ${endpoint}:`, error);
       handleApiError(error);
-      throw error; // Re-throw to handle further if needed
+      throw error;
     }
   };
-
+  
   // Specific API service functions
-  const fetchEvents = async () => {
-    try {
-      const data = await makeApiCall("get", "/api/events");
-      return data;
-    } catch (error) {
-      console.error("Error fetching events:", error);
-    }
-  };
 
   const fetchEvent = async (eventId) => {
     try {
@@ -164,14 +154,30 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchVenues = async () => {
-    try {
-      const data = await makeApiCall("get", "/api/venues");
-      return data;
-    } catch (error) {
-      console.error("Error fetching venues:", error);
+  const fetchEvents = async (forceRefresh = false) => {
+    if (!events || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/events");
+        setEvents(data); // Update the cache
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
     }
+    return events;
   };
+  
+  const fetchVenues = async (forceRefresh = false) => {
+    if (!venues || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/venues");
+        setVenues(data); // Update the cache
+      } catch (error) {
+        console.error("Error fetching venues:", error);
+      }
+    }
+    return venues;
+  };
+  
 
   const fetchVenue = async (venueId) => {
     try {

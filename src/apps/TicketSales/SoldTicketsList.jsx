@@ -48,7 +48,7 @@ export default function SoldTicketsList({ soldTicketsData }) {
             <strong>Sold by user: {soldTicketsData.userId}</strong>
             <br />
           </Box>
-          <Table size="small">
+          {/* <Table size="small">
             <TableHead>
               <TableRow>
                 <TableCell>Event</TableCell>
@@ -69,10 +69,10 @@ export default function SoldTicketsList({ soldTicketsData }) {
                 </TableRow>
               ))}
             </TableBody>
-          </Table>
-          {/* <PDFViewer width="100%" height="600px">
+          </Table> */}
+          <PDFViewer width="100%" height="600px">
             <Ticket tickets={tickets} />
-          </PDFViewer> */}
+          </PDFViewer>
         </>
       )}
     </>
