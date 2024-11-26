@@ -1,44 +1,64 @@
 import React, { useState, useEffect } from "react";
+import { useApiService } from "../../service/ApiProvider";
+import { formatDateTime } from "../../util/helperfunctions";
 
-const Events = () => {
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-material.css";
+
+export default function Events() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { fetchEvents } = useApiService();
+  const [columnDefs, setColumnDefs] = useState([
+    { field: "name", headerName: "Name" },
+    { field: "description", headerName: "Description" },
+    { field: "totalTickets", headerName: "Total tickets" },
+    {
+      field: "beginsAt",
+      headerName: "Begins",
+      valueFormatter: (params) => formatDateTime(params.value),
+    },
+    {
+      field: "endsAt",
+      headerName: "Ends",
+      valueFormatter: (params) => formatDateTime(params.value),
+    },
+    {
+      field: "ticketSaleBegins",
+      headerName: "Ticket sale begins",
+      valueFormatter: (params) => formatDateTime(params.value),
+    },
+    { field: "venueId", headerName: "Venue" },
+  ]);
+
+  // Fetch events data from an API or database
+  const getEvents = async () => {
+    try {
+      setLoading(true);
+      const fetchedEvents = await fetchEvents();
+      setEvents(fetchedEvents);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    // Fetch events data from an API or database
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch("/api/events");
-        const data = await response.json();
-        setEvents(data);
-      } catch (error) {
-        console.error("Error fetching events:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchEvents();
+    // Fetch events the first time the component mounts
+    getEvents();
   }, []);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
   return (
     <div>
       <h1>Events</h1>
-      <ul>
-        {events.map((event) => (
-          <li key={event.id}>
-            <h2>{event.name}</h2>
-            <p>{event.description}</p>
-            <p>{new Date(event.date).toLocaleDateString()}</p>
-          </li>
-        ))}
-      </ul>
+      {loading && <h1>Loading...</h1>}
+      <div
+        className='ag-theme-material'
+        style={{ height: "500px", width: "100%" }}>
+        <AgGridReact rowData={events} columnDefs={columnDefs} />
+      </div>
     </div>
   );
-};
-
-export default Events;
+}
