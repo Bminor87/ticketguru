@@ -1,21 +1,14 @@
-import React from "react";
-
-import "./App.css";
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-
+import React, { useEffect } from "react";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
+  useLocation,
 } from "react-router-dom";
+import { CssBaseline, Container } from "@mui/material";
 
-import { Container, CssBaseline } from "@mui/material";
-
-import { SettingsProvider } from "./SettingsContext";
+import { SettingsProvider, useSettings } from "./SettingsContext";
 import { ThemeProvider } from "./ThemeContext";
 import { ApiProvider } from "./service/ApiProvider";
 import { BasketProvider } from "./apps/TicketSales/BasketContext";
@@ -24,8 +17,9 @@ import Layout from "./Layout";
 import Login from "./Login";
 import FrontPage from "./apps/FrontPage/FrontPage";
 import { componentMap } from "./util/componentMap";
-
 import menuJson from "./menu.json";
+
+import ProtectedRoute from "./service/ProtectedRoute";
 
 function App() {
   const menu = menuJson.menu;
@@ -41,32 +35,34 @@ function App() {
                 {/* Login Route */}
                 <Route path="/login" element={<Login />} />
 
-                {/* All other routes with Layout */}
+                {/* Protected Routes */}
                 <Route
                   path="*"
                   element={
-                    <Layout>
-                      <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
-                        <Routes>
-                          <Route path="/" element={<FrontPage />} />
-                          {menu.map((category) =>
-                            category.sections.flatMap((item) => (
-                              <Route
-                                key={item.name}
-                                path={item.href}
-                                element={React.createElement(
-                                  componentMap[item.component]
-                                )} // Dynamically render component
-                              />
-                            ))
-                          )}
-                          <Route
-                            path="*"
-                            element={<Navigate to="/" replace />}
-                          />
-                        </Routes>
-                      </Container>
-                    </Layout>
+                    <ProtectedRoute>
+                      <Layout>
+                        <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
+                          <Routes>
+                            <Route path="/" element={<FrontPage />} />
+                            {menu.map((category) =>
+                              category.sections.flatMap((item) => (
+                                <Route
+                                  key={item.name}
+                                  path={item.href}
+                                  element={React.createElement(
+                                    componentMap[item.component]
+                                  )}
+                                />
+                              ))
+                            )}
+                            <Route
+                              path="*"
+                              element={<Navigate to="/" replace />}
+                            />
+                          </Routes>
+                        </Container>
+                      </Layout>
+                    </ProtectedRoute>
                   }
                 />
               </Routes>

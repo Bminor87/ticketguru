@@ -155,28 +155,27 @@ export const ApiProvider = ({ children }) => {
   };
 
   const fetchEvents = async (forceRefresh = false) => {
-  if (!events || forceRefresh) {
-    try {
-      const data = await makeApiCall("get", "/api/events");
-      setEvents(data); // Cache events
-      return data;
-    } catch (error) {
-      console.error("Error fetching events:", error);
+    if (!events || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/events");
+        setEvents(data); // Cache events
+        return data;
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
     }
-  }
-  return events;
-};
+    return events;
+  };
 
-const addEvent = async (event) => {
-  try {
-    await makeApiCall("post", "api/events", event)
-    fetchEvents(true);
-  } catch (error) {
-    console.error("Error posting event: ", error)
-  }
-}
+  const addEvent = async (event) => {
+    try {
+      await makeApiCall("post", "api/events", event);
+      fetchEvents(true);
+    } catch (error) {
+      console.error("Error posting event: ", error);
+    }
+  };
 
-  
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
@@ -189,7 +188,6 @@ const addEvent = async (event) => {
     }
     return venues;
   };
-  
 
   const fetchVenue = async (venueId) => {
     try {
@@ -197,6 +195,65 @@ const addEvent = async (event) => {
     } catch (error) {
       console.error("Error fetching venues:", error);
     }
+  };
+
+  const login = async (email, password) => {
+    console.log("Using the ApiProvider's Login", email, password);
+    const authToken = btoa(`${email}:${password}`); // Encode credentials for Basic Auth
+
+    try {
+      // Use an existing protected endpoint for credential validation
+      const response = await axios.get(`${settings.url}/api/events`, {
+        headers: {
+          Authorization: `Basic ${authToken}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      // Save user credentials in SettingsContext
+      settings.setUserName(email);
+      settings.setUserPass(password);
+
+      // Save user credentials in localStorage for persistence
+      localStorage.setItem(
+        "user",
+        JSON.stringify({ userName: email, userPass: password })
+      );
+
+      // Set the global Axios Authorization header
+      axios.defaults.headers.common["Authorization"] = `Basic ${authToken}`;
+
+      console.log("Login successful");
+      return response.data; // Return data from the validated endpoint
+    } catch (error) {
+      console.error("Login failed:", error);
+
+      // Handle specific error cases
+      if (error.response?.status === 401) {
+        throw new Error("Invalid credentials. Please try again.");
+      } else {
+        throw new Error(
+          "An error occurred during login. Please try again later."
+        );
+      }
+    }
+  };
+
+  const logout = () => {
+    console.log("Logging out the user");
+
+    // Clear credentials from SettingsContext
+    settings.setUserName(null);
+    settings.setUserPass(null);
+
+    // Remove user credentials from localStorage
+    localStorage.removeItem("user");
+
+    // Remove the global Axios Authorization header
+    delete axios.defaults.headers.common["Authorization"];
+
+    // Optional: Redirect to the login page
+    window.location.href = "/login";
   };
 
   return (
@@ -217,7 +274,10 @@ const addEvent = async (event) => {
         fetchTicketTypes,
         fetchVenues,
         fetchVenue,
-      }}>
+        login,
+        logout,
+      }}
+    >
       {children}
     </ApiContext.Provider>
   );

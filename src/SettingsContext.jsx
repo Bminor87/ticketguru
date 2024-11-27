@@ -18,13 +18,23 @@ export const SettingsProvider = ({ children }) => {
     }
   };
 
+  const setUserName = (userName) => {
+    settings.userName = userName;
+  };
+
+  const setUserPass = (userPass) => {
+    settings.userPass = userPass;
+  };
+
   const settings = {
-    url: "https://ticketguru.hellmanstudios.fi", // Ensure this is correct
-    userName: "admin@test.com",
-    userPass: "admin",
+    url: "https://ticketguru.hellmanstudios.fi",
+    userName: "",
+    userPass: "",
     ticketUsedErrorCode: "ERR_BAD_REQUEST",
     darkMode,
     toggleDarkMode,
+    setUserName,
+    setUserPass,
   };
 
   return (

@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useApiService } from "./service/ApiProvider";
+import { useSettings } from "./SettingsContext";
 import {
   Menu,
   MenuButton,
@@ -28,6 +30,10 @@ function classNames(...classes) {
 }
 
 export default function Layout({ children }) {
+  const settings = useSettings();
+
+  const { logout } = useApiService();
+
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation(); // Get the current location
 
@@ -209,7 +215,7 @@ export default function Layout({ children }) {
                       aria-hidden="true"
                       className="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white"
                     >
-                      Seppo Lipunmyyjä
+                      {settings?.userName}
                     </span>
                     <ChevronDownIcon
                       aria-hidden="true"
@@ -222,12 +228,12 @@ export default function Layout({ children }) {
                   className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-gray-900 py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
                   <MenuItem key="uniqueKey">
-                    <a
-                      href="#"
+                    <button
+                      onClick={logout}
                       className="block px-3 py-1 text-sm/6 text-gray-900 dark:text-white data-[focus]:bg-gray-50 dark:data-[focus]:bg-gray-600 data-[focus]:outline-none"
                     >
                       Log Out
-                    </a>
+                    </button>
                   </MenuItem>
                 </MenuItems>
               </Menu>
