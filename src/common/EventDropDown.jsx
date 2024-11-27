@@ -42,7 +42,7 @@ export default function EventDropDown({
     options.find((option) => option.id === selectedEventId) || null;
 
   return (
-    <FormControl>
+    <FormControl fullWidth>
       <InputLabel shrink>Event</InputLabel>
       <Autocomplete
         disablePortal

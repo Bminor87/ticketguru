@@ -1,104 +1,80 @@
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  Stack,
-} from "@mui/material";
-
-import { useEffect, useState } from "react";
-
-import { useApiService } from "../../service/ApiProvider";
+import { Card, Box, Stack, Typography, Divider, Chip } from "@mui/material";
 import { formatDateTime } from "../../util/helperfunctions";
 
-import EventDropDown from "../../common/EventDropDown";
-
-export default function EventControl({ selectedEventId, setSelectedEventId }) {
-
-  const { fetchEvents } = useApiService();
-  const [events, setEvents] = useState([]);
-  const [selectedEvent, setSelectedEvent] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const loadEvents = async () => {
-      setIsLoading(true);
-      const fetchedEvents = await fetchEvents();
-      setEvents(fetchedEvents || []);
-      setIsLoading(false);
-    };
-    loadEvents();
-  }, [fetchEvents]);
-
-  useEffect(() => {
-    if (selectedEventId !== 0) {
-      const event = events?.find((event) => event.id === selectedEventId); // Use eventId
-      setSelectedEvent(event || null);
-    } else {
-      setSelectedEvent(null);
-    }
-  }, [selectedEventId, events]);
-
-  const handleChange = (e) => {
-    const eventId = e.target.value;
-    setSelectedEventId(eventId);
-  };
-
-  useEffect(() => {
-    if (selectedEvent) {
-      setSelectedEventId(selectedEventId, selectedEvent.name);
-    }
-  }, [selectedEvent]);
+export default function EventControl({ selectedEvent }) {
+  if (!selectedEvent) {
+    return (
+      <Typography variant="body1" align="center">
+        No event selected.
+      </Typography>
+    );
+  }
 
   return (
-    <Stack>
-      { isLoading ? (<p>Loading events...</p>) : (
-        <EventDropDown
-        selectedEventId={selectedEventId}
-        setSelectedEventId={setSelectedEventId}
-        events={events}
-      />
-      )}
-      
-      <Table
-        size="small"
-        sx={{ mt: 2 }}
-        className={selectedEventId ? "" : "hidden"}
-      >
-        <TableBody>
-          <TableRow>
-            <TableCell>Event name</TableCell>
-            <TableCell>{selectedEvent?.name || ""}</TableCell>{" "}
-            {/* Use eventName */}
-          </TableRow>
-          <TableRow>
-            <TableCell>Description</TableCell>
-            <TableCell>{selectedEvent?.description || ""}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Total tickets</TableCell>
-            <TableCell>{selectedEvent?.totalTickets || ""}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Event begins</TableCell>
-            <TableCell>{formatDateTime(selectedEvent?.beginsAt)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Event ends</TableCell>
-            <TableCell>{formatDateTime(selectedEvent?.endsAt)}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Ticket sale begins </TableCell>
-            <TableCell>
-              {formatDateTime(selectedEvent?.ticketSaleBegins)}
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
-    </Stack>
+    <Card variant="outlined" sx={{ width: "100%", mx: "auto", p: 2 }}>
+      {/* Event Name and Tickets Available */}
+      <Box sx={{ p: 2 }}>
+        <Stack
+          direction="row"
+          sx={{ justifyContent: "space-between", alignItems: "center" }}
+        >
+          <Typography gutterBottom variant="h5" component="div">
+            {selectedEvent.name}
+          </Typography>
+          <Typography
+            gutterBottom
+            variant="body2"
+            component="div"
+            sx={{ color: "text.secondary" }}
+          >
+            {selectedEvent.totalTickets || "0"} tickets
+          </Typography>
+        </Stack>
+        {/* Event Description */}
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {selectedEvent.description || "No description available."}
+        </Typography>
+      </Box>
+
+      {/* Divider */}
+      <Divider />
+
+      {/* Event Times */}
+      <Box sx={{ p: 2 }}>
+        <Typography gutterBottom variant="h6">
+          Event Times
+        </Typography>
+        <Stack direction="column" spacing={1}>
+          <div className="flex justify-between align-between">
+            <Typography sx={{ color: "text.primary" }}>Begins:</Typography>
+            <Chip
+              label={formatDateTime(selectedEvent.beginsAt)}
+              color="primary"
+              size="small"
+            />
+          </div>
+
+          <div className="flex justify-between align-between">
+            <Typography sx={{ color: "text.primary" }}>Ends:</Typography>
+            <Chip
+              label={formatDateTime(selectedEvent.endsAt)}
+              color="secondary"
+              size="small"
+            />
+          </div>
+
+          <div className="flex justify-between align-between">
+            <Typography sx={{ color: "text.primary" }}>
+              Tickets Open:
+            </Typography>
+            <Chip
+              label={formatDateTime(selectedEvent.ticketSaleBegins)}
+              color="info"
+              size="small"
+            />
+          </div>
+        </Stack>
+      </Box>
+    </Card>
   );
 }

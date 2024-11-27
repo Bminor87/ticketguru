@@ -1,21 +1,17 @@
-import Button from "@mui/material/Button";
-
+import {
+  Button,
+  Stack,
+  TextField,
+  InputAdornment,
+  Card,
+  Box,
+  Chip,
+  Divider,
+  Typography,
+} from "@mui/material";
 import { useEffect, useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { useBasket } from "./BasketContext";
-import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Stack,
-  Table,
-  TableBody,
-  TableRow,
-  TableCell,
-  TextField,
-  InputAdornment,
-} from "@mui/material";
 
 export default function TicketOrderControl({
   selectedEventId,
@@ -24,179 +20,139 @@ export default function TicketOrderControl({
   setSelectedTicketTypeId,
 }) {
   const { fetchTicketTypes } = useApiService();
+  const { addToBasket } = useBasket();
 
   const [ticketTypes, setTicketTypes] = useState([]);
-  const params = new URLSearchParams([["eventId", selectedEventId]]); // query params to find ticketTypes by eventId
   const [selectedTicketType, setSelectedTicketType] = useState(null);
-  const { addToBasket } = useBasket();
   const [price, setPrice] = useState(0);
   const [amount, setAmount] = useState(1);
 
+  const params = new URLSearchParams([["eventId", selectedEventId]]);
+
+  // Fetch ticket types when the selected event changes
   useEffect(() => {
-    if (selectedEventId == 0) return;
-    setSelectedTicketTypeId(0); // clear tickettype selection when selectedEventId changes
+    if (!selectedEventId) return;
+
     const getTicketTypes = async () => {
       try {
-        console.log("Trying to fetch Ticket types for event", selectedEventId);
+        setSelectedTicketTypeId(0); // Clear ticket type selection
         const fetchedTicketTypes = await fetchTicketTypes(params);
-        setTicketTypes(fetchedTicketTypes);
+        setTicketTypes(fetchedTicketTypes || []);
       } catch (error) {
-        console.error("Error fetching ticket types", error);
+        console.error("Error fetching ticket types:", error);
       }
     };
+
     getTicketTypes();
-  }, [selectedEventId]);
+  }, [selectedEventId, fetchTicketTypes]);
 
-  const handleChange = (e) => {
-    setSelectedTicketTypeId(Number(e.target.value)); // select returns a string, not a number
-  };
-
+  // Update selected ticket type details
   useEffect(() => {
-    if (selectedTicketTypeId !== 0) {
-      const ticketType = ticketTypes?.find(
-        (ticketType) => ticketType.id === selectedTicketTypeId
+    if (selectedTicketTypeId) {
+      const ticketType = ticketTypes.find(
+        (type) => type.id === selectedTicketTypeId
       );
       setSelectedTicketType(ticketType || null);
-      setPrice(ticketType.retailPrice);
+      setPrice(ticketType?.retailPrice || 0);
       setAmount(1);
     } else {
-      setSelectedTicketType(null); // Clear if no valid selection
+      setSelectedTicketType(null);
       setPrice(0);
       setAmount(1);
     }
   }, [selectedTicketTypeId, ticketTypes]);
 
-  const handleAddToBasket = (
-    ticketType,
-    quantity,
-    price,
-    selectedEventName
-  ) => {
-    if (!selectedEventName && ticketType == null) {
-      alert("Please select event and ticket type!");
-    } else if (!selectedEventName) {
-      alert("Please select event!");
-    } else if (ticketType == null) {
-      alert("Please select ticket type!");
-    } else {
-      addToBasket(ticketType, quantity, price, selectedEventName);
+  // Handle adding to basket
+  const handleAddToBasket = () => {
+    if (!selectedTicketType) {
+      alert("Please select an event and a ticket type!");
+      return;
     }
+
+    addToBasket(selectedTicketType, amount, price, selectedEventName);
   };
 
-  const handlePriceChange = (e) => {
-    const newPrice = Number(e.target.value);
-    if (newPrice >= 0) {
-      setPrice(newPrice);
-    } else {
-      setPrice(0);
-    }
-  };
-
-  const handleAmountChange = (e) => {
-    const input = e.target.value;
-    let newAmount = 1;
-    try {
-      newAmount = parseInt(input);
-    } catch (error) {
-      setAmount(1);
-    }
-    if (newAmount >= 1) {
-      setAmount(newAmount);
-    } else {
-      setAmount(1);
-    }
-  };
+  const handlePriceChange = (e) =>
+    setPrice(Math.max(0, Number(e.target.value)));
+  const handleAmountChange = (e) =>
+    setAmount(Math.max(1, parseInt(e.target.value, 10) || 1));
 
   return (
-    <Stack>
-      <FormControl fullWidth>
-        <InputLabel>Ticket type</InputLabel>
-        <Select
-          id="ticketTypeSelect"
-          value={selectedTicketTypeId}
-          onChange={handleChange}
-          label="Ticket type"
-        >
-          <MenuItem value={0}>Select ticket type</MenuItem>
-          {ticketTypes?.map((ticketType) => (
-            <MenuItem key={ticketType.id} value={ticketType.id}>
-              {ticketType.name}
-            </MenuItem>
+    <Card variant="outlined" sx={{ maxWidth: 600, mx: "auto", p: 2 }}>
+      <Box>
+        {/* Event Name */}
+        <Typography variant="h6" gutterBottom>
+          Ticket Types
+        </Typography>
+        <Divider sx={{ mb: 2 }} />
+
+        {/* Ticket Types */}
+        {ticketTypes.length === 0 && (
+          <Typography variant="body1" gutterBottom>
+            No ticket types available
+          </Typography>
+        )}
+        <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap", mb: 2 }}>
+          {ticketTypes.map((ticketType) => (
+            <Chip
+              key={ticketType.id}
+              label={ticketType.name}
+              color={
+                ticketType.id === selectedTicketTypeId ? "primary" : "default"
+              }
+              onClick={() => setSelectedTicketTypeId(ticketType.id)}
+              sx={{ cursor: "pointer" }}
+            />
           ))}
-        </Select>
-      </FormControl>
-      <Table size="small" className={selectedTicketTypeId ? "" : "hidden"}>
-        <TableBody>
-          <TableRow>
-            <TableCell>Ticket type</TableCell>
-            <TableCell>{selectedTicketType?.name}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Retail price</TableCell>
-            <TableCell>{selectedTicketType?.retailPrice} €</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>Available</TableCell>
-            <TableCell>{selectedTicketType?.totalAvailable}</TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell>
+        </Stack>
+
+        {/* Selected Ticket Details */}
+        {selectedTicketType && (
+          <>
+            <Typography variant="body1" gutterBottom>
+              {selectedTicketType.name} - {selectedTicketType.retailPrice} €
+            </Typography>
+            <Typography variant="body2" gutterBottom>
+              {selectedTicketType.totalAvailable} tickets available
+            </Typography>
+            <Stack direction="row" spacing={2} sx={{ my: 2 }}>
               <TextField
                 label="Price"
                 type="number"
                 value={price}
                 onChange={handlePriceChange}
-                slotProps={{
-                  htmlInput: {
-                    step: 0.01,
-                    min: 0,
-                  },
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">€</InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">€</InputAdornment>
+                  ),
                 }}
               />
-            </TableCell>
-            <TableCell>
               <TextField
                 label="Amount"
                 type="number"
                 value={amount}
                 onChange={handleAmountChange}
-                slotProps={{
-                  htmlInput: {
-                    min: 1,
-                    step: 1,
-                  },
-                  input: {
-                    endAdornment: (
-                      <InputAdornment position="end">tickets</InputAdornment>
-                    ),
-                  },
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">tickets</InputAdornment>
+                  ),
                 }}
               />
-            </TableCell>
-          </TableRow>
-        </TableBody>
-      </Table>
+            </Stack>
+          </>
+        )}
 
-      <Button
-        color="primary"
-        className={selectedTicketTypeId ? "" : "hidden"}
-        variant="contained"
-        onClick={() =>
-          handleAddToBasket(
-            selectedTicketType,
-            amount,
-            price,
-            selectedEventName
-          )
-        }
-      >
-        Add to Basket
-      </Button>
-    </Stack>
+        {/* Add to Basket Button */}
+        <Button
+          variant="contained"
+          color="primary"
+          disabled={!selectedTicketType}
+          onClick={handleAddToBasket}
+          fullWidth
+        >
+          Add to Basket
+        </Button>
+      </Box>
+    </Card>
   );
 }
