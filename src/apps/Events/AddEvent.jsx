@@ -8,7 +8,7 @@ export default function AddEvent({ getEvents }) {
   const [event, setEvent] = useState({
     name: "",
     description: "",
-    totalTickets: 0,
+    totalTickets: "",
     beginsAt: "",
     endsAt: "",
     ticketSaleBegins: "",
@@ -32,7 +32,7 @@ export default function AddEvent({ getEvents }) {
     setEvent({
       name: "",
       description: "",
-      totalTickets: 0,
+      totalTickets: "",
       beginsAt: "",
       endsAt: "",
       ticketSaleBegins: "",
