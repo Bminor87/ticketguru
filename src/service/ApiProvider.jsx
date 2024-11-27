@@ -155,28 +155,36 @@ export const ApiProvider = ({ children }) => {
   };
 
   const fetchEvents = async (forceRefresh = false) => {
-  if (!events || forceRefresh) {
-    try {
-      const data = await makeApiCall("get", "/api/events");
-      setEvents(data); // Cache events
-      return data;
-    } catch (error) {
-      console.error("Error fetching events:", error);
+    if (!events || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/events");
+        setEvents(data); // Cache events
+        return data;
+      } catch (error) {
+        console.error("Error fetching events:", error);
+      }
     }
-  }
-  return events;
-};
+    return events;
+  };
 
-const addEvent = async (event) => {
-  try {
-    await makeApiCall("post", "api/events", event)
-    fetchEvents(true);
-  } catch (error) {
-    console.error("Error posting event: ", error)
-  }
-}
+  const addEvent = async (event) => {
+    try {
+      await makeApiCall("post", "api/events", event);
+      fetchEvents(true);
+    } catch (error) {
+      console.error("Error posting event: ", error);
+    }
+  };
 
-  
+  const updateEvent = async (id, event) => {
+    try {
+      await makeApiCall("put", `api/events/${id}`, event)
+      fetchEvents(true);
+    } catch (error) {
+      console.error("Error updating event: ", error);
+    }
+  };
+
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
@@ -189,7 +197,6 @@ const addEvent = async (event) => {
     }
     return venues;
   };
-  
 
   const fetchVenue = async (venueId) => {
     try {
@@ -210,6 +217,7 @@ const addEvent = async (event) => {
         fetchEvent,
         fetchEvents,
         addEvent,
+        updateEvent,
         fetchTicketType,
         consumeTicket,
         releaseTicket,
