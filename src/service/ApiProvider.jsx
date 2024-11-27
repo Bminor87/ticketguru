@@ -176,6 +176,15 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  const updateEvent = async (id, event) => {
+    try {
+      await makeApiCall("put", `api/events/${id}`, event);
+      fetchEvents(true);
+    } catch (error) {
+      console.error("Error updating event: ", error);
+    }
+  };
+
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
@@ -267,6 +276,7 @@ export const ApiProvider = ({ children }) => {
         fetchEvent,
         fetchEvents,
         addEvent,
+        updateEvent,
         fetchTicketType,
         consumeTicket,
         releaseTicket,
