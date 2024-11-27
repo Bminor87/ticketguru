@@ -9,7 +9,6 @@ import "ag-grid-community/styles/ag-theme-material.css";
 export default function Events() {
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
-  const [loading, setLoading] = useState(true);
   const { fetchEvents, fetchVenues } = useApiService();
   const [columnDefs, setColumnDefs] = useState([
     { field: "name", headerName: "Name" },
@@ -42,13 +41,10 @@ export default function Events() {
   // Fetch events data from an API or database
   const getEvents = async () => {
     try {
-      setLoading(true);
       const fetchedEvents = await fetchEvents();
       setEvents(fetchedEvents);
-      setLoading(false);
     } catch (error) {
       console.error(error);
-      setLoading(false);
     }
   };
 
@@ -69,8 +65,6 @@ export default function Events() {
 
   return (
     <div>
-      <h1>Events</h1>
-      {loading && <h1>Loading...</h1>}
       <div
         className='ag-theme-material'
         style={{ height: "500px", width: "100%" }}>
