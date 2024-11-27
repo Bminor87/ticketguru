@@ -34,7 +34,7 @@ export default function Events() {
     {
       headerName: "Venue",
       valueGetter: (params) => {
-        const venue = params.context.venues.find(
+        const venue = params.context.venues?.find(
           (v) => v.id === params.data.venueId
         );
         return venue?.name;
@@ -78,8 +78,9 @@ export default function Events() {
     <div>
       <AddEvent getEvents={getEvents} />
       <div
-        className='ag-theme-material'
-        style={{ height: "500px", width: "100%" }}>
+        className="ag-theme-material"
+        style={{ height: "500px", width: "100%" }}
+      >
         <AgGridReact
           rowData={events}
           columnDefs={columnDefs}

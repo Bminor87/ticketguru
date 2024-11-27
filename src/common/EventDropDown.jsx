@@ -1,31 +1,58 @@
-import { FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  FormControl,
+  InputLabel,
+  TextField,
+  Autocomplete,
+} from "@mui/material";
 
 export default function EventDropDown({
   selectedEventId,
   setSelectedEventId,
   events,
 }) {
-  const handleChange = (e) => {
-    const eventId = parseInt(e.target.value, 10);
-    setSelectedEventId(eventId);
+  const [options, setOptions] = useState([]);
+
+  useEffect(() => {
+    // Get current date
+    const now = new Date();
+
+    // Filter and map events where endsAt > now
+    const filteredOptions = events
+      ?.filter((event) => new Date(event.endsAt) > now) // Filter events
+      .map((event) => ({
+        id: event.id,
+        label: event.name,
+        value: event.id,
+      }));
+
+    setOptions(filteredOptions || []);
+  }, [events]);
+
+  const handleChange = (event, newValue) => {
+    if (newValue) {
+      setSelectedEventId(newValue.id); // Set the selected event's ID
+    } else {
+      setSelectedEventId(0); // Handle deselection
+    }
   };
+
+  // Find the matching option based on selectedEventId
+  const selectedOption =
+    options.find((option) => option.id === selectedEventId) || null;
 
   return (
     <FormControl>
-      <InputLabel>Event</InputLabel>
-      <Select
-        id="eventSelect"
-        value={selectedEventId}
+      <InputLabel shrink>Event</InputLabel>
+      <Autocomplete
+        disablePortal
+        options={options}
+        value={selectedOption}
         onChange={handleChange}
-        label="Event"
-      >
-        <MenuItem value={0}>Select an event</MenuItem>
-        {events?.map((event) => (
-          <MenuItem key={event.id} value={event.id}>
-            {event.name}
-          </MenuItem>
-        ))}
-      </Select>
+        getOptionLabel={(option) => option.label} // Display label in dropdown
+        isOptionEqualToValue={(option, value) => option.id === value.id} // Match options by ID
+        renderInput={(params) => <TextField {...params} label="Event" />}
+      />
     </FormControl>
   );
 }
