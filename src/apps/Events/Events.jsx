@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 import AddEvent from "./AddEvent";
+import EditEvent from "./EditEvent";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -38,6 +39,13 @@ export default function Events() {
         );
         return venue?.name;
       },
+    },
+    {
+      field: "id",
+      headerName: "",
+      cellRenderer: (params) => (
+        <EditEvent currentEvent={params.data} getEvents={getEvents} />
+      ),
     },
   ]);
 
