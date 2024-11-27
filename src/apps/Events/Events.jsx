@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
+import AddEvent from "./AddEvent";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -32,16 +33,18 @@ export default function Events() {
     {
       headerName: "Venue",
       valueGetter: (params) => {
-        const venue = params.context.venues.find((v) => v.id === params.data.venueId);
+        const venue = params.context.venues.find(
+          (v) => v.id === params.data.venueId
+        );
         return venue?.name;
       },
     },
   ]);
 
   // Fetch events data from an API or database
-  const getEvents = async () => {
+  const getEvents = async (trueOrFalse) => {
     try {
-      const fetchedEvents = await fetchEvents();
+      const fetchedEvents = await fetchEvents(trueOrFalse);
       setEvents(fetchedEvents);
     } catch (error) {
       console.error(error);
@@ -59,16 +62,21 @@ export default function Events() {
 
   useEffect(() => {
     // Fetch events and venues the first time the component mounts
-    getEvents();
+    getEvents(false);
     getVenues();
   }, []);
 
   return (
     <div>
+      <AddEvent getEvents={getEvents} />
       <div
         className='ag-theme-material'
         style={{ height: "500px", width: "100%" }}>
-        <AgGridReact rowData={events} columnDefs={columnDefs} context={{venues}}/>
+        <AgGridReact
+          rowData={events}
+          columnDefs={columnDefs}
+          context={{ venues }}
+        />
       </div>
     </div>
   );
