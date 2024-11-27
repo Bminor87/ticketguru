@@ -14,7 +14,8 @@ export default function AddEvent({ getEvents }) {
     ticketSaleBegins: "",
     venueId: "",
   });
-  const { fetchEvents, addEvent } = useApiService();
+  
+  const { addEvent } = useApiService();
 
   const [open, setOpen] = useState(false);
 
@@ -51,7 +52,7 @@ export default function AddEvent({ getEvents }) {
       <Button onClick={handleOpen}>Add event</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a new event</DialogTitle>
-        <EventDialog event={event} handleChange={handleChange} />
+        <EventDialog event={event} handleChange={handleChange}/>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>
