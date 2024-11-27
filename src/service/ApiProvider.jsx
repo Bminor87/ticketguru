@@ -167,6 +167,15 @@ export const ApiProvider = ({ children }) => {
   return events;
 };
 
+const addEvent = async (event) => {
+  try {
+    await makeApiCall("post", "api/events", event)
+    fetchEvents(true);
+  } catch (error) {
+    console.error("Error posting event: ", error)
+  }
+}
+
   
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
@@ -200,6 +209,7 @@ export const ApiProvider = ({ children }) => {
         fetchTickets,
         fetchEvent,
         fetchEvents,
+        addEvent,
         fetchTicketType,
         consumeTicket,
         releaseTicket,
