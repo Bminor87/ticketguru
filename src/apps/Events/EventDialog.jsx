@@ -8,6 +8,7 @@ import {
   InputLabel,
   FormControl,
 } from "@mui/material";
+import Stack from "@mui/material/Stack";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
@@ -41,79 +42,80 @@ export default function EventDialog({ event, handleChange }) {
   return (
     <div>
       <DialogContent>
-        <TextField
-          autoFocus
-          required
-          name='name'
-          label='Event name'
-          value={event.name}
-          onChange={handleChange}
-        />
-        <TextField
-          required
-          name='description'
-          label='Event description'
-          value={event.description}
-          onChange={handleChange}
-        />
-        <TextField
-          required
-          name='totalTickets'
-          label='Total tickets'
-          type='number'
-          value={event.totalTickets}
-          onChange={handleChange}
-        />
-        <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fi'>
-          <DateTimePicker
+        <Stack spacing={2} width={500}>
+          <TextField
+            autoFocus
             required
-            name='beginsAt'
-            label='Event begin'
-            value={
-              // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
-              event.beginsAt ? dayjs(event.beginsAt) : null
-            }
-            onChange={(newValue) => handleDateChange("beginsAt", newValue)}
+            name='name'
+            label='Event name'
+            value={event.name}
+            onChange={handleChange}
           />
-          <DateTimePicker
+          <TextField
             required
-            name='endsAt'
-            label='Event end'
-            value={
-              // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
-              event.endsAt ? dayjs(event.endsAt) : null
-            }
-            onChange={(newValue) => handleDateChange("endsAt", newValue)}
+            name='description'
+            label='Event description'
+            value={event.description}
+            onChange={handleChange}
           />
-          <DateTimePicker
+          <TextField
             required
-            name='ticketSaleBegins'
-            label='Ticket sale begin'
-            value={
-              // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
-              event.ticketSaleBegins ? dayjs(event.ticketSaleBegins) : null
-            }
-            onChange={(newValue) =>
-              handleDateChange("ticketSaleBegins", newValue)
-            }
+            name='totalTickets'
+            label='Total tickets'
+            type='number'
+            value={event.totalTickets}
+            onChange={handleChange}
           />
-        </LocalizationProvider>
-        <FormControl fullWidth variant='standard' required>
-          <InputLabel id='venue'>Venue</InputLabel>
-          <Select
-            labelId='venueId'
-            name='venueId'
-            value={event.venueId}
-            onChange={handleChange}>
-            {/*This map function lists all venues a dropdown menu */}
-            {/*This way we can select a venue directly from the list */}
-            {venues.map((venue) => (
-              <MenuItem key={venue.id} value={venue.id}>
-                {venue.name}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fi'>
+            <DateTimePicker
+              required
+              name='beginsAt'
+              label='Event begin *'
+              value={
+                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
+                event.beginsAt ? dayjs(event.beginsAt) : null
+              }
+              onChange={(newValue) => handleDateChange("beginsAt", newValue)}
+            />
+            <DateTimePicker
+              required
+              name='endsAt'
+              label='Event end *'
+              value={
+                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
+                event.endsAt ? dayjs(event.endsAt) : null
+              }
+              onChange={(newValue) => handleDateChange("endsAt", newValue)}
+            />
+            <DateTimePicker
+              name='ticketSaleBegins'
+              label='Ticket sale begin'
+              value={
+                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
+                event.ticketSaleBegins ? dayjs(event.ticketSaleBegins) : null
+              }
+              onChange={(newValue) =>
+                handleDateChange("ticketSaleBegins", newValue)
+              }
+            />
+          </LocalizationProvider>
+          <FormControl fullWidth variant='standard' required>
+            <InputLabel id='venue'>Venue</InputLabel>
+            <Select
+              labelId='venueId'
+              name='venueId'
+              value={event.venueId}
+              onChange={handleChange}>
+              {/*This map function lists all venues a dropdown menu */}
+              {/*This way we can select a venue directly from the list */}
+              {venues.map((venue) => (
+                <MenuItem key={venue.id} value={venue.id}>
+                  {venue.name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Stack>
       </DialogContent>
     </div>
   );
