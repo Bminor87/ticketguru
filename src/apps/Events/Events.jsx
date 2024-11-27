@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
+import { useSettings } from "../../SettingsContext";
+
 import AddEvent from "./AddEvent";
 import EditEvent from "./EditEvent";
 
@@ -9,6 +11,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
 
 export default function Events() {
+  const { darkMode } = useSettings(); // Access darkMode and API URL from settings
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
   const { fetchEvents, fetchVenues } = useApiService();
@@ -78,7 +81,9 @@ export default function Events() {
     <div>
       <AddEvent getEvents={getEvents} />
       <div
-        className="ag-theme-material"
+        className={`ag-theme-material ${
+          darkMode ? "ag-theme-material-dark" : ""
+        }`}
         style={{ height: "500px", width: "100%" }}
       >
         <AgGridReact
