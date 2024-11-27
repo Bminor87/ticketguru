@@ -1,7 +1,7 @@
 import { Card, Box, Stack, Typography, Divider, Chip } from "@mui/material";
 import { formatDateTime } from "../../util/helperfunctions";
 
-export default function EventControl({ selectedEvent }) {
+export default function EventControl({ selectedEvent, venues }) {
   if (!selectedEvent) {
     return (
       <Typography variant="body1" align="center">
@@ -27,7 +27,7 @@ export default function EventControl({ selectedEvent }) {
             component="div"
             sx={{ color: "text.secondary" }}
           >
-            {selectedEvent.totalTickets || "0"} tickets
+            {venues?.find((venue) => venue.id === selectedEvent.venueId)?.name}
           </Typography>
         </Stack>
         {/* Event Description */}
@@ -41,9 +41,10 @@ export default function EventControl({ selectedEvent }) {
 
       {/* Event Times */}
       <Box sx={{ p: 2 }}>
-        <Typography gutterBottom variant="h6">
-          Event Times
+        <Typography gutterBottom variant="h6" color="success">
+          {selectedEvent.totalTickets || "0"} tickets available
         </Typography>
+        <p>&nbsp;</p>
         <Stack direction="column" spacing={1}>
           <div className="flex justify-between align-between">
             <Typography sx={{ color: "text.primary" }}>Begins:</Typography>

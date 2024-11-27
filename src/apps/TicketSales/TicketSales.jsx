@@ -8,8 +8,9 @@ import EventDropDown from "../../common/EventDropDown";
 import { useApiService } from "../../service/ApiProvider";
 
 export default function TicketSales() {
-  const { fetchEvents } = useApiService();
+  const { fetchEvents, fetchVenues } = useApiService();
   const [events, setEvents] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(0);
   const [selectedEventName, setSelectedEventName] = useState("");
   const [soldTicketsData, setSoldTicketsData] = useState(null);
@@ -29,7 +30,9 @@ export default function TicketSales() {
     const loadEvents = async () => {
       setIsLoading(true);
       const fetchedEvents = await fetchEvents();
+      const fetchedVenues = await fetchVenues();
       setEvents(fetchedEvents || []);
+      setVenues(fetchedVenues || []);
       setIsLoading(false);
     };
     loadEvents();
@@ -55,7 +58,7 @@ export default function TicketSales() {
       <div className="flex flex-wrap gap-8">
         <div className="flex-1 min-w-[320px] max-w-[720px]">
           {/* Event details */}
-          <EventControl selectedEvent={selectedEvent} />
+          <EventControl selectedEvent={selectedEvent} venues={venues} />
         </div>
         <div className="flex-1 min-w-[320px] max-w-[720px]">
           <TicketOrderControl
