@@ -6,6 +6,7 @@ import { useSettings } from "../../SettingsContext";
 import AddEvent from "./AddEvent";
 import EditEvent from "./EditEvent";
 import DeleteEvent from "./DeleteEvent";
+import TicketTypes from "./TicketTypes";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -52,6 +53,7 @@ export default function Events() {
         return venue?.name;
       },
     },
+
     {
       field: "id",
       headerName: "",
@@ -62,6 +64,15 @@ export default function Events() {
       cellRenderer: (params) => (
         <EditEvent currentEvent={params.data} getEvents={getEvents} />
       ),
+    },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => <TicketTypes currentEventId={params.data.id} currentEventName={params.data.name}/>,
     },
     {
       field: "id",
