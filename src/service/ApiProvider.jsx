@@ -185,6 +185,15 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  const deleteEvent = async (id) => {
+    try {
+      await makeApiCall("delete", `api/events/${id}`);
+      fetchEvents(true);
+    } catch (error) {
+      console.error("Error updating event: ", error);
+    }
+  };
+
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
@@ -277,6 +286,7 @@ export const ApiProvider = ({ children }) => {
         fetchEvents,
         addEvent,
         updateEvent,
+        deleteEvent,
         fetchTicketType,
         consumeTicket,
         releaseTicket,
