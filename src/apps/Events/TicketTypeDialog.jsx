@@ -24,10 +24,10 @@ export default function TicketTypeDialog({ ticketType, handleChange }) {
             onChange={handleChange}
           />
           <TextField
-            name='totalAvailable'
-            label='Total available'
+            name='totalTickets'
+            label='Total tickets'
             type='number'
-            value={ticketType.totalAvailable}
+            value={ticketType.totalTickets}
             onChange={handleChange}
           />
         </Stack>

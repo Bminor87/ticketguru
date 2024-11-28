@@ -7,7 +7,7 @@ export default function AddTicketType({ currentEventId, getEventTicketTypes }) {
   const [ticketType, setTicketType] = useState({
     name: "",
     retailPrice: "",
-    totalAvailable: "",
+    totalTickets: null,
     eventId: currentEventId,
   });
 
@@ -29,7 +29,7 @@ export default function AddTicketType({ currentEventId, getEventTicketTypes }) {
       ...ticketType,
       name: "",
       retailPrice: "",
-      totalAvailable: "",
+      totalTickets: null,
     });
   };
 

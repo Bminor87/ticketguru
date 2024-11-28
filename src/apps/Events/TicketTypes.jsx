@@ -1,4 +1,4 @@
-import { useState} from "react";
+import { useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { useSettings } from "../../SettingsContext";
 import {
@@ -6,7 +6,7 @@ import {
   DialogTitle,
   DialogActions,
   DialogContent,
-  Button
+  Button,
 } from "@mui/material";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { AgGridReact } from "ag-grid-react";
@@ -32,7 +32,15 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
   const [columnDefs, setColumnDefs] = useState([
     { field: "name", headerName: "Ticket type" },
     { field: "retailPrice", headerName: "Retail price €" },
-    { field: "totalAvailable", headerName: "Total available" },
+    {
+      field: "totalTickets",
+      headerName: "Total tickets",
+      valueFormatter: (params) => {
+        if (params.data.totalTickets == null) {
+          return "not limited";
+        }
+      },
+    },
     {
       field: "id",
       headerName: "",
@@ -41,7 +49,10 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
       resizable: false,
       width: 70,
       cellRenderer: (params) => (
-        <EditTicketType currentTicketType={params.data} getEventTicketTypes={getEventTicketTypes}/>
+        <EditTicketType
+          currentTicketType={params.data}
+          getEventTicketTypes={getEventTicketTypes}
+        />
       ),
     },
     {
