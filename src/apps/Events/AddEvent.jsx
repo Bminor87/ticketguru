@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
-import { Dialog, DialogTitle, DialogActions } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 import EventDialog from "./EventDialog";
 
 export default function AddEvent({ getEvents }) {
@@ -14,7 +13,7 @@ export default function AddEvent({ getEvents }) {
     ticketSaleBegins: "",
     venueId: "",
   });
-  
+
   const { addEvent } = useApiService();
 
   const [open, setOpen] = useState(false);
@@ -41,7 +40,6 @@ export default function AddEvent({ getEvents }) {
   };
 
   const handleSave = async () => {
-    console.log(event);
     await addEvent(event);
     await getEvents(true);
     handleClose();
@@ -52,7 +50,7 @@ export default function AddEvent({ getEvents }) {
       <Button onClick={handleOpen}>Add event</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a new event</DialogTitle>
-        <EventDialog event={event} handleChange={handleChange}/>
+        <EventDialog event={event} handleChange={handleChange} />
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>

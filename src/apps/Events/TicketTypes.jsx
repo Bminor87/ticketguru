@@ -1,21 +1,20 @@
-import { useState, useEffect } from "react";
+import { useState} from "react";
+import { useApiService } from "../../service/ApiProvider";
+import { useSettings } from "../../SettingsContext";
 import {
   Dialog,
   DialogTitle,
   DialogActions,
   DialogContent,
+  Button
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
-import { useApiService } from "../../service/ApiProvider";
-import { useSettings } from "../../SettingsContext";
-import AddTicketType from "./AddTicketType";
-import EditTicketType from "./EditTicketType";
-import DeleteTicketType from "./DeleteTicketType";
-
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
+import AddTicketType from "./AddTicketType";
+import EditTicketType from "./EditTicketType";
+import DeleteTicketType from "./DeleteTicketType";
 
 export default function TicketTypes({ currentEventId, currentEventName }) {
   const { darkMode } = useSettings(); // Access darkMode and API URL from settings
@@ -73,7 +72,6 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
 
   const getEventTicketTypes = async (id) => {
     try {
-      console.log("EventId: ", id);
       const eventTicketTypeData = await fetchTicketTypes({ eventId: id });
       setEventTicketTypes(eventTicketTypeData);
     } catch (error) {
