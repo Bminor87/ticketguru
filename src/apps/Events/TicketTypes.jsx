@@ -10,6 +10,7 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { useApiService } from "../../service/ApiProvider";
 import { useSettings } from "../../SettingsContext";
 import AddTicketType from "./AddTicketType";
+import DeleteTicketType from "./DeleteTicketType";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -32,6 +33,21 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
     { field: "name", headerName: "Ticket type" },
     { field: "retailPrice", headerName: "Retail price €" },
     { field: "totalAvailable", headerName: "Total available" },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => (
+        <DeleteTicketType
+          currentTicketTypeId={params.data.id}
+          currentEventId={currentEventId}
+          getEventTicketTypes={getEventTicketTypes}
+        />
+      ),
+    },
   ]);
 
   const handleOpen = () => {
@@ -66,7 +82,10 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
         fullWidth={true}>
         <DialogTitle>Ticket types for {currentEventName}</DialogTitle>
         <DialogActions style={{ justifyContent: "space-between" }}>
-          <AddTicketType currentEventId={currentEventId} getEventTicketTypes={getEventTicketTypes}/>
+          <AddTicketType
+            currentEventId={currentEventId}
+            getEventTicketTypes={getEventTicketTypes}
+          />
         </DialogActions>
         <DialogContent>
           <div
