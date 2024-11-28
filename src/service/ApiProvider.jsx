@@ -100,6 +100,14 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  const addTicketType = async (ticketType) => {
+    try {
+      await makeApiCall("post", "/api/tickettypes", ticketType)
+    } catch (error) {
+      console.error("Error posting ticket type: ", error)
+    }
+  }
+
   const fetchExampleTicket = async () => {
     try {
       const tickets = await makeApiCall("get", "/api/tickets");
@@ -288,6 +296,7 @@ export const ApiProvider = ({ children }) => {
         updateEvent,
         deleteEvent,
         fetchTicketType,
+        addTicketType,
         consumeTicket,
         releaseTicket,
         postBasketItems,
