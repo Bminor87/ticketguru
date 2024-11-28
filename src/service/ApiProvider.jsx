@@ -102,11 +102,19 @@ export const ApiProvider = ({ children }) => {
 
   const addTicketType = async (ticketType) => {
     try {
-      await makeApiCall("post", "/api/tickettypes", ticketType)
+      await makeApiCall("post", "/api/tickettypes", ticketType);
     } catch (error) {
-      console.error("Error posting ticket type: ", error)
+      console.error("Error posting ticket type: ", error);
     }
-  }
+  };
+
+  const updateTicketType = async (id, ticketType) => {
+    try {
+      await makeApiCall("put", `api/tickettypes/${id}`, ticketType);
+    } catch (error) {
+      console.error("Error updating ticket type: ", error);
+    }
+  };
 
   const deleteTicketType = async (id) => {
     try {
@@ -305,6 +313,7 @@ export const ApiProvider = ({ children }) => {
         deleteEvent,
         fetchTicketType,
         addTicketType,
+        updateTicketType,
         deleteTicketType,
         consumeTicket,
         releaseTicket,
@@ -314,8 +323,7 @@ export const ApiProvider = ({ children }) => {
         fetchVenue,
         login,
         logout,
-      }}
-    >
+      }}>
       {children}
     </ApiContext.Provider>
   );
