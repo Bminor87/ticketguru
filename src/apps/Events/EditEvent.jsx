@@ -1,11 +1,8 @@
 import { useState } from "react";
-
-import EventDialog from "./EventDialog";
 import { useApiService } from "../../service/ApiProvider";
-
-import { Dialog, DialogTitle, DialogActions } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import EventDialog from "./EventDialog";
 
 export default function EditEvent({ currentEvent, getEvents }) {
   const [event, setEvent] = useState(currentEvent);
@@ -25,7 +22,6 @@ export default function EditEvent({ currentEvent, getEvents }) {
   };
 
   const handleSave = async () => {
-    console.log(event);
     await updateEvent(event.id, event);
     await getEvents(true);
     handleClose();

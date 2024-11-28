@@ -1,11 +1,8 @@
 import { useState } from "react";
-
-import TicketTypeDialog from "./TicketTypeDialog";
 import { useApiService } from "../../service/ApiProvider";
-
-import { Dialog, DialogTitle, DialogActions } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
+import TicketTypeDialog from "./TicketTypeDialog";
 
 export default function EditTicketType({
   currentTicketType,

@@ -2,15 +2,13 @@ import React, { useState, useEffect } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 import { useSettings } from "../../SettingsContext";
-
+import { AgGridReact } from "ag-grid-react";
+import "ag-grid-community/styles/ag-grid.css";
+import "ag-grid-community/styles/ag-theme-material.css";
 import AddEvent from "./AddEvent";
 import EditEvent from "./EditEvent";
 import DeleteEvent from "./DeleteEvent";
 import TicketTypes from "./TicketTypes";
-
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-material.css";
 
 export default function Events() {
   const { darkMode } = useSettings(); // Access darkMode and API URL from settings

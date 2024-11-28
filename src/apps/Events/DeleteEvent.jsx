@@ -5,8 +5,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Button
 } from "@mui/material";
-import Button from "@mui/material/Button";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 export default function DeleteEvent({ currentEventId, getEvents }) {
@@ -22,7 +22,6 @@ export default function DeleteEvent({ currentEventId, getEvents }) {
   };
 
   const handleDelete = async () => {
-    console.log("currentEventId: ", currentEventId)
     await deleteEvent(currentEventId);
     await getEvents(true);
     handleClose();
@@ -34,7 +33,7 @@ export default function DeleteEvent({ currentEventId, getEvents }) {
         onClick={handleOpen}
         color='error'
         startIcon={<DeleteIcon />}></Button>
-      {/*We use Dialog instead of alert to confirm user's intent to delete the customer */}
+      {/*We use Dialog instead of alert to confirm user's intent to delete the event */}
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Delete event</DialogTitle>
         <DialogContent>

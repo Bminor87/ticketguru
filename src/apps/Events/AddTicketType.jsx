@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
-import { Dialog, DialogTitle, DialogActions } from "@mui/material";
-import Button from "@mui/material/Button";
+import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
 import TicketTypeDialog from "./TicketTypeDialog";
 
 export default function AddTicketType({ currentEventId, getEventTicketTypes }) {
@@ -44,7 +43,7 @@ export default function AddTicketType({ currentEventId, getEventTicketTypes }) {
     <div>
       <Button onClick={handleOpen}>Add ticket type</Button>
       <Dialog open={open} onClose={handleClose}>
-        <DialogTitle>Add new ticket type</DialogTitle>
+        <DialogTitle>Add a new ticket type</DialogTitle>
         <TicketTypeDialog ticketType={ticketType} handleChange={handleChange} />
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
