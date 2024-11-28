@@ -16,6 +16,14 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
   const { fetchEvents, fetchVenues } = useApiService();
+
+  const defaultColumnDefs = {
+    filter: true,
+    floatingFilter: true,
+    sortable: true,
+    resizable: true,
+  };
+
   const [columnDefs, setColumnDefs] = useState([
     { field: "name", headerName: "Name" },
     { field: "description", headerName: "Description" },
@@ -47,6 +55,10 @@ export default function Events() {
     {
       field: "id",
       headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
       cellRenderer: (params) => (
         <EditEvent currentEvent={params.data} getEvents={getEvents} />
       ),
@@ -54,11 +66,20 @@ export default function Events() {
     {
       field: "id",
       headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
       cellRenderer: (params) => (
         <DeleteEvent currentEventId={params.data.id} getEvents={getEvents} />
       ),
     },
   ]);
+
+  const autoSizeStrategy = {
+    type: "fitGridWidth",
+    flex: 1,
+  };
 
   // Fetch events data from an API or database
   const getEvents = async (trueOrFalse) => {
@@ -92,11 +113,12 @@ export default function Events() {
         className={`ag-theme-material ${
           darkMode ? "ag-theme-material-dark" : ""
         }`}
-        style={{ height: "500px", width: "100%" }}
-      >
+        style={{ height: "500px", width: "100%" }}>
         <AgGridReact
           rowData={events}
+          defaultColDef={defaultColumnDefs}
           columnDefs={columnDefs}
+          autoSizeStrategy={autoSizeStrategy}
           context={{ venues }}
         />
       </div>
