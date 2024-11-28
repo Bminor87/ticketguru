@@ -6,7 +6,6 @@ import Ticket from "../../common/Ticket";
 import CorrectEventChecker from "../../common/CorrectEventChecker";
 import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
-import ExampleBarcode from "./ExampleBarcode";
 import { Modal, Box } from "@mui/material";
 
 const style = {
@@ -24,14 +23,12 @@ const style = {
 
 export default function TicketScanner() {
   const settings = useSettings();
-  const [example, setExample] = useState(null);
   const [barcode, setBarcode] = useState("");
   const [ticketMessage, setTicketMessage] = useState(
     "No ticket data available. Please scan a ticket."
   );
 
   const {
-    fetchExampleTicket,
     fetchTicket,
     consumeTicket,
     releaseTicket,
@@ -50,6 +47,7 @@ export default function TicketScanner() {
   });
 
   const [isLoading, setIsLoading] = useState(true);
+  const [barcodeLoading, setBarcodeLoading] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
   const handleClose = () => {
@@ -68,22 +66,6 @@ export default function TicketScanner() {
   }, [fetchEvents]);
 
   useEffect(() => {
-    let isMounted = true;
-    const getExampleTicket = async () => {
-      try {
-        const data = await fetchExampleTicket();
-        if (isMounted) setExample(data);
-      } catch (error) {
-        console.error("Error fetching example ticket:", error);
-      }
-    };
-    getExampleTicket();
-    return () => {
-      isMounted = false;
-    };
-  }, [fetchExampleTicket]);
-
-  useEffect(() => {
     if (ticketData) {
       setEventIdInTicket(ticketData.event?.id || 0);
       clearErrorMessage();
@@ -100,6 +82,7 @@ export default function TicketScanner() {
       }
       setTicketData(response);
       await fetchAdditionalData(response);
+      return response;
     } catch (error) {
       console.error("Error fetching ticket data:", error);
       setTicketData(null);
@@ -157,10 +140,13 @@ export default function TicketScanner() {
     setIsCorrectEvent(selectedEventId === eventIdInTicket);
   }, [selectedEventId, eventIdInTicket]);
 
-  const handleBarcodeRead = (event) => {
+  const handleBarcodeRead = async (event) => {
     event.preventDefault();
-    fetchTicketData(barcode);
-    if (isCorrectEvent) setOpenModal(true);
+    setBarcodeLoading(true);
+    const response = await fetchTicketData(barcode);
+    setBarcodeLoading(false);
+    console.log("Response when trying to open modal", response);
+    if (selectedEventId === response.event?.id) setOpenModal(true);
   };
 
   return (
@@ -183,6 +169,7 @@ export default function TicketScanner() {
             barcode={barcode}
             handleChange={handleChange}
             handleSubmit={handleBarcodeRead}
+            barcodeLoading={barcodeLoading}
           />
         </div>
         <CorrectEventChecker
@@ -217,12 +204,6 @@ export default function TicketScanner() {
             )}
           </Box>
         </Modal>
-
-        <ExampleBarcode
-          example={example}
-          setBarcode={setBarcode}
-          fetchTicketData={fetchTicketData}
-        />
       </div>
     </div>
   );

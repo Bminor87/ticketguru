@@ -246,6 +246,16 @@ const Ticket = ({ tickets }) => {
                 <Link src="https://ticketguru.store">ticketguru.store</Link>.
               </Text>
             </View>
+            <View style={styles.bottomParagraph}>
+              <Text style={styles.definitionValue}>
+                The ticket is only valid for the event specified above.
+              </Text>
+            </View>
+            <View style={styles.bottomParagraph}>
+              <Text style={styles.definitionValue}>
+                Ticket #: {ticket.barcode}
+              </Text>
+            </View>
           </View>
         </Page>
       ))}

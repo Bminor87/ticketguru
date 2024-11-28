@@ -1,6 +1,11 @@
 import { useRef, useEffect } from "react";
 
-export default function BarcodeInput({ barcode, handleChange, handleSubmit }) {
+export default function BarcodeInput({
+  barcode,
+  handleChange,
+  handleSubmit,
+  barcodeLoading,
+}) {
   const inputRef = useRef(null);
 
   useEffect(() => {
@@ -29,7 +34,7 @@ export default function BarcodeInput({ barcode, handleChange, handleSubmit }) {
         style={{ height: "4.5rem" }}
         className="mt-3 inline-flex w-full sm:w-2/3 items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 sm:ml-3 sm:mt-0 sm:w-auto"
       >
-        Fetch Ticket
+        {barcodeLoading ? "Loading..." : "Fetch Ticket"}
       </button>
     </form>
   );
