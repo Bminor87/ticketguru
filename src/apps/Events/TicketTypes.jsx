@@ -9,6 +9,7 @@ import Button from "@mui/material/Button";
 import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { useApiService } from "../../service/ApiProvider";
 import { useSettings } from "../../SettingsContext";
+import AddTicketType from "./AddTicketType";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -58,8 +59,15 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
         onClick={handleOpen}
         startIcon={<ConfirmationNumberIcon />}></Button>
       {/*We use Dialog to open ticket types table */}
-      <Dialog open={open} onClose={handleClose} maxWidth={"md"} fullWidth={true}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth={"md"}
+        fullWidth={true}>
         <DialogTitle>Ticket types for {currentEventName}</DialogTitle>
+        <DialogActions style={{ justifyContent: "space-between" }}>
+          <AddTicketType currentEventId={currentEventId} getEventTicketTypes={getEventTicketTypes}/>
+        </DialogActions>
         <DialogContent>
           <div
             className={`ag-theme-material ${
