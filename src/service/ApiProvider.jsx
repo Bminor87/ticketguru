@@ -10,6 +10,7 @@ export const ApiProvider = ({ children }) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [events, setEvents] = useState(null); // State for events
   const [venues, setVenues] = useState(null); // State for venues
+  const [ticketTypes, setTicketTypes] = useState(null); // State for ticket types
 
   useEffect(() => {
     const setAuthHeader = () => {
@@ -120,6 +121,20 @@ export const ApiProvider = ({ children }) => {
     } catch (error) {
       console.error("Error fetching ticket type:", error);
     }
+  };
+
+  const fetchAllTicketTypes = async (forceRefresh = false) => {
+    if (!ticketTypes || forceRefresh) {
+      try {
+        const ticketTypes = await makeApiCall("get", "/api/tickettypes");
+        console.log("Ticket types:", ticketTypes);
+        setTicketTypes(ticketTypes); // Update the cache
+        return ticketTypes;
+      } catch (error) {
+        console.error("Error fetching ticket types:", error);
+      }
+    }
+    return ticketTypes;
   };
 
   const fetchTicketTypes = async (params) => {
@@ -320,6 +335,7 @@ export const ApiProvider = ({ children }) => {
         // Ticket type API calls
         fetchTicketType,
         fetchTicketTypes,
+        fetchAllTicketTypes,
         addTicketType,
         updateTicketType,
         deleteTicketType,
@@ -339,7 +355,8 @@ export const ApiProvider = ({ children }) => {
         // Login
         login,
         logout,
-      }}>
+      }}
+    >
       {children}
     </ApiContext.Provider>
   );

@@ -11,3 +11,15 @@ export function formatDateTime(dateTime) {
   });
   return `${formattedDate} klo ${formattedTime}`;
 }
+
+export function findEvent(eventId, events) {
+  return events?.find((event) => event.id === eventId);
+}
+
+export function findVenue(venueId, venues) {
+  return venues?.find((venue) => venue.id === venueId);
+}
+
+export function findTicketType(ticketTypeId, ticketTypes) {
+  return ticketTypes?.find((type) => type.id === ticketTypeId);
+}

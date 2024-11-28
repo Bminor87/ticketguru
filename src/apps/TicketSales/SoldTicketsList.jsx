@@ -15,7 +15,12 @@ import { formatDateTime } from "../../util/helperfunctions";
 
 import Ticket from "./Ticket";
 
-export default function SoldTicketsList({ soldTicketsData }) {
+export default function SoldTicketsList({
+  soldTicketsData,
+  events,
+  venues,
+  ticketTypes,
+}) {
   const [tickets, setTickets] = useState([]);
 
   const { fetchTickets } = useApiService();
@@ -26,6 +31,8 @@ export default function SoldTicketsList({ soldTicketsData }) {
       try {
         const ticketIds = soldTicketsData.ticketIds.toString();
         const fetchedTickets = await fetchTickets(ticketIds);
+        console.log("everything in the sold tickets:", fetchedTickets);
+        console.log("Sold tickets data:", soldTicketsData);
         setTickets(fetchedTickets);
       } catch (error) {
         console.error(error);
@@ -71,7 +78,12 @@ export default function SoldTicketsList({ soldTicketsData }) {
             </TableBody>
           </Table> */}
           <PDFViewer width="100%" height="600px">
-            <Ticket tickets={tickets} />
+            <Ticket
+              tickets={tickets}
+              events={events}
+              venues={venues}
+              ticketTypes={ticketTypes}
+            />
           </PDFViewer>
         </>
       )}

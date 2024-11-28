@@ -8,9 +8,10 @@ import EventDropDown from "../../common/EventDropDown";
 import { useApiService } from "../../service/ApiProvider";
 
 export default function TicketSales() {
-  const { fetchEvents, fetchVenues } = useApiService();
+  const { fetchEvents, fetchVenues, fetchAllTicketTypes } = useApiService();
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
+  const [ticketTypes, setTicketTypes] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(0);
   const [selectedEventName, setSelectedEventName] = useState("");
   const [soldTicketsData, setSoldTicketsData] = useState(null);
@@ -31,8 +32,10 @@ export default function TicketSales() {
       setIsLoading(true);
       const fetchedEvents = await fetchEvents();
       const fetchedVenues = await fetchVenues();
+      const fetchedTicketTypes = await fetchAllTicketTypes();
       setEvents(fetchedEvents || []);
       setVenues(fetchedVenues || []);
+      setTicketTypes(fetchedTicketTypes || []);
       setIsLoading(false);
     };
     loadEvents();
@@ -80,7 +83,12 @@ export default function TicketSales() {
           />
         </div>
         <div>
-          <SoldTicketsList soldTicketsData={soldTicketsData} />
+          <SoldTicketsList
+            soldTicketsData={soldTicketsData}
+            events={events}
+            venues={venues}
+            ticketTypes={ticketTypes}
+          />
         </div>
       </div>
     </div>

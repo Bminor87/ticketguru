@@ -11,7 +11,12 @@ import {
 } from "@react-pdf/renderer";
 import QRCode from "qrcode";
 
-import { formatDateTime } from "../../util/helperfunctions";
+import {
+  formatDateTime,
+  findEvent,
+  findVenue,
+  findTicketType,
+} from "../../util/helperfunctions";
 
 // Font source
 const fontNormal =
@@ -117,7 +122,7 @@ const generateQRCode = async (text) => {
   }
 };
 
-const Ticket = ({ tickets }) => {
+const Ticket = ({ tickets, events, venues, ticketTypes }) => {
   const [preparedTickets, setPreparedTickets] = useState(null);
 
   useEffect(() => {
@@ -171,19 +176,29 @@ const Ticket = ({ tickets }) => {
               <View style={styles.ticketDetails}>
                 <Text style={styles.leftColumn}>Event:</Text>
                 <Text style={styles.rightColumn}>
-                  {ticket.event?.name || "Unknown Event"}
+                  {findEvent(
+                    findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
+                    events
+                  )?.name || "Unknown Event"}
                 </Text>
               </View>
               <View style={styles.ticketDetails}>
                 <Text style={styles.leftColumn}>Ticket Type:</Text>
                 <Text style={styles.rightColumn}>
-                  {ticket.ticketType?.name || "Unknown Ticket Type"}
+                  {findTicketType(ticket.ticketTypeId, ticketTypes)?.name ||
+                    "Unknown Ticket Type"}
                 </Text>
               </View>
               <View style={styles.ticketDetails}>
                 <Text style={styles.leftColumn}>Venue:</Text>
                 <Text style={styles.rightColumn}>
-                  {ticket.venue?.name || "Unknown Venue"}
+                  {findVenue(
+                    findEvent(
+                      findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
+                      events
+                    )?.venueId,
+                    venues
+                  )?.name || "Unknown Event"}
                 </Text>
               </View>
               <View style={styles.ticketDetails}>
@@ -207,13 +222,22 @@ const Ticket = ({ tickets }) => {
             <View style={styles.bottomParagraph}>
               <Text style={styles.definition}>Event:</Text>
               <Text style={styles.definitionValue}>
-                {ticket.event?.name || "Unknown Event"}
+                {findEvent(
+                  findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
+                  events
+                )?.name || "Unknown Event"}
               </Text>
             </View>
             <View style={styles.bottomParagraph}>
               <Text style={styles.definition}>Venue:</Text>
               <Text style={styles.definitionValue}>
-                {ticket.venue?.name || "Unknown Venue"}
+                {findVenue(
+                  findEvent(
+                    findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
+                    events
+                  )?.venueId,
+                  venues
+                )?.name || "Unknown Event"}
               </Text>
             </View>
             <View style={styles.bottomParagraph}>
@@ -225,7 +249,8 @@ const Ticket = ({ tickets }) => {
             <View style={styles.bottomParagraph}>
               <Text style={styles.definition}>Ticket Type:</Text>
               <Text style={styles.definitionValue}>
-                {ticket.ticketType?.name || "Unknown Ticket Type"}
+                {findTicketType(ticket.ticketTypeId, ticketTypes)?.name ||
+                  "Unknown Ticket Type"}
               </Text>
             </View>
             <View style={styles.bottomParagraph}>
@@ -236,7 +261,10 @@ const Ticket = ({ tickets }) => {
             </View>
             <View style={styles.bottomParagraph}>
               <Text style={styles.description}>
-                {ticket.event?.description || "No description available"}
+                {findEvent(
+                  findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
+                  events
+                )?.description || "No description available"}
               </Text>
             </View>
             <View style={styles.bottomParagraph}>
