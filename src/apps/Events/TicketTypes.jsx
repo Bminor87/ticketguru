@@ -10,6 +10,7 @@ import ConfirmationNumberIcon from "@mui/icons-material/ConfirmationNumber";
 import { useApiService } from "../../service/ApiProvider";
 import { useSettings } from "../../SettingsContext";
 import AddTicketType from "./AddTicketType";
+import EditTicketType from "./EditTicketType";
 import DeleteTicketType from "./DeleteTicketType";
 
 import { AgGridReact } from "ag-grid-react";
@@ -33,6 +34,17 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
     { field: "name", headerName: "Ticket type" },
     { field: "retailPrice", headerName: "Retail price €" },
     { field: "totalAvailable", headerName: "Total available" },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => (
+        <EditTicketType currentTicketType={params.data} getEventTicketTypes={getEventTicketTypes}/>
+      ),
+    },
     {
       field: "id",
       headerName: "",
