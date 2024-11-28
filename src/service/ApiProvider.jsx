@@ -11,6 +11,11 @@ export const ApiProvider = ({ children }) => {
   const [events, setEvents] = useState(null); // State for events
   const [venues, setVenues] = useState(null); // State for venues
   const [ticketTypes, setTicketTypes] = useState(null); // State for ticket types
+  const [dirt, setDirt] = useState({
+    events: false,
+    venues: false,
+    ticketTypes: false,
+  });
 
   useEffect(() => {
     const setAuthHeader = () => {
@@ -74,11 +79,12 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchEvents = async (forceRefresh = false) => {
-    if (!events || forceRefresh) {
+  const fetchEvents = async () => {
+    if (!events || dirt.events) {
       try {
         const data = await makeApiCall("get", "/api/events");
         setEvents(data); // Cache events
+        setDirt({ ...dirt, events: false });
         return data;
       } catch (error) {
         console.error("Error fetching events:", error);
@@ -90,7 +96,7 @@ export const ApiProvider = ({ children }) => {
   const addEvent = async (event) => {
     try {
       await makeApiCall("post", "api/events", event);
-      fetchEvents(true);
+      setDirt({ ...dirt, events: true });
     } catch (error) {
       console.error("Error posting event: ", error);
     }
@@ -99,7 +105,7 @@ export const ApiProvider = ({ children }) => {
   const updateEvent = async (id, event) => {
     try {
       await makeApiCall("put", `api/events/${id}`, event);
-      fetchEvents(true);
+      setDirt({ ...dirt, events: true });
     } catch (error) {
       console.error("Error updating event: ", error);
     }
@@ -108,7 +114,7 @@ export const ApiProvider = ({ children }) => {
   const deleteEvent = async (id) => {
     try {
       await makeApiCall("delete", `api/events/${id}`);
-      fetchEvents(true);
+      setDirt({ ...dirt, events: true });
     } catch (error) {
       console.error("Error updating event: ", error);
     }
@@ -123,12 +129,13 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchAllTicketTypes = async (forceRefresh = false) => {
-    if (!ticketTypes || forceRefresh) {
+  const fetchAllTicketTypes = async () => {
+    if (!ticketTypes || dirt.ticketTypes) {
       try {
         const ticketTypes = await makeApiCall("get", "/api/tickettypes");
         console.log("Ticket types:", ticketTypes);
         setTicketTypes(ticketTypes); // Update the cache
+        setDirt({ ...dirt, ticketTypes: false });
         return ticketTypes;
       } catch (error) {
         console.error("Error fetching ticket types:", error);
@@ -155,6 +162,7 @@ export const ApiProvider = ({ children }) => {
   const addTicketType = async (ticketType) => {
     try {
       await makeApiCall("post", "/api/tickettypes", ticketType);
+      setDirt({ ...dirt, ticketTypes: true });
     } catch (error) {
       console.error("Error posting ticket type: ", error);
     }
@@ -163,6 +171,7 @@ export const ApiProvider = ({ children }) => {
   const updateTicketType = async (id, ticketType) => {
     try {
       await makeApiCall("put", `api/tickettypes/${id}`, ticketType);
+      setDirt({ ...dirt, ticketTypes: true });
     } catch (error) {
       console.error("Error updating ticket type: ", error);
     }
@@ -171,6 +180,7 @@ export const ApiProvider = ({ children }) => {
   const deleteTicketType = async (id) => {
     try {
       await makeApiCall("delete", `api/tickettypes/${id}`);
+      setDirt({ ...dirt, ticketTypes: true });
     } catch (error) {
       console.error("Error deleting ticket ytpe: ", error);
     }
@@ -185,17 +195,45 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchVenues = async (forceRefresh = false) => {
-    if (!venues || forceRefresh) {
+  const fetchVenues = async () => {
+    if (!venues || dirt.venues) {
       try {
         const data = await makeApiCall("get", "/api/venues");
         setVenues(data); // Update the cache
+        setDirt({ ...dirt, venues: false });
         return data;
       } catch (error) {
         console.error("Error fetching venues:", error);
       }
     }
     return venues;
+  };
+
+  const addVenue = async (venue) => {
+    try {
+      await makeApiCall("post", "api/venues", venue);
+      setDirt({ ...dirt, venues: true });
+    } catch (error) {
+      console.error("Error posting venue: ", error);
+    }
+  };
+
+  const updateVenue = async (id, venue) => {
+    try {
+      await makeApiCall("put", `api/venues/${id}`, venue);
+      setDirt({ ...dirt, venues: true });
+    } catch (error) {
+      console.error("Error updating venue: ", error);
+    }
+  };
+
+  const deleteVenue = async (id) => {
+    try {
+      await makeApiCall("delete", `api/venues/${id}`);
+      setDirt({ ...dirt, venues: true });
+    } catch (error) {
+      console.error("Error deleting venue: ", error);
+    }
   };
 
   // Ticket API calls
@@ -220,8 +258,11 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchTickets = async (ticketIds) => {
+  const fetchTickets = async (ticketIds = []) => {
     try {
+      if (!ticketIds || ticketIds.length === 0) {
+        return await makeApiCall("get", `/api/tickets`);
+      }
       return await makeApiCall("get", `/api/tickets`, {}, { ids: ticketIds });
     } catch (error) {
       console.error("Error fetching tickets:", error);
@@ -343,6 +384,9 @@ export const ApiProvider = ({ children }) => {
         // Venue API calls
         fetchVenue,
         fetchVenues,
+        addVenue,
+        updateVenue,
+        deleteVenue,
 
         // Ticket API cals
         fetchTicket,
