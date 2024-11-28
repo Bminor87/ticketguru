@@ -8,7 +8,7 @@ const Ticket = ({ ticketData, additionalData }) => {
   useEffect(() => {
     if (ticketData) {
       console.log("Ticket data received:", ticketData);
-
+      console.log("Additional data received:", additionalData);
       // Use the `barcode` property from the ticket data
       const barcode = ticketData?.barcode;
 

@@ -23,3 +23,10 @@ export function findVenue(venueId, venues) {
 export function findTicketType(ticketTypeId, ticketTypes) {
   return ticketTypes?.find((type) => type.id === ticketTypeId);
 }
+
+export function countDuration(beginssAt, endsAt) {
+  const beginsAtTime = new Date(beginssAt);
+  const endsAtTime = new Date(endsAt);
+  const duration = endsAtTime - beginsAtTime;
+  return duration;
+}

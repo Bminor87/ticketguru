@@ -8,6 +8,12 @@ import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import { Modal, Box } from "@mui/material";
 
+import {
+  findEvent,
+  findTicketType,
+  findVenue,
+} from "../../util/helperfunctions";
+
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,6 +35,8 @@ export default function TicketScanner() {
   );
 
   const {
+    ticketTypes,
+    venues,
     fetchTicket,
     consumeTicket,
     releaseTicket,
@@ -67,7 +75,9 @@ export default function TicketScanner() {
 
   useEffect(() => {
     if (ticketData) {
-      setEventIdInTicket(ticketData.event?.id || 0);
+      setEventIdInTicket(
+        findTicketType(ticketData.ticketTypeId, ticketTypes)?.eventId || 0
+      );
       clearErrorMessage();
     }
   }, [ticketData, clearErrorMessage]);
@@ -92,11 +102,16 @@ export default function TicketScanner() {
   };
 
   const fetchAdditionalData = async (ticket) => {
+    console.log("Fetching additional data for ticket:", ticket);
     try {
+      const TheTicketType = findTicketType(ticket.ticketTypeId, ticketTypes);
+      const TheEvent = findEvent(TheTicketType.eventId, events);
+      const TheVenue = findVenue(TheEvent.venueId, venues);
+
       const event = {
-        name: ticket.event?.name || "Unknown Event",
-        time: ticket.event?.beginsAt || "Unknown Time",
-        location: ticket.venue?.name || "Unknown Location",
+        name: TheEvent?.name || "Unknown Event",
+        time: TheEvent?.beginsAt || "Unknown Time",
+        location: TheVenue?.name || "Unknown Location",
       };
       const ticketType = ticket.ticketType?.name || "N/A";
       setAdditionalData({ event, ticketType });
@@ -146,7 +161,11 @@ export default function TicketScanner() {
     const response = await fetchTicketData(barcode);
     setBarcodeLoading(false);
     console.log("Response when trying to open modal", response);
-    if (selectedEventId === response.event?.id) setOpenModal(true);
+    if (
+      selectedEventId ===
+      findTicketType(response.ticketTypeId, ticketTypes)?.eventId
+    )
+      setOpenModal(true);
   };
 
   return (

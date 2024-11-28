@@ -391,6 +391,11 @@ export const ApiProvider = ({ children }) => {
         // Login
         login,
         logout,
+
+        // Data
+        events,
+        venues,
+        ticketTypes,
       }}
     >
       {children}
