@@ -1,36 +1,66 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import EventControl from "./EventControl";
 import TicketOrderControl from "./TicketOrderControl";
 import Basket from "./Basket";
 import SoldTicketsList from "./SoldTicketsList";
+import EventDropDown from "../../common/EventDropDown";
+import { useApiService } from "../../service/ApiProvider";
 
 export default function TicketSales() {
+  const { fetchEvents, fetchVenues } = useApiService();
+  const [events, setEvents] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(0);
   const [selectedEventName, setSelectedEventName] = useState("");
   const [soldTicketsData, setSoldTicketsData] = useState(null);
   const [selectedTicketTypeId, setSelectedTicketTypeId] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleEventSelect = (eventId, eventName) => {
     setSelectedEventId(eventId);
-    setSelectedEventName(eventName); // Set the event name when an event is selected
+    setSelectedEventName(events.find((event) => event.id === eventId).name);
   };
 
   const handleSetSoldTicketsData = (data) => {
     setSoldTicketsData(data);
   };
 
+  useEffect(() => {
+    const loadEvents = async () => {
+      setIsLoading(true);
+      const fetchedEvents = await fetchEvents();
+      const fetchedVenues = await fetchVenues();
+      setEvents(fetchedEvents || []);
+      setVenues(fetchedVenues || []);
+      setIsLoading(false);
+    };
+    loadEvents();
+  }, [fetchEvents]);
+
+  const selectedEvent = events.find((event) => event.id === selectedEventId);
+
   return (
     <div id="TicketSales" className="text-gray-500 dark:text-white">
-      {/* Responsive container for the dropdowns */}
-      <div className="flex flex-wrap gap-4">
-        <div className="flex-1 min-w-[320px] max-w-[500px]">
-          <EventControl
-            selectedEventId={selectedEventId}
-            setSelectedEventId={handleEventSelect}
-          />
+      <div className="w-full">
+        <div className="w-full mb-8">
+          {isLoading ? (
+            <p>Loading events...</p>
+          ) : (
+            <EventDropDown
+              selectedEventId={selectedEventId}
+              setSelectedEventId={handleEventSelect}
+              events={events}
+            />
+          )}
         </div>
-        <div className="flex-1 min-w-[320px] max-w-[500px]">
+      </div>
+      <div className="flex flex-wrap gap-8">
+        <div className="flex-1 min-w-[320px] max-w-[720px]">
+          {/* Event details */}
+          <EventControl selectedEvent={selectedEvent} venues={venues} />
+        </div>
+        <div className="flex-1 min-w-[320px] max-w-[720px]">
           <TicketOrderControl
             selectedEventId={selectedEventId}
             selectedEventName={selectedEventName}

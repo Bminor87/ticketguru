@@ -1,4 +1,4 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 
 const SettingsContext = createContext();
 
@@ -11,12 +11,26 @@ export const SettingsProvider = ({ children }) => {
 
   const toggleDarkMode = () => {
     setDarkMode(!darkMode);
+    localStorage.setItem("darkMode", !darkMode);
+    applyDarkOrLightMode();
+  };
+
+  const applyDarkOrLightMode = () => {
     if (!darkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
     }
   };
+
+  useEffect(() => {
+    if (localStorage.getItem("darkMode") === "true") {
+      setDarkMode(true);
+    } else if (localStorage.getItem("darkMode") === "false") {
+      setDarkMode(false);
+    }
+    applyDarkOrLightMode();
+  }, []);
 
   const setUserName = (userName) => {
     settings.userName = userName;

@@ -7,13 +7,28 @@ import CorrectEventChecker from "../../common/CorrectEventChecker";
 import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import ExampleBarcode from "./ExampleBarcode";
-import PopupMessage from "../../common/PopupMessage";
-import { Button } from "@mui/material";
+import { Modal, Box } from "@mui/material";
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  minWidth: 480,
+  width: "80%",
+  bgcolor: "background.paper",
+  border: "2px solid #000",
+  boxShadow: 24,
+  p: 4,
+};
 
 export default function TicketScanner() {
   const settings = useSettings();
   const [example, setExample] = useState(null);
   const [barcode, setBarcode] = useState("");
+  const [ticketMessage, setTicketMessage] = useState(
+    "No ticket data available. Please scan a ticket."
+  );
 
   const {
     fetchExampleTicket,
@@ -36,10 +51,11 @@ export default function TicketScanner() {
 
   const [isLoading, setIsLoading] = useState(true);
 
-  const [popupOpened, setPopupOpened] = useState(false);
-  const [popupMessage, setPopupMessage] = useState("");
-  const [popupTitle, setPopupTitle] = useState("");
-  const [popupType, setPopupType] = useState("success");
+  const [openModal, setOpenModal] = useState(false);
+  const handleClose = () => {
+    setOpenModal(false);
+    resetState();
+  };
 
   useEffect(() => {
     const loadEvents = async () => {
@@ -68,8 +84,7 @@ export default function TicketScanner() {
   }, [fetchExampleTicket]);
 
   useEffect(() => {
-    if (ticketData != null) {
-      console.log("Ticket data:", ticketData);
+    if (ticketData) {
       setEventIdInTicket(ticketData.event?.id || 0);
       clearErrorMessage();
     }
@@ -77,24 +92,19 @@ export default function TicketScanner() {
 
   const handleChange = (event) => setBarcode(event.target.value);
 
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      event.preventDefault();
-      fetchTicketData(barcode);
-    }
-  };
-
   const fetchTicketData = async (barcode) => {
     try {
       const response = await fetchTicket(barcode);
-      const ticket = response;
-      console.log("Fetched ticket DATATATATATATAAA:", ticket);
-      if (!ticket) throw new Error("Ticket data is empty");
-      setTicketData(ticket);
-      await fetchAdditionalData(ticket);
+      if (!response) {
+        throw new Error("No ticket data found");
+      }
+      setTicketData(response);
+      await fetchAdditionalData(response);
     } catch (error) {
       console.error("Error fetching ticket data:", error);
+      setTicketData(null);
       clearErrorMessage();
+      setTicketMessage("Ticket not found. Please try again.");
     }
   };
 
@@ -115,10 +125,7 @@ export default function TicketScanner() {
   const markTicketAsUsed = async () => {
     try {
       await consumeTicket(barcode);
-      setPopupOpened(true);
-      setPopupType("success");
-      setPopupTitle("Ticket Used");
-      setPopupMessage("The ticket has been successfully marked as used.");
+      setTicketMessage("Ticket has been marked as used.");
       resetState();
     } catch (error) {
       console.error("Error marking ticket as used:", error);
@@ -128,10 +135,7 @@ export default function TicketScanner() {
   const markTicketAsUnused = async () => {
     try {
       await releaseTicket(barcode);
-      setPopupOpened(true);
-      setPopupType("success");
-      setPopupTitle("Ticket Unused");
-      setPopupMessage("The ticket has been successfully marked as unused.");
+      setTicketMessage("Ticket has been marked as unused.");
       resetState();
     } catch (error) {
       console.error("Error marking ticket as unused:", error);
@@ -142,9 +146,22 @@ export default function TicketScanner() {
     setTicketData(null);
     setEventIdInTicket(0);
     setBarcode("");
+    setIsCorrectEvent(false);
   };
 
-  const isCorrectEvent = selectedEventId === eventIdInTicket;
+  const [isCorrectEvent, setIsCorrectEvent] = useState(
+    selectedEventId === eventIdInTicket
+  );
+
+  useEffect(() => {
+    setIsCorrectEvent(selectedEventId === eventIdInTicket);
+  }, [selectedEventId, eventIdInTicket]);
+
+  const handleBarcodeRead = (event) => {
+    event.preventDefault();
+    fetchTicketData(barcode);
+    if (isCorrectEvent) setOpenModal(true);
+  };
 
   return (
     <div className="sm:rounded-lg">
@@ -152,50 +169,55 @@ export default function TicketScanner() {
         <p className="text-sm mb-4 text-gray-500 dark:text-white">
           Scan tickets for the selected event.
         </p>
-        <div className="grid grid-cols-4 gap-4">
-          {isLoading ? (<p>Loading events...</p>):
-          (<EventDropDown
-            selectedEventId={selectedEventId}
-            setSelectedEventId={setSelectedEventId}
-            events={events}
-            />)}
+        <div className="grid md-grid-cols-4 gap-4">
+          {isLoading ? (
+            <p>Loading events...</p>
+          ) : (
+            <EventDropDown
+              selectedEventId={selectedEventId}
+              setSelectedEventId={setSelectedEventId}
+              events={events}
+            />
+          )}
           <BarcodeInput
             barcode={barcode}
             handleChange={handleChange}
-            handleKeyPress={handleKeyPress}
+            handleSubmit={handleBarcodeRead}
           />
-          <Button variant="contained" onClick={() => fetchTicketData(barcode)}>
-            Fetch Ticket
-          </Button>
         </div>
         <CorrectEventChecker
           selectedEventId={selectedEventId}
           eventIdInTicket={eventIdInTicket}
           isCorrectEvent={isCorrectEvent}
         />
-        <PopupMessage
-          type={popupType}
-          title={popupTitle}
-          message={popupMessage}
-          opened={popupOpened}
-        />
         <ErrorMessage
           error={errorMessage}
           errorCode={settings.ticketUsedErrorCode}
         />
-        {ticketData && isCorrectEvent && (
-          <div className="mt-5">
-            <Ticket ticketData={ticketData} additionalData={additionalData} />
-            <button
-              onClick={
-                ticketData.usedAt ? markTicketAsUnused : markTicketAsUsed
-              }
-              className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-            >
-              {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
-            </button>
-          </div>
-        )}
+
+        <Modal open={openModal} onClose={handleClose}>
+          <Box sx={style}>
+            {ticketData ? (
+              <>
+                <Ticket
+                  ticketData={ticketData}
+                  additionalData={additionalData}
+                />
+                <button
+                  onClick={
+                    ticketData.usedAt ? markTicketAsUnused : markTicketAsUsed
+                  }
+                  className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                >
+                  {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
+                </button>
+              </>
+            ) : (
+              <p>{ticketMessage}</p>
+            )}
+          </Box>
+        </Modal>
+
         <ExampleBarcode
           example={example}
           setBarcode={setBarcode}

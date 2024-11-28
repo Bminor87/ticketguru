@@ -26,10 +26,7 @@ export default function CorrectEventChecker({
       ) : eventIdInTicket == 0 ? (
         <>
           <ExclamationCircleIcon className="h-5 w-5 text-red-500 mr-2" />
-          <p className="text-sm font-medium">
-            Please give a ticket number. The selected event is:{" "}
-            {selectedEventId}
-          </p>
+          <p className="text-sm font-medium">Please give a ticket number.</p>
         </>
       ) : selectedEventId != 0 ? (
         <>

@@ -82,7 +82,7 @@ export default function Basket({
   }, [basket]);
 
   return (
-    <div className="bg-white p-6 shadow-md rounded-lg">
+    <div className="bg-transparent p-6 shadow-md rounded-lg">
       <h2 className="text-xl font-bold mb-4">Basket</h2>
 
       <div
