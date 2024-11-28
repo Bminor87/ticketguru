@@ -108,6 +108,14 @@ export const ApiProvider = ({ children }) => {
     }
   }
 
+  const deleteTicketType = async (id) => {
+    try {
+      await makeApiCall("delete", `api/tickettypes/${id}`);
+    } catch (error) {
+      console.error("Error deleting ticket ytpe: ", error);
+    }
+  };
+
   const fetchExampleTicket = async () => {
     try {
       const tickets = await makeApiCall("get", "/api/tickets");
@@ -297,6 +305,7 @@ export const ApiProvider = ({ children }) => {
         deleteEvent,
         fetchTicketType,
         addTicketType,
+        deleteTicketType,
         consumeTicket,
         releaseTicket,
         postBasketItems,
