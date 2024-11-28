@@ -79,7 +79,11 @@ export default function Layout({ children }) {
                   onClick={() => setSidebarOpen(false)}
                   className="text-white text-2xl"
                 >
-                  TicketGuru
+                  <img
+                    src="ticketguru-logo-rc2.png"
+                    alt="TicketGuru"
+                    className="nav-logo"
+                  />
                 </Link>
               </div>
               <nav className="flex flex-1 flex-col">
@@ -131,7 +135,11 @@ export default function Layout({ children }) {
         <div className="flex grow flex-col gap-y-5 overflow-y-auto bg-gray-900 px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center">
             <Link to="/" className="text-white text-2xl">
-              TicketGuru
+              <img
+                src="ticketguru-logo-rc2.png"
+                alt="TicketGuru"
+                className="nav-logo"
+              />
             </Link>
           </div>
           <nav className="flex flex-1 flex-col">

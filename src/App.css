@@ -1,21 +1,112 @@
+/* Root container */
 #root {
+  margin: 0 auto;
+  height: 100vh;
+}
+
+/* Background image styling */
+.background {
+  background-image: url("background-219668_1920.jpg");
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Login container */
+.login-container {
+  background-color: rgba(0, 0, 0, 0.9);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+  max-width: 400px;
+  width: 90%;
+  text-align: center;
+}
+
+/* Header */
+.login-header .logo {
+  width: 50px;
+  height: auto;
   margin: 0 auto;
 }
 
-.error {
+.login-header .title {
+  color: white;
+  font-size: 1.5rem;
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+/* Form styling */
+.login-form .form-group {
+  margin-bottom: 20px;
+}
+
+.login-form .label {
+  display: block;
+  font-size: 0.9rem;
+  color: #bbb;
+  margin-bottom: 5px;
+}
+
+.login-form .input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 1rem;
+}
+
+.login-form .input:focus {
+  outline: 2px solid #4f46e5;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Button */
+.login-form .button {
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #4f46e5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-form .button:hover {
+  background-color: #4338ca;
+}
+
+.login-form .button:disabled {
+  background-color: #6b7280;
+  cursor: not-allowed;
+}
+
+/* Error message */
+.error-message {
   color: tomato;
+  font-size: 0.9rem;
+  margin-top: 10px;
 }
 
-.testButtonsRow {
-  display: flex;
-  justify-content: center;
-  margin: 20px;
+.logo {
+  width: 250px !important;
+  height: auto;
+  margin: 0 auto;
 }
 
-.testButtonsRow button {
-  margin: 0 10px;
-}
-
-#TicketSales .hidden {
-  visibility: hidden;
+.nav-logo {
+  width: 110px;
+  height: auto;
+  margin-left: 50px;
+  margin-top: 25px;
 }
