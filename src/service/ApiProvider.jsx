@@ -64,117 +64,12 @@ export const ApiProvider = ({ children }) => {
 
   // Specific API service functions
 
+  // Event API calls
   const fetchEvent = async (eventId) => {
     try {
       return await makeApiCall("get", `/api/events/${eventId}`);
     } catch (error) {
       console.error("Error fetching event:", error);
-    }
-  };
-
-  const fetchTicket = async (barcode) => {
-    try {
-      const ticketData = await makeApiCall(
-        "get",
-        `/api/tickets/barcode/${barcode}`
-      );
-      return ticketData;
-    } catch (error) {
-      console.error("Error fetching ticket:", error);
-    }
-  };
-
-  const fetchTickets = async (ticketIds) => {
-    try {
-      return await makeApiCall("get", `/api/tickets`, {}, { ids: ticketIds });
-    } catch (error) {
-      console.error("Error fetching tickets:", error);
-    }
-  };
-
-  const fetchTicketType = async (ticketTypeId) => {
-    try {
-      return await makeApiCall("get", `/api/tickettypes/${ticketTypeId}`);
-    } catch (error) {
-      console.error("Error fetching ticket type:", error);
-    }
-  };
-
-  const addTicketType = async (ticketType) => {
-    try {
-      await makeApiCall("post", "/api/tickettypes", ticketType);
-    } catch (error) {
-      console.error("Error posting ticket type: ", error);
-    }
-  };
-
-  const updateTicketType = async (id, ticketType) => {
-    try {
-      await makeApiCall("put", `api/tickettypes/${id}`, ticketType);
-    } catch (error) {
-      console.error("Error updating ticket type: ", error);
-    }
-  };
-
-  const deleteTicketType = async (id) => {
-    try {
-      await makeApiCall("delete", `api/tickettypes/${id}`);
-    } catch (error) {
-      console.error("Error deleting ticket ytpe: ", error);
-    }
-  };
-
-  const fetchExampleTicket = async () => {
-    try {
-      const tickets = await makeApiCall("get", "/api/tickets");
-      return tickets[0]; // Return the first ticket
-    } catch (error) {
-      console.error("Error fetching example ticket:", error);
-    }
-  };
-
-  const consumeTicket = async (barcode) => {
-    try {
-      return await makeApiCall("put", `/api/tickets/use/${barcode}`);
-    } catch (error) {
-      console.error("Error consuming ticket:", error);
-    }
-  };
-
-  const releaseTicket = async (barcode) => {
-    try {
-      return await makeApiCall("put", `/api/tickets/use/${barcode}?used=false`);
-    } catch (error) {
-      console.error("Error releasing ticket:", error);
-    }
-  };
-
-  const postBasketItems = async (basket) => {
-    console.log("Posting basket items:", basket);
-    try {
-      const ticketItems = basket.flatMap((item) => ({
-        ticketTypeId: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      }));
-      return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
-    } catch (error) {
-      console.error("Error posting basket items:", error);
-    }
-  };
-
-  const fetchTicketTypes = async (params) => {
-    try {
-      const ticketTypes = await makeApiCall(
-        "get",
-        "/api/tickettypes/search",
-        {},
-        params
-      );
-      console.log("Ticket types:", ticketTypes);
-      return ticketTypes;
-    } catch (error) {
-      console.error("Error fetching ticket types:", error);
     }
   };
 
@@ -218,6 +113,63 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  // Ticket type API calls
+  const fetchTicketType = async (ticketTypeId) => {
+    try {
+      return await makeApiCall("get", `/api/tickettypes/${ticketTypeId}`);
+    } catch (error) {
+      console.error("Error fetching ticket type:", error);
+    }
+  };
+
+  const fetchTicketTypes = async (params) => {
+    try {
+      const ticketTypes = await makeApiCall(
+        "get",
+        "/api/tickettypes/search",
+        {},
+        params
+      );
+      console.log("Ticket types:", ticketTypes);
+      return ticketTypes;
+    } catch (error) {
+      console.error("Error fetching ticket types:", error);
+    }
+  };
+
+  const addTicketType = async (ticketType) => {
+    try {
+      await makeApiCall("post", "/api/tickettypes", ticketType);
+    } catch (error) {
+      console.error("Error posting ticket type: ", error);
+    }
+  };
+
+  const updateTicketType = async (id, ticketType) => {
+    try {
+      await makeApiCall("put", `api/tickettypes/${id}`, ticketType);
+    } catch (error) {
+      console.error("Error updating ticket type: ", error);
+    }
+  };
+
+  const deleteTicketType = async (id) => {
+    try {
+      await makeApiCall("delete", `api/tickettypes/${id}`);
+    } catch (error) {
+      console.error("Error deleting ticket ytpe: ", error);
+    }
+  };
+
+  // Venue API calls
+  const fetchVenue = async (venueId) => {
+    try {
+      return await makeApiCall("get", `/api/venues/${venueId}`);
+    } catch (error) {
+      console.error("Error fetching venues:", error);
+    }
+  };
+
   const fetchVenues = async (forceRefresh = false) => {
     if (!venues || forceRefresh) {
       try {
@@ -231,14 +183,67 @@ export const ApiProvider = ({ children }) => {
     return venues;
   };
 
-  const fetchVenue = async (venueId) => {
+  // Ticket API calls
+  const fetchTicket = async (barcode) => {
     try {
-      return await makeApiCall("get", `/api/venues/${venueId}`);
+      const ticketData = await makeApiCall(
+        "get",
+        `/api/tickets/barcode/${barcode}`
+      );
+      return ticketData;
     } catch (error) {
-      console.error("Error fetching venues:", error);
+      console.error("Error fetching ticket:", error);
     }
   };
 
+  const fetchExampleTicket = async () => {
+    try {
+      const tickets = await makeApiCall("get", "/api/tickets");
+      return tickets[0]; // Return the first ticket
+    } catch (error) {
+      console.error("Error fetching example ticket:", error);
+    }
+  };
+
+  const fetchTickets = async (ticketIds) => {
+    try {
+      return await makeApiCall("get", `/api/tickets`, {}, { ids: ticketIds });
+    } catch (error) {
+      console.error("Error fetching tickets:", error);
+    }
+  };
+
+  const consumeTicket = async (barcode) => {
+    try {
+      return await makeApiCall("put", `/api/tickets/use/${barcode}`);
+    } catch (error) {
+      console.error("Error consuming ticket:", error);
+    }
+  };
+
+  const releaseTicket = async (barcode) => {
+    try {
+      return await makeApiCall("put", `/api/tickets/use/${barcode}?used=false`);
+    } catch (error) {
+      console.error("Error releasing ticket:", error);
+    }
+  };
+
+  const postBasketItems = async (basket) => {
+    console.log("Posting basket items:", basket);
+    try {
+      const ticketItems = basket.flatMap((item) => ({
+        ticketTypeId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
+    } catch (error) {
+      console.error("Error posting basket items:", error);
+    }
+  };
+
+  // Login API calls
   const login = async (email, password) => {
     console.log("Using the ApiProvider's Login", email, password);
     const authToken = btoa(`${email}:${password}`); // Encode credentials for Basic Auth
@@ -301,26 +306,37 @@ export const ApiProvider = ({ children }) => {
   return (
     <ApiContext.Provider
       value={{
+        // Error
         errorMessage,
         clearErrorMessage,
-        fetchExampleTicket,
-        fetchTicket,
-        fetchTickets,
+
+        // Event API calls
         fetchEvent,
         fetchEvents,
         addEvent,
         updateEvent,
         deleteEvent,
+
+        // Ticket type API calls
         fetchTicketType,
+        fetchTicketTypes,
         addTicketType,
         updateTicketType,
         deleteTicketType,
+
+        // Venue API calls
+        fetchVenue,
+        fetchVenues,
+
+        // Ticket API cals
+        fetchTicket,
+        fetchExampleTicket,
+        fetchTickets,
         consumeTicket,
         releaseTicket,
         postBasketItems,
-        fetchTicketTypes,
-        fetchVenues,
-        fetchVenue,
+
+        // Login
         login,
         logout,
       }}>
