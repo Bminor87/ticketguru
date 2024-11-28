@@ -3,6 +3,7 @@ import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 import AddEvent from "./AddEvent";
 import EditEvent from "./EditEvent";
+import DeleteEvent from "./DeleteEvent";
 
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -45,6 +46,13 @@ export default function Events() {
       headerName: "",
       cellRenderer: (params) => (
         <EditEvent currentEvent={params.data} getEvents={getEvents} />
+      ),
+    },
+    {
+      field: "id",
+      headerName: "",
+      cellRenderer: (params) => (
+        <DeleteEvent currentEventId={params.data.id} getEvents={getEvents} />
       ),
     },
   ]);
