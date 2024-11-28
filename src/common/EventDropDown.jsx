@@ -19,7 +19,10 @@ export default function EventDropDown({
 
     // Filter and map events where endsAt > now
     const filteredOptions = events
-      ?.filter((event) => new Date(event.endsAt) > now) // Filter events
+      ?.filter(
+        (event) =>
+          new Date(event.endsAt) > now && new Date(event.ticketSaleBegins) < now
+      ) // Filter events
       .map((event) => ({
         id: event.id,
         label: event.name,
