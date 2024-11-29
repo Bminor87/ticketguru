@@ -3,7 +3,6 @@ import { TextField, DialogContent, Stack } from "@mui/material";
 export default function TicketTypeDialog({ ticketType, handleChange }) {
   return (
     <div>
-      <p>{ticketType.id}</p>
       <DialogContent>
         <Stack spacing={2} width={500}>
           <TextField
