@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import EventDialog from "./EventDialog";
 
 export default function AddEvent({ getEvents }) {
@@ -47,7 +48,7 @@ export default function AddEvent({ getEvents }) {
 
   return (
     <div>
-      <Button onClick={handleOpen}>Add event</Button>
+      <Button onClick={handleOpen} startIcon={<AddIcon />}>Add event</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a new event</DialogTitle>
         <EventDialog event={event} handleChange={handleChange} />
