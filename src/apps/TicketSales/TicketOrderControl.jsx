@@ -113,7 +113,7 @@ export default function TicketOrderControl({
               {selectedTicketType.name} - {selectedTicketType.retailPrice} €
             </Typography>
             <Typography variant="body2" gutterBottom>
-              {selectedTicketType.totalAvailable} tickets available
+              {selectedTicketType.availableTickets} tickets available
             </Typography>
             <Stack direction="row" spacing={2} sx={{ my: 2 }}>
               <TextField

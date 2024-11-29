@@ -42,7 +42,7 @@ export default function EventControl({ selectedEvent, venues }) {
       {/* Event Times */}
       <Box sx={{ p: 2 }}>
         <Typography gutterBottom variant="h6" color="success">
-          {selectedEvent.totalTickets || "0"} tickets available
+          Total tickets: {selectedEvent.totalTickets || "0"}
         </Typography>
         <p>&nbsp;</p>
         <Stack direction="column" spacing={1}>
