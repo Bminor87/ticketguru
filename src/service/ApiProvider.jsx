@@ -280,6 +280,46 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  // Sales API calls
+
+  const fetchSales = async () => {
+    try {
+      return await makeApiCall("get", "/api/sales");
+    } catch (error) {
+      console.error("Error fetching sales:", error);
+    }
+  };
+
+  const fetchSale = async (saleId) => {
+    try {
+      return await makeApiCall("get", `/api/sales/${saleId}`);
+    } catch (error) {
+      console.error("Error fetching sale:", error);
+    }
+  };
+
+  const fetchReport = async () => {
+    try {
+      return await makeApiCall("get", "/api/sales/report");
+    } catch (error) {
+      console.error("Error fetching report:", error);
+    }
+  };
+
+  const postBasketItems = async (basket) => {
+    console.log("Posting basket items:", basket);
+    try {
+      const ticketItems = basket.flatMap((item) => ({
+        ticketTypeId: item.id,
+        quantity: item.quantity,
+        price: item.price,
+      }));
+      return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
+    } catch (error) {
+      console.error("Error posting basket items:", error);
+    }
+  };
+
   // Ticket API calls
   const fetchTicket = async (barcode) => {
     try {
@@ -326,20 +366,6 @@ export const ApiProvider = ({ children }) => {
       return await makeApiCall("put", `/api/tickets/use/${barcode}?used=false`);
     } catch (error) {
       console.error("Error releasing ticket:", error);
-    }
-  };
-
-  const postBasketItems = async (basket) => {
-    console.log("Posting basket items:", basket);
-    try {
-      const ticketItems = basket.flatMap((item) => ({
-        ticketTypeId: item.id,
-        quantity: item.quantity,
-        price: item.price,
-      }));
-      return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
-    } catch (error) {
-      console.error("Error posting basket items:", error);
     }
   };
 
@@ -446,6 +472,11 @@ export const ApiProvider = ({ children }) => {
         fetchTickets,
         consumeTicket,
         releaseTicket,
+
+        // Sales API calls
+        fetchSales,
+        fetchSale,
+        fetchReport,
         postBasketItems,
 
         // Login
