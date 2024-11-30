@@ -1,58 +1,30 @@
 import React, { useState } from "react";
-import { useApiService } from "../../service/ApiProvider";
-import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
+import { Button } from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
-import UserDialog from "./UserDialog";
+import UserFormDialog from "./UserFormDialog";
+import { useApiService } from "../../service/ApiProvider";
 
-export default function EditUsers({ currentUser, getUsers }) {
-  const [user, setUser] = useState(currentUser);
+export default function EditUsers({ currentUser, getUsers, roles }) {
   const [open, setOpen] = useState(false);
-  const { updateUser, fetchRoles } = useApiService();
-  const [roles, setRoles] = useState([]);
+  const { updateUser } = useApiService();
 
-  const handleOpen = async () => {
-    const fetchedRoles = await fetchRoles();
-    setRoles(fetchedRoles);
-    setOpen(true);
-  };
-
-  const handleChange = (e) => {
-    setUser({ ...user, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleChange = (event) => {
-    setUser({
-      ...user,
-      role: roles.find((role) => role.id === event.target.value),
-    });
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
-
-  const handleSave = async () => {
-    await updateUser(user.id, user);
-    await getUsers();
-    handleClose();
+  const handleEditUser = async (updatedUser) => {
+    await updateUser(updatedUser.id, updatedUser);
+    getUsers(true);
   };
 
   return (
     <div>
-      <Button onClick={handleOpen} startIcon={<EditIcon />}></Button>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Edit User</DialogTitle>
-        <UserDialog
-          user={user}
+      <Button onClick={() => setOpen(true)} startIcon={<EditIcon />}></Button>
+      {open && (
+        <UserFormDialog
+          mode="edit"
+          currentUser={currentUser}
           roles={roles}
-          handleChange={handleChange}
-          handleRoleChange={handleRoleChange}
+          onSave={handleEditUser}
+          onClose={() => setOpen(false)}
         />
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
-        </DialogActions>
-      </Dialog>
+      )}
     </div>
   );
 }

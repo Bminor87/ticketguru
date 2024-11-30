@@ -1,77 +1,30 @@
 import React, { useState } from "react";
-import { Dialog, DialogTitle, DialogActions, Button } from "@mui/material";
-import UserDialog from "./UserDialog";
+import { Button } from "@mui/material";
+import UserFormDialog from "./UserFormDialog";
 import { useApiService } from "../../service/ApiProvider";
 
 export default function AddUser({ getUsers, roles }) {
   const [open, setOpen] = useState(false);
-  const [newUser, setNewUser] = useState({
-    email: "",
-    firstName: "",
-    lastName: "",
-    password: "",
-    confirmPassword: "",
-    role: { id: 1 },
-  });
   const { addUser } = useApiService();
 
-  const handleOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-    setNewUser({
-      email: "",
-      firstName: "",
-      lastName: "",
-      password: "",
-      confirmPassword: "",
-      role: { id: 1 },
-    });
-  };
-
-  const handleChange = (e) => {
-    setNewUser({ ...newUser, [e.target.name]: e.target.value });
-  };
-
-  const handleRoleChange = (event) => {
-    setNewUser({
-      ...newUser,
-      role: roles.find((role) => role.id === event.target.value),
-    });
-  };
-
-  const handleAddUser = async () => {
-    try {
-      await addUser(newUser);
-      getUsers();
-      handleClose();
-    } catch (error) {
-      console.error(error);
-    }
+  const handleAddUser = async (newUser) => {
+    await addUser(newUser);
+    getUsers(true);
   };
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={handleOpen}>
+      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
         Add User
       </Button>
-      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
-        <DialogTitle>Add New User</DialogTitle>
-        <UserDialog
-          user={newUser}
+      {open && (
+        <UserFormDialog
+          mode="add"
           roles={roles}
-          handleChange={handleChange}
-          handleRoleChange={handleRoleChange}
+          onSave={handleAddUser}
+          onClose={() => setOpen(false)}
         />
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleAddUser} variant="contained" color="primary">
-            Add
-          </Button>
-        </DialogActions>
-      </Dialog>
+      )}
     </div>
   );
 }

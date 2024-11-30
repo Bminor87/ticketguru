@@ -33,7 +33,11 @@ export default function Users() {
       resizable: false,
       width: 70,
       cellRenderer: (params) => (
-        <EditUsers currentUser={params.data} getUsers={getUsers} />
+        <EditUsers
+          currentUser={params.data}
+          roles={roles}
+          getUsers={getUsers}
+        />
       ),
     },
     {
@@ -81,9 +85,9 @@ export default function Users() {
     params.api.sizeColumnsToFit();
   };
 
-  const getUsers = async () => {
+  const getUsers = async (forceRefresh = false) => {
     try {
-      const fetchedUsers = await fetchUsers();
+      const fetchedUsers = await fetchUsers(forceRefresh);
       setUsers(fetchedUsers);
     } catch (error) {
       console.error(error);
