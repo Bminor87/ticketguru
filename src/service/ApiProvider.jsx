@@ -330,7 +330,7 @@ export const ApiProvider = ({ children }) => {
       }));
       return await makeApiCall("post", "/api/sales/confirm", { ticketItems });
     } catch (error) {
-      console.error("Error posting basket items:", error);
+      throw error;
     }
   };
 

@@ -2,6 +2,7 @@ import React, { useState, useMemo, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Button } from "@mui/material";
 import { Add, DeleteForever, Remove } from "@mui/icons-material";
+import PopupMessage from "../../common/PopupMessage";
 
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-material.css";
@@ -21,6 +22,7 @@ export default function Basket({
   const { postBasketItems } = useApiService();
 
   const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [popup, setPopup] = useState({ open: false, message: "", title: "" });
 
   const defaultColumnDefs = {
     sortable: true,
@@ -110,7 +112,15 @@ export default function Basket({
   }, []);
 
   const handleConfirmSale = async () => {
-    if (!basket || basket.length === 0) return;
+    if (!basket || basket.length === 0) {
+      setPopup({
+        title: "Empty basket",
+        message: "Basket is empty",
+        open: true,
+      });
+      return;
+    }
+
     try {
       const response = await postBasketItems(basket);
       if (response) {
@@ -120,6 +130,20 @@ export default function Basket({
         setSelectedTicketTypeId(0);
       }
     } catch (error) {
+      let errorMessage = "An error occurred. Please try again.";
+      if (error.response && error.response.status === 422) {
+        // Handle specific 422 errors
+        errorMessage =
+          error.response.data?.message ||
+          "Some items in the basket are no longer available.";
+      }
+
+      setPopup({
+        title: "Error",
+        message: errorMessage,
+        open: true,
+      });
+
       console.error("Error posting basket: ", error);
     }
   };
@@ -153,6 +177,15 @@ export default function Basket({
           onFirstDataRendered={(params) => params.api.sizeColumnsToFit()}
         />
       </div>
+
+      <PopupMessage
+        opened={popup.open}
+        title={popup.title}
+        message={popup.message}
+        handleClose={() => {
+          setPopup({ title: "", message: "", open: false });
+        }}
+      />
 
       <div className="mt-4 flex justify-between items-center border-t border-gray-200 pt-4">
         <p className="text-lg font-bold">
