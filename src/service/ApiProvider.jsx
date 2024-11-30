@@ -228,6 +228,58 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  // User API calls
+  const fetchUser = async (userId) => {
+    try {
+      return await makeApiCall("get", `/api/users/${userId}`);
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      return await makeApiCall("get", "/api/users");
+    } catch (error) {
+      console.error("Error fetching users:", error);
+    }
+  };
+
+  const addUser = async (user) => {
+    try {
+      await makeApiCall("post", "api/users", user);
+      fetchUsers(); // Refresh
+    } catch (error) {
+      console.error("Error posting user: ", error);
+    }
+  };
+
+  const updateUser = async (id, user) => {
+    try {
+      await makeApiCall("put", `api/users/${id}`, user);
+      fetchUsers(); // Refresh
+    } catch (error) {
+      console.error("Error updating user: ", error);
+    }
+  };
+
+  const deleteUser = async (id) => {
+    try {
+      await makeApiCall("delete", `api/users/${id}`);
+      fetchUsers(); // Refresh
+    } catch (error) {
+      console.error("Error deleting user: ", error);
+    }
+  };
+
+  const fetchRoles = async () => {
+    try {
+      return await makeApiCall("get", "/api/roles");
+    } catch (error) {
+      console.error("Error fetching roles:", error);
+    }
+  };
+
   // Ticket API calls
   const fetchTicket = async (barcode) => {
     try {
@@ -379,6 +431,14 @@ export const ApiProvider = ({ children }) => {
         addVenue,
         updateVenue,
         deleteVenue,
+
+        // User API calls
+        fetchUser,
+        fetchUsers,
+        addUser,
+        updateUser,
+        deleteUser,
+        fetchRoles,
 
         // Ticket API cals
         fetchTicket,
