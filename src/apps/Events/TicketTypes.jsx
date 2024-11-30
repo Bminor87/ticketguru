@@ -73,16 +73,6 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
     { field: "retailPrice", headerName: "Retail price €", flex: 1 },
     { field: "totalTickets", headerName: "Total tickets", flex: 1 },
     {
-      field: "beginsAt",
-      headerName: "Begins",
-      valueFormatter: (params) => formatDateTime(params.value),
-    },
-    {
-      field: "endsAt",
-      headerName: "Ends",
-      valueFormatter: (params) => formatDateTime(params.value),
-    },
-    {
       field: "id",
       headerName: "",
       sortable: false,
