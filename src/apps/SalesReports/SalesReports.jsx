@@ -56,15 +56,53 @@ export default function SalesReports() {
         });
 
         setReportData(
-          sortedReport.map((row) => ({
-            eventName: findEvent(row.eventId, events)?.name || "Unknown Event",
-            ticketTypeName:
+          sortedReport.reduce((acc, row, index, array) => {
+            const eventName =
+              findEvent(row.eventId, events)?.name || "Unknown Event";
+            const ticketTypeName =
               findTicketType(row.ticketTypeId, ticketTypes)?.name ||
-              "Unknown Ticket Type",
-            ticketsSold: row.ticketsSold,
-            ticketsTotal: row.ticketsTotal,
-            totalRevenue: row.totalRevenue.toFixed(2),
-          }))
+              "Unknown Ticket Type";
+
+            acc.push({
+              eventName,
+              ticketTypeName,
+              ticketsSold: row.ticketsSold,
+              ticketsTotal: row.ticketsTotal,
+              totalRevenue: row.totalRevenue.toFixed(2),
+              isTotalRow: false,
+            });
+
+            const isLastRowForEvent =
+              index === array.length - 1 ||
+              row.eventId !== array[index + 1].eventId;
+
+            if (isLastRowForEvent) {
+              const eventRows = array.filter((r) => r.eventId === row.eventId);
+              const eventTicketsSold = eventRows.reduce(
+                (sum, r) => sum + r.ticketsSold,
+                0
+              );
+              const eventTicketsTotal = eventRows.reduce(
+                (sum, r) => sum + r.ticketsTotal,
+                0
+              );
+              const eventTotalRevenue = eventRows.reduce(
+                (sum, r) => sum + r.totalRevenue,
+                0
+              );
+
+              acc.push({
+                eventName,
+                ticketTypeName: "Total",
+                ticketsSold: eventTicketsSold,
+                ticketsTotal: eventTicketsTotal,
+                totalRevenue: eventTotalRevenue.toFixed(2),
+                isTotalRow: true,
+              });
+            }
+
+            return acc;
+          }, [])
         );
 
         console.log("Report data loaded:", reportData);
@@ -144,6 +182,11 @@ export default function SalesReports() {
               filter: true,
             }}
             animateRows={true}
+            getRowStyle={(params) => {
+              if (params.data.isTotalRow) {
+                return { fontWeight: "bold", backgroundColor: "#2244cc44" };
+              }
+            }}
           />
         </div>
       </div>
