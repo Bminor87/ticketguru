@@ -20,6 +20,13 @@ export default function EditUsers({ currentUser, getUsers }) {
     setUser({ ...user, [e.target.name]: e.target.value });
   };
 
+  const handleRoleChange = (event) => {
+    setUser({
+      ...user,
+      role: roles.find((role) => role.id === event.target.value),
+    });
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -35,7 +42,12 @@ export default function EditUsers({ currentUser, getUsers }) {
       <Button onClick={handleOpen} startIcon={<EditIcon />}></Button>
       <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Edit User</DialogTitle>
-        <UserDialog user={user} roles={roles} handleChange={handleChange} />
+        <UserDialog
+          user={user}
+          roles={roles}
+          handleChange={handleChange}
+          handleRoleChange={handleRoleChange}
+        />
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleSave}>Save</Button>

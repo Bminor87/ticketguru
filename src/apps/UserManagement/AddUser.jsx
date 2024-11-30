@@ -9,7 +9,9 @@ export default function AddUser({ getUsers, roles }) {
     email: "",
     firstName: "",
     lastName: "",
-    role: null,
+    password: "",
+    confirmPassword: "",
+    role: { id: 1 },
   });
   const { addUser } = useApiService();
 
@@ -19,15 +21,25 @@ export default function AddUser({ getUsers, roles }) {
 
   const handleClose = () => {
     setOpen(false);
-    setNewUser({ email: "", firstName: "", lastName: "", role: null });
+    setNewUser({
+      email: "",
+      firstName: "",
+      lastName: "",
+      password: "",
+      confirmPassword: "",
+      role: { id: 1 },
+    });
   };
 
   const handleChange = (e) => {
     setNewUser({ ...newUser, [e.target.name]: e.target.value });
   };
 
-  const handleRoleChange = (role) => {
-    setNewUser({ ...newUser, role });
+  const handleRoleChange = (event) => {
+    setNewUser({
+      ...newUser,
+      role: roles.find((role) => role.id === event.target.value),
+    });
   };
 
   const handleAddUser = async () => {

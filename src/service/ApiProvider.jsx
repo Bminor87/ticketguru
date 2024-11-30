@@ -247,6 +247,7 @@ export const ApiProvider = ({ children }) => {
 
   const addUser = async (user) => {
     try {
+      user.roleId = user.role?.id; // Convert role object to roleId
       await makeApiCall("post", "api/users", user);
       fetchUsers(); // Refresh
     } catch (error) {
@@ -256,6 +257,7 @@ export const ApiProvider = ({ children }) => {
 
   const updateUser = async (id, user) => {
     try {
+      user.roleId = user.role?.id; // Convert role object to roleId
       await makeApiCall("put", `api/users/${id}`, user);
       fetchUsers(); // Refresh
     } catch (error) {

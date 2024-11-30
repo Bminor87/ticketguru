@@ -13,6 +13,7 @@ export default function UserDialog({
   user,
   roles,
   handleChange,
+  handleRoleChange,
   handlePasswordChange, // Separate handler for passwords
   isNewUser = false, // Distinguish between creating and editing
 }) {
@@ -50,18 +51,11 @@ export default function UserDialog({
             <Select
               labelId="role-label"
               name="role"
-              value={user.role?.title || ""}
-              onChange={(e) =>
-                handleChange({
-                  target: {
-                    name: "role",
-                    value: roles.find((r) => r.title === e.target.value),
-                  },
-                })
-              }
+              value={user.role?.id || ""}
+              onChange={handleRoleChange}
             >
               {roles.map((role) => (
-                <MenuItem key={role.title} value={role.title}>
+                <MenuItem key={role.id} value={role.id}>
                   {role.title}
                 </MenuItem>
               ))}
@@ -75,7 +69,7 @@ export default function UserDialog({
             label="Password"
             type="password"
             value={user.password || ""}
-            onChange={handlePasswordChange}
+            onChange={handleChange}
             fullWidth
           />
           <TextField
@@ -84,7 +78,7 @@ export default function UserDialog({
             label="Confirm Password"
             type="password"
             value={user.confirmPassword || ""}
-            onChange={handlePasswordChange}
+            onChange={handleChange}
             fullWidth
           />
         </Stack>
