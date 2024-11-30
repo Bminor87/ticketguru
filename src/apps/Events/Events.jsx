@@ -15,6 +15,7 @@ export default function Events() {
   const [events, setEvents] = useState([]);
   const [venues, setVenues] = useState([]);
   const { fetchEvents, fetchVenues } = useApiService();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
 
   const defaultColumnDefs = {
     filter: true,
@@ -24,6 +25,47 @@ export default function Events() {
   };
 
   const [columnDefs, setColumnDefs] = useState([
+    { field: "name", headerName: "Name" },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => (
+        <EditEvent currentEvent={params.data} getEvents={getEvents} />
+      ),
+    },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => (
+        <TicketTypes
+          currentEventId={params.data.id}
+          currentEventName={params.data.name}
+        />
+      ),
+    },
+    {
+      field: "id",
+      headerName: "",
+      sortable: false,
+      filter: false,
+      resizable: false,
+      width: 70,
+      cellRenderer: (params) => (
+        <DeleteEvent currentEventId={params.data.id} getEvents={getEvents} />
+      ),
+    },
+  ]);
+
+  // Full columns for larger screens
+  const fullColumns = [
     { field: "name", headerName: "Name" },
     { field: "description", headerName: "Description" },
     { field: "totalTickets", headerName: "Total tickets" },
@@ -51,7 +93,6 @@ export default function Events() {
         return venue?.name;
       },
     },
-
     {
       field: "id",
       headerName: "",
@@ -70,7 +111,12 @@ export default function Events() {
       filter: false,
       resizable: false,
       width: 70,
-      cellRenderer: (params) => <TicketTypes currentEventId={params.data.id} currentEventName={params.data.name}/>,
+      cellRenderer: (params) => (
+        <TicketTypes
+          currentEventId={params.data.id}
+          currentEventName={params.data.name}
+        />
+      ),
     },
     {
       field: "id",
@@ -83,7 +129,12 @@ export default function Events() {
         <DeleteEvent currentEventId={params.data.id} getEvents={getEvents} />
       ),
     },
-  ]);
+  ];
+
+  // Adjust visible columns based on screen size
+  useEffect(() => {
+    setColumnDefs(isMobile ? columnDefs : fullColumns);
+  }, [isMobile]);
 
   const autoSizeStrategy = {
     type: "fitGridWidth",
@@ -110,10 +161,17 @@ export default function Events() {
   };
 
   useEffect(() => {
+    // Responsiveness
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     // Fetch events and venues the first time the component mounts
     getEvents(false);
     getVenues();
-  }, []);
+  });
 
   return (
     <div>
@@ -122,13 +180,15 @@ export default function Events() {
         className={`ag-theme-material ${
           darkMode ? "ag-theme-material-dark" : ""
         }`}
-        style={{ height: "500px", width: "100%" }}>
+        style={{ height: "500px", width: "100%" }}
+      >
         <AgGridReact
           rowData={events}
           defaultColDef={defaultColumnDefs}
           columnDefs={columnDefs}
           autoSizeStrategy={autoSizeStrategy}
           context={{ venues }}
+          suppressHorizontalScroll={true} // Prevent horizontal scrolling
         />
       </div>
     </div>

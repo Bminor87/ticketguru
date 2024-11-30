@@ -8,6 +8,8 @@ import {
   InputLabel,
   FormControl,
   Stack,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import { DateTimePicker } from "@mui/x-date-pickers/DateTimePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -19,9 +21,11 @@ export default function EventDialog({ event, handleChange }) {
   const { fetchVenues } = useApiService();
   const [venues, setVenues] = useState([]);
 
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   const handleDateChange = (name, newValue) => {
     handleChange({
-      // Here we convert datetime object to ISO8601 string, so we can set it to the event state
       target: { name, value: newValue.toISOString() },
     });
   };
@@ -42,72 +46,73 @@ export default function EventDialog({ event, handleChange }) {
   return (
     <div>
       <DialogContent>
-        <Stack spacing={2} width={500}>
+        <Stack
+          spacing={2}
+          width={isMobile ? "100%" : 500} // Full-width on mobile
+        >
           <TextField
             autoFocus
             required
-            name='name'
-            label='Event name'
+            name="name"
+            label="Event name"
             value={event.name}
             onChange={handleChange}
+            fullWidth
           />
           <TextField
             required
-            name='description'
-            label='Event description'
+            name="description"
+            label="Event description"
             value={event.description}
             onChange={handleChange}
+            fullWidth
           />
           <TextField
             required
-            name='totalTickets'
-            label='Total tickets'
-            type='number'
+            name="totalTickets"
+            label="Total tickets"
+            type="number"
             value={event.totalTickets}
             onChange={handleChange}
+            fullWidth
           />
-          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale='fi'>
+          <LocalizationProvider dateAdapter={AdapterDayjs} adapterLocale="fi">
             <DateTimePicker
               required
-              name='beginsAt'
-              label='Event begin *'
-              value={
-                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
-                event.beginsAt ? dayjs(event.beginsAt) : null
-              }
+              name="beginsAt"
+              label="Event begin *"
+              value={event.beginsAt ? dayjs(event.beginsAt) : null}
               onChange={(newValue) => handleDateChange("beginsAt", newValue)}
+              fullWidth
             />
             <DateTimePicker
               required
-              name='endsAt'
-              label='Event end *'
-              value={
-                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
-                event.endsAt ? dayjs(event.endsAt) : null
-              }
+              name="endsAt"
+              label="Event end *"
+              value={event.endsAt ? dayjs(event.endsAt) : null}
               onChange={(newValue) => handleDateChange("endsAt", newValue)}
+              fullWidth
             />
             <DateTimePicker
-              name='ticketSaleBegins'
-              label='Ticket sale begin'
+              name="ticketSaleBegins"
+              label="Ticket sale begin"
               value={
-                // Here we convert ISO8601 string to datetime object, so we can place it to MUI datetime picker
                 event.ticketSaleBegins ? dayjs(event.ticketSaleBegins) : null
               }
               onChange={(newValue) =>
                 handleDateChange("ticketSaleBegins", newValue)
               }
+              fullWidth
             />
           </LocalizationProvider>
-          <FormControl fullWidth variant='standard' required>
-            <InputLabel id='venue'>Venue</InputLabel>
+          <FormControl fullWidth required>
+            <InputLabel id="venue">Venue</InputLabel>
             <Select
-              labelId='venueId'
-              name='venueId'
+              labelId="venueId"
+              name="venueId"
               value={event.venueId}
-              onChange={handleChange}>
-              {/*This map function lists all venues a dropdown menu */}
-              {/*This way we can select a venue directly from the list */}
+              onChange={handleChange}
+            >
               {venues.map((venue) => (
                 <MenuItem key={venue.id} value={venue.id}>
                   {venue.name}

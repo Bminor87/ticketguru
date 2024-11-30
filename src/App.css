@@ -110,3 +110,12 @@
   margin-left: 50px;
   margin-top: 25px;
 }
+
+.ag-theme-material .ag-header-cell,
+.ag-theme-material .ag-cell {
+  font-size: 14px; /* Adjust font size for readability */
+}
+
+.ag-theme-material .ag-header-cell-label {
+  white-space: normal; /* Allow wrapping for long column headers */
+}

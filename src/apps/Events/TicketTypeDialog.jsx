@@ -1,10 +1,22 @@
-import { TextField, DialogContent, Stack } from "@mui/material";
+import {
+  TextField,
+  DialogContent,
+  Stack,
+  useMediaQuery,
+  useTheme,
+} from "@mui/material";
 
 export default function TicketTypeDialog({ ticketType, handleChange }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   return (
     <div>
       <DialogContent>
-        <Stack spacing={2} width={500}>
+        <Stack
+          spacing={2}
+          width={isMobile ? "100%" : 500} // Adjust width for mobile
+        >
           <TextField
             autoFocus
             required
@@ -12,6 +24,7 @@ export default function TicketTypeDialog({ ticketType, handleChange }) {
             label="Ticket type name"
             value={ticketType.name || ""}
             onChange={handleChange}
+            fullWidth // Ensure full width on all screens
           />
           <TextField
             required
@@ -20,6 +33,7 @@ export default function TicketTypeDialog({ ticketType, handleChange }) {
             type="number"
             value={ticketType.retailPrice || ""}
             onChange={handleChange}
+            fullWidth
           />
           <TextField
             name="totalTickets"
@@ -27,6 +41,7 @@ export default function TicketTypeDialog({ ticketType, handleChange }) {
             type="number"
             value={ticketType.totalTickets || ""}
             onChange={handleChange}
+            fullWidth
           />
         </Stack>
       </DialogContent>
