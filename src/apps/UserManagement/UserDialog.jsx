@@ -14,9 +14,39 @@ export default function UserDialog({
   roles,
   handleChange,
   handleRoleChange,
-  handlePasswordChange, // Separate handler for passwords
+  validationErrors,
+  setValidationErrors,
   isNewUser = false, // Distinguish between creating and editing
 }) {
+  const handlePasswordChange = (e) => {
+    const { name, value } = e.target;
+
+    // Update the user object
+    handleChange(e);
+
+    // Check if passwords match
+    const newErrors = validationErrors.filter(
+      (error) => error.id !== "passwords-match"
+    );
+
+    if (name === "password" || name === "confirmPassword") {
+      if (name === "password") {
+        user.password = value; // Ensure the user object updates immediately
+      } else {
+        user.confirmPassword = value;
+      }
+
+      if (user.password !== user.confirmPassword) {
+        newErrors.push({
+          id: "passwords-match",
+          message: "Passwords do not match",
+        });
+      }
+    }
+
+    setValidationErrors(newErrors);
+  };
+
   return (
     <div>
       <DialogContent>
@@ -25,6 +55,7 @@ export default function UserDialog({
             autoFocus
             required
             name="email"
+            type="email"
             label="Email"
             value={user.email || ""}
             onChange={handleChange}
@@ -54,7 +85,7 @@ export default function UserDialog({
               value={user.role?.id || ""}
               onChange={handleRoleChange}
             >
-              {roles.map((role) => (
+              {roles?.map((role) => (
                 <MenuItem key={role.id} value={role.id}>
                   {role.title}
                 </MenuItem>
@@ -69,7 +100,7 @@ export default function UserDialog({
             label="Password"
             type="password"
             value={user.password || ""}
-            onChange={handleChange}
+            onChange={handlePasswordChange}
             fullWidth
           />
           <TextField
@@ -78,7 +109,7 @@ export default function UserDialog({
             label="Confirm Password"
             type="password"
             value={user.confirmPassword || ""}
-            onChange={handleChange}
+            onChange={handlePasswordChange}
             fullWidth
           />
         </Stack>

@@ -11,6 +11,8 @@ export const ApiProvider = ({ children }) => {
   const [events, setEvents] = useState(null); // State for events
   const [venues, setVenues] = useState(null); // State for venues
   const [ticketTypes, setTicketTypes] = useState(null); // State for ticket types
+  const [users, setUsers] = useState(null); // State for users
+  const [roles, setRoles] = useState(null); // State for roles
 
   useEffect(() => {
     const setAuthHeader = () => {
@@ -237,19 +239,24 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      return await makeApiCall("get", "/api/users");
-    } catch (error) {
-      console.error("Error fetching users:", error);
+  const fetchUsers = async (forceRefresh = false) => {
+    if (!users || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/users");
+        setUsers(data); // Cache users
+        return data;
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
     }
+    return users;
   };
 
   const addUser = async (user) => {
     try {
       user.roleId = user.role?.id; // Convert role object to roleId
       await makeApiCall("post", "api/users", user);
-      fetchUsers(); // Refresh
+      fetchUsers(true); // Refresh
     } catch (error) {
       console.error("Error posting user: ", error);
     }
@@ -259,7 +266,7 @@ export const ApiProvider = ({ children }) => {
     try {
       user.roleId = user.role?.id; // Convert role object to roleId
       await makeApiCall("put", `api/users/${id}`, user);
-      fetchUsers(); // Refresh
+      fetchUsers(true); // Refresh
     } catch (error) {
       console.error("Error updating user: ", error);
     }
@@ -268,18 +275,23 @@ export const ApiProvider = ({ children }) => {
   const deleteUser = async (id) => {
     try {
       await makeApiCall("delete", `api/users/${id}`);
-      fetchUsers(); // Refresh
+      fetchUsers(true); // Refresh
     } catch (error) {
       console.error("Error deleting user: ", error);
     }
   };
 
-  const fetchRoles = async () => {
-    try {
-      return await makeApiCall("get", "/api/roles");
-    } catch (error) {
-      console.error("Error fetching roles:", error);
+  const fetchRoles = async (forceRefresh = false) => {
+    if (!roles || forceRefresh) {
+      try {
+        const data = await makeApiCall("get", "/api/roles");
+        setRoles(data); // Cache roles
+        return data;
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
     }
+    return roles;
   };
 
   // Sales API calls
@@ -489,6 +501,8 @@ export const ApiProvider = ({ children }) => {
         events,
         venues,
         ticketTypes,
+        users,
+        roles,
       }}
     >
       {children}
