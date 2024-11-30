@@ -24,7 +24,7 @@ export default function DeleteUser({ currentUserId, getUsers }) {
   const handleDelete = async () => {
     try {
       await deleteUser(currentUserId);
-      await getUsers();
+      await getUsers(true);
       handleClose();
     } catch (error) {
       console.error("Failed to delete user:", error);
