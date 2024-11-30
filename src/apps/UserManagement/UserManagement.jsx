@@ -6,11 +6,14 @@ import "ag-grid-community/styles/ag-theme-material.css";
 import EditUsers from "./EditUsers";
 import AddUser from "./AddUser";
 import DeleteUser from "./DeleteUser";
+import { useSettings } from "../../SettingsContext";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [roles, setRoles] = useState([]);
   const { fetchUsers, fetchRoles } = useApiService();
+
+  const { darkMode } = useSettings();
 
   const columnDefs = [
     { field: "email", headerName: "Email", minWidth: 200 },
@@ -107,7 +110,9 @@ export default function Users() {
         <AddUser getUsers={getUsers} roles={roles} />
       </div>
       <div
-        className="ag-theme-material"
+        className={`ag-theme-material ${
+          darkMode ? "ag-theme-material-dark" : ""
+        }`}
         style={{ height: "500px", width: "100%" }}
       >
         <AgGridReact
