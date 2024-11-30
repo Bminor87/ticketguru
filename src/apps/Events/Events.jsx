@@ -188,7 +188,7 @@ export default function Events() {
           columnDefs={columnDefs}
           autoSizeStrategy={autoSizeStrategy}
           context={{ venues }}
-          suppressHorizontalScroll={true} // Prevent horizontal scrolling
+          suppressHorizontalScroll={false} // Prevent horizontal scrolling
         />
       </div>
     </div>

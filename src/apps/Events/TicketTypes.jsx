@@ -17,7 +17,6 @@ import "ag-grid-community/styles/ag-theme-material.css";
 import AddTicketType from "./AddTicketType";
 import EditTicketType from "./EditTicketType";
 import DeleteTicketType from "./DeleteTicketType";
-import { formatDateTime } from "../../util/helperfunctions";
 
 export default function TicketTypes({ currentEventId, currentEventName }) {
   const { darkMode } = useSettings(); // Access darkMode and API URL from settings
@@ -71,7 +70,15 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
   const fullColumns = [
     { field: "name", headerName: "Ticket type", flex: 1 },
     { field: "retailPrice", headerName: "Retail price €", flex: 1 },
-    { field: "totalTickets", headerName: "Total tickets", flex: 1 },
+    {
+      field: "totalTickets",
+      headerName: "Total tickets",
+      valueFormatter: (params) => {
+        if (params.data.totalTickets == null) {
+          return "not limited";
+        }
+      },
+    },
     {
       field: "id",
       headerName: "",
@@ -161,7 +168,7 @@ export default function TicketTypes({ currentEventId, currentEventName }) {
               defaultColDef={defaultColumnDefs}
               columnDefs={columnDefs}
               domLayout={isMobile ? "autoHeight" : "normal"} // Adjust layout for mobile
-              suppressHorizontalScroll={true}
+              suppressHorizontalScroll={false}
             />
           </div>
         </DialogContent>
