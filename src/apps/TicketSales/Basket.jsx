@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { AgGridReact } from "ag-grid-react";
 import { Button } from "@mui/material";
 import { Add, DeleteForever, Remove } from "@mui/icons-material";
@@ -20,41 +20,94 @@ export default function Basket({
   const { darkMode } = useSettings(); // Access darkMode and API URL from settings
   const { postBasketItems } = useApiService();
 
-  const [columnDefs, setColumnDefs] = useState([
-    { field: "eventName", headerName: "Event Name" },
-    { field: "name", headerName: "Name", width: 120 },
-    { field: "price", headerName: "Price (€)", width: 100 },
-    { field: "quantity", headerName: "Quantity", width: 100 },
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+  const defaultColumnDefs = {
+    sortable: true,
+    resizable: true,
+    minWidth: 100,
+  };
+
+  const fullColumnDefs = [
+    { field: "eventName", headerName: "Event Name", minWidth: 150 },
+    { field: "name", headerName: "Type", minWidth: 120 },
+    { field: "price", headerName: "Price (€)", minWidth: 100, maxWidth: 120 },
+    { field: "quantity", headerName: "Quantity", minWidth: 100, maxWidth: 120 },
     {
       headerName: "Subtotal (€)",
-      width: 100,
+      minWidth: 120,
+      maxWidth: 150,
       valueGetter: (params) => params.data.price * params.data.quantity,
       valueFormatter: (params) => params.value.toFixed(2),
     },
     {
       headerName: "",
+      minWidth: 70,
+      maxWidth: 80,
       cellRenderer: (params) => (
-        <>
-          <Button color="primary" onClick={() => plusOneTicket(params.data)}>
-            <Add />
-          </Button>
-          <Button
-            color={params.data.quantity != 1 ? "primary" : "gray"}
-            onClick={() => minusOneTicket(params.data)}
-          >
-            <Remove />
-          </Button>
-          <Button color="error" onClick={() => removeFromBasket(params.data)}>
-            <DeleteForever />
-          </Button>
-        </>
+        <Button
+          color="primary"
+          onClick={() => plusOneTicket(params.data)}
+          style={{ minWidth: "40px" }}
+        >
+          <Add />
+        </Button>
       ),
     },
-  ]);
+    {
+      headerName: "",
+      minWidth: 70,
+      maxWidth: 80,
+      cellRenderer: (params) => (
+        <Button
+          color={params.data.quantity > 1 ? "primary" : "gray"}
+          onClick={() => minusOneTicket(params.data)}
+          style={{ minWidth: "40px" }}
+        >
+          <Remove />
+        </Button>
+      ),
+    },
+    {
+      headerName: "",
+      minWidth: 70,
+      maxWidth: 80,
+      cellRenderer: (params) => (
+        <Button
+          color="error"
+          onClick={() => removeFromBasket(params.data)}
+          style={{ minWidth: "40px" }}
+        >
+          <DeleteForever />
+        </Button>
+      ),
+    },
+  ];
 
-  const autoSizeStrategy = {
-    type: "fitGridWidth",
-  };
+  const mobileColumnDefs = [
+    { field: "eventName", headerName: "Event", maxWidth: 160 },
+    { field: "name", headerName: "Type", maxWidth: 100 },
+    { field: "quantity", headerName: "Q", maxWidth: 60 },
+    {
+      headerName: "",
+      maxWidth: 60,
+      cellRenderer: (params) => (
+        <Button
+          color="error"
+          onClick={() => removeFromBasket(params.data)}
+          style={{ minWidth: "40px" }}
+        >
+          <DeleteForever />
+        </Button>
+      ),
+    },
+  ];
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const handleConfirmSale = async () => {
     if (!basket || basket.length === 0) return;
@@ -82,21 +135,22 @@ export default function Basket({
   }, [basket]);
 
   return (
-    <div className="bg-transparent p-6 shadow-md rounded-lg">
+    <div className="bg-transparent shadow-md rounded-lg w-full">
       <h2 className="text-xl font-bold mb-4">Basket</h2>
 
       <div
         className={`ag-theme-material ${
           darkMode ? "ag-theme-material-dark" : ""
         }`}
-        style={{ height: "300px" }}
+        style={{ height: "300px", width: "100%" }}
       >
         <AgGridReact
           rowData={basket}
-          columnDefs={columnDefs}
+          columnDefs={isMobile ? mobileColumnDefs : fullColumnDefs}
+          defaultColDef={defaultColumnDefs}
           domLayout="autoHeight"
-          groupTotalRow={true}
-          autoSizeStrategy={autoSizeStrategy}
+          onGridSizeChanged={(params) => params.api.sizeColumnsToFit()}
+          onFirstDataRendered={(params) => params.api.sizeColumnsToFit()}
         />
       </div>
 
