@@ -23,6 +23,13 @@ export default function SalesReports() {
     { name: "Total Revenue", value: 0 },
   ]);
 
+  const currencyFormatter = (value) => {
+    return Number(value).toLocaleString("fi-FI", {
+      style: "currency",
+      currency: "EUR",
+    });
+  };
+
   const [reportData, setReportData] = useState([]);
 
   useEffect(() => {
@@ -43,8 +50,9 @@ export default function SalesReports() {
           { name: "Tickets Used", value: ticketsUsed },
           {
             name: "Total Revenue",
-            value:
-              tickets?.reduce((acc, t) => acc + t.price, 0).toFixed(2) + " €",
+            value: currencyFormatter(
+              tickets?.reduce((acc, t) => acc + t.price, 0).toFixed(2)
+            ),
           },
         ]);
 
@@ -127,10 +135,10 @@ export default function SalesReports() {
     { headerName: "Tickets Sold", field: "ticketsSold", sortable: true },
     { headerName: "Total Tickets", field: "ticketsTotal", sortable: true },
     {
-      headerName: "Revenue (€)",
+      headerName: "Revenue",
       field: "totalRevenue",
       sortable: true,
-      valueFormatter: (params) => `€${params.value}`,
+      valueFormatter: (params) => currencyFormatter(params.value),
     },
   ];
 
