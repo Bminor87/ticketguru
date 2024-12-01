@@ -171,8 +171,9 @@ export default function TicketScanner() {
   const handleBarcodeRead = async (event = null) => {
     console.log("Reading Barcode...", event, barcode);
     event?.preventDefault();
+    const currentBarcode = event?.barcode || barcode;
     setBarcodeLoading(true);
-    const response = await fetchTicketData(barcode);
+    const response = await fetchTicketData(currentBarcode);
     console.log("Ticket data fetched after reading barcode:", response);
     setBarcodeLoading(false);
     if (
@@ -200,6 +201,7 @@ export default function TicketScanner() {
           )}
           <BarcodeInput
             barcode={barcode}
+            setBarcode={setBarcode}
             handleChange={handleChange}
             handleSubmit={handleBarcodeRead}
             barcodeLoading={barcodeLoading}

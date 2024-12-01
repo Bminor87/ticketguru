@@ -3,6 +3,7 @@ import QrCodeScanner from "./QrCodeScanner";
 
 export default function BarcodeInput({
   barcode,
+  setBarcode,
   handleChange,
   handleSubmit,
   barcodeLoading,
@@ -19,8 +20,8 @@ export default function BarcodeInput({
   const handleScanSuccess = (decodedText, decodedResult) => {
     console.log(`Scan result: ${decodedText}`, decodedResult);
     setCameraOpen(false);
-    inputRef.current.value = decodedText;
-    handleSubmit();
+    setBarcode(decodedText);
+    handleSubmit({ preventDefault: () => {}, barcode: decodedText });
   };
 
   const handleScanError = (errorMessage) => {
