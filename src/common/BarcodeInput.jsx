@@ -8,7 +8,7 @@ export default function BarcodeInput({
   barcodeLoading,
 }) {
   const inputRef = useRef(null);
-  const [isCameraActive, setIsCameraActive] = useState(false);
+  const formRef = useRef(null);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -17,11 +17,11 @@ export default function BarcodeInput({
   const handleScanSuccess = (decodedText, decodedResult) => {
     console.log(`Scan result: ${decodedText}`, decodedResult);
     inputRef.current.value = decodedText;
+    formRef.current.dispatchEvent(new Event("submit"));
   };
 
   const handleScanError = (errorMessage) => {
-    console.error(`Scan error: ${errorMessage}`);
-    alert(`Scan error: ${errorMessage}`);
+    // Do nothing because the scanner will keep spitting messages as long as it can't read a QR code
   };
 
   return (
@@ -30,7 +30,11 @@ export default function BarcodeInput({
         onScanSuccess={handleScanSuccess}
         onScanError={handleScanError}
       />
-      <form className="sm:flex sm:items-center" onSubmit={handleSubmit}>
+      <form
+        ref={formRef}
+        className="sm:flex sm:items-center"
+        onSubmit={handleSubmit}
+      >
         <div className="w-full">
           <input
             ref={inputRef}
