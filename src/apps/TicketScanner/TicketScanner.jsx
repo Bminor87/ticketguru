@@ -42,17 +42,19 @@ export default function TicketScanner() {
   );
 
   const {
-    ticketTypes,
-    venues,
     fetchTicket,
     consumeTicket,
     releaseTicket,
     errorMessage,
     clearErrorMessage,
     fetchEvents,
+    fetchAllTicketTypes,
+    fetchVenues,
   } = useApiService();
 
   const [events, setEvents] = useState([]);
+  const [ticketTypes, setTicketTypes] = useState([]);
+  const [venues, setVenues] = useState([]);
   const [selectedEventId, setSelectedEventId] = useState(0);
   const [eventIdInTicket, setEventIdInTicket] = useState(0);
   const [ticketData, setTicketData] = useState(null);
@@ -75,11 +77,15 @@ export default function TicketScanner() {
     const loadEvents = async () => {
       setIsLoading(true);
       const fetchedEvents = await fetchEvents();
+      const fetchedTicketTypes = await fetchAllTicketTypes();
+      const fetchedVenues = await fetchVenues();
+      setTicketTypes(fetchedTicketTypes || []);
+      setVenues(fetchedVenues || []);
       setEvents(fetchedEvents || []);
       setIsLoading(false);
     };
     loadEvents();
-  }, [fetchEvents]);
+  }, [fetchEvents, fetchAllTicketTypes, fetchVenues]);
 
   useEffect(() => {
     if (ticketData) {
@@ -162,14 +168,16 @@ export default function TicketScanner() {
     setIsCorrectEvent(selectedEventId === eventIdInTicket);
   }, [selectedEventId, eventIdInTicket]);
 
-  const handleBarcodeRead = async (event) => {
-    event.preventDefault();
+  const handleBarcodeRead = async (event = null) => {
+    console.log("Reading Barcode...", event, barcode);
+    event?.preventDefault();
     setBarcodeLoading(true);
     const response = await fetchTicketData(barcode);
+    console.log("Ticket data fetched after reading barcode:", response);
     setBarcodeLoading(false);
     if (
       selectedEventId ===
-      findTicketType(response.ticketTypeId, ticketTypes)?.eventId
+      findTicketType(response?.ticketTypeId, ticketTypes)?.eventId
     )
       setOpenModal(true);
   };

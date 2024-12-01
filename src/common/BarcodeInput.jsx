@@ -10,7 +10,7 @@ export default function BarcodeInput({
   const inputRef = useRef(null);
   const formRef = useRef(null);
 
-  const [scannedResult, setScannedResult] = useState(null);
+  const [cameraOpen, setCameraOpen] = useState(false);
 
   useEffect(() => {
     inputRef.current.focus();
@@ -18,9 +18,9 @@ export default function BarcodeInput({
 
   const handleScanSuccess = (decodedText, decodedResult) => {
     console.log(`Scan result: ${decodedText}`, decodedResult);
-    setScannedResult(decodedText);
+    setCameraOpen(false);
     inputRef.current.value = decodedText;
-    formRef.current.dispatchEvent(new Event("submit"));
+    handleSubmit();
   };
 
   const handleScanError = (errorMessage) => {
@@ -29,10 +29,20 @@ export default function BarcodeInput({
 
   return (
     <div className="barcode-input-container mt-5">
-      <QrCodeScanner
-        onScanSuccess={handleScanSuccess}
-        onScanError={handleScanError}
-      />
+      {cameraOpen ? (
+        <QrCodeScanner
+          onScanSuccess={handleScanSuccess}
+          onScanError={handleScanError}
+        />
+      ) : (
+        <button
+          onClick={() => setCameraOpen(true)}
+          className="my-4 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+          Open Camera
+        </button>
+      )}
+
       <form
         ref={formRef}
         className="sm:flex sm:items-center"
