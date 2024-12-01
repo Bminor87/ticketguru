@@ -8,6 +8,10 @@ import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import { Modal, Box } from "@mui/material";
 
+import PdfTicket from "../TicketSales/Ticket";
+
+import { PDFViewer } from "@react-pdf/renderer";
+
 import {
   findEvent,
   findTicketType,
@@ -59,6 +63,7 @@ export default function TicketScanner() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [barcodeLoading, setBarcodeLoading] = useState(false);
+  const [reprintRequested, setReprintRequested] = useState(false);
 
   const [openModal, setOpenModal] = useState(false);
   const handleClose = () => {
@@ -146,6 +151,7 @@ export default function TicketScanner() {
     setEventIdInTicket(0);
     setBarcode("");
     setIsCorrectEvent(false);
+    setReprintRequested(false);
   };
 
   const [isCorrectEvent, setIsCorrectEvent] = useState(
@@ -221,7 +227,10 @@ export default function TicketScanner() {
                     {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
                   </button>
                   <button
-                    onClick={() => console.log("Reprint ticket clicked")}
+                    onClick={() => {
+                      setReprintRequested(true);
+                      setOpenModal(false);
+                    }}
                     className="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600"
                   >
                     Reprint Ticket
@@ -233,6 +242,16 @@ export default function TicketScanner() {
             )}
           </Box>
         </Modal>
+        {reprintRequested && (
+          <PDFViewer width="100%" height="600px">
+            <PdfTicket
+              tickets={[ticketData]}
+              events={events}
+              venues={venues}
+              ticketTypes={ticketTypes}
+            />
+          </PDFViewer>
+        )}
       </div>
     </div>
   );
