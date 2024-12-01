@@ -1,9 +1,10 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 
 const QrCodeScanner = ({ onScanSuccess, onScanError }) => {
   const scannerRef = useRef(null);
-  const scannerInstance = useRef(null); // Keep track of the scanner instance
+  const scannerInstance = useRef(null);
+  const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     // Initialize the scanner
@@ -17,14 +18,9 @@ const QrCodeScanner = ({ onScanSuccess, onScanError }) => {
     );
 
     const wrappedOnScanSuccess = (decodedText, decodedResult) => {
-      // Call the provided callback
-      onScanSuccess(decodedText, decodedResult);
-
-      // Shut down the scanner
-      if (scannerInstance.current) {
-        scannerInstance.current.clear().catch((error) => {
-          console.error("Failed to clear scanner:", error);
-        });
+      if (!isPaused) {
+        onScanSuccess(decodedText, decodedResult);
+        pauseScanner(); // Pause instead of stopping
       }
     };
 
@@ -38,9 +34,35 @@ const QrCodeScanner = ({ onScanSuccess, onScanError }) => {
         });
       }
     };
-  }, [onScanSuccess, onScanError]);
+  }, [onScanSuccess, onScanError, isPaused]);
 
-  return <div id="qr-scanner" ref={scannerRef} style={{ width: "100%" }} />;
+  const pauseScanner = () => {
+    if (scannerInstance.current && !isPaused) {
+      scannerInstance.current.pause(true); // Pause the scanner
+      setIsPaused(true);
+    }
+  };
+
+  const resumeScanner = () => {
+    if (scannerInstance.current && isPaused) {
+      scannerInstance.current.resume(); // Resume the scanner
+      setIsPaused(false);
+    }
+  };
+
+  return (
+    <div>
+      <div id="qr-scanner" ref={scannerRef} style={{ width: "100%" }} />
+      {isPaused && (
+        <button
+          onClick={resumeScanner}
+          className="mt-4 rounded-md bg-green-500 px-3 py-2 text-sm font-semibold text-white hover:bg-green-600"
+        >
+          Resume Scanner
+        </button>
+      )}
+    </div>
+  );
 };
 
 export default QrCodeScanner;
