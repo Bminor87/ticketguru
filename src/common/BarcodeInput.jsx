@@ -10,12 +10,15 @@ export default function BarcodeInput({
   const inputRef = useRef(null);
   const formRef = useRef(null);
 
+  const [scannedResult, setScannedResult] = useState(null);
+
   useEffect(() => {
     inputRef.current.focus();
   }, []);
 
   const handleScanSuccess = (decodedText, decodedResult) => {
     console.log(`Scan result: ${decodedText}`, decodedResult);
+    setScannedResult(decodedText);
     inputRef.current.value = decodedText;
     formRef.current.dispatchEvent(new Event("submit"));
   };
