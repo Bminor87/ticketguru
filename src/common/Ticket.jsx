@@ -9,7 +9,6 @@ const Ticket = ({ ticketData, additionalData }) => {
     if (ticketData) {
       console.log("Ticket data received:", ticketData);
       console.log("Additional data received:", additionalData);
-      // Use the `barcode` property from the ticket data
       const barcode = ticketData?.barcode;
 
       console.log("Barcode to set:", barcode); // Log the barcode being set
@@ -31,58 +30,42 @@ const Ticket = ({ ticketData, additionalData }) => {
   const ticketPrice = ticketData?.price || "N/A";
 
   return (
-    <section className="isolate overflow-hidden bg-white px-6 lg:px-8">
-      <div className="relative mx-auto max-w-2xl py-24 sm:py-32 lg:max-w-4xl">
-        <div className="absolute left-1/2 top-0 -z-10 h-[50rem] w-[90rem] -translate-x-1/2 bg-[radial-gradient(50%_100%_at_top,theme(colors.indigo.100),white)] opacity-20 lg:left-36" />
-        <div className="absolute inset-y-0 right-1/2 -z-10 mr-12 w-[150vw] origin-bottom-left skew-x-[-30deg] bg-white shadow-xl shadow-indigo-600/10 ring-1 ring-indigo-50 sm:mr-20 md:mr-0 lg:right-full lg:-mr-36 lg:origin-center" />
-
-        <figure className="grid grid-cols-1 items-center gap-x-6 gap-y-8 lg:gap-x-10">
-          {/* QR Code Component */}
-          <div className="col-end-1 w-16 lg:row-span-4 lg:w-72">
+    <div className="bg-gray-900 py-24 sm:py-32">
+      <div className="mx-auto max-w-7xl px-6 text-center lg:px-8">
+        <div className="mx-auto max-w-2xl">
+          <h2 className="text-balance text-4xl font-semibold tracking-tight text-white sm:text-5xl">
+            Your Ticket
+          </h2>
+          <p className="mt-6 text-lg/8 text-gray-400">
+            Below are the details of your ticket. Show the QR code at the event
+            entrance.
+          </p>
+        </div>
+        <div className="mx-auto mt-20 max-w-md rounded-2xl bg-gray-800 px-8 py-10">
+          <div className="flex justify-center">
             <QRCode
               value={barcodeValue}
-              size={200}
-              className="rounded-xl bg-indigo-50 lg:rounded-3xl"
+              size={120}
+              className="rounded-xl bg-indigo-50"
             />
           </div>
-
-          {/* Ticket Details */}
-          <div className="relative col-span-2 lg:col-start-1 lg:row-start-2">
-            <svg
-              fill="none"
-              viewBox="0 0 162 128"
-              aria-hidden="true"
-              className="absolute -top-12 left-0 -z-10 h-32 stroke-gray-900/10"
-            >
-              <path
-                d="M5 20 H155 A10 10 0 0 1 165 30 V98 A10 10 0 0 1 155 108 H5 A10 10 0 0 1 -5 98 V30 A10 10 0 0 1 5 20 
-                  M20 0 V40 M20 88 V128 M142 0 V40 M142 88 V128"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-            <blockquote className="text-xl/8 font-semibold text-gray-900 sm:text-2xl/9">
-              <p>{eventName}</p>
-              <p className="text-gray-500">
-                {dayjs(eventTime).format("dddd, MMMM D, YYYY h:mm A")}
-              </p>
-              <p>Price: {ticketPrice}</p>
-            </blockquote>
+          <h3 className="mt-6 text-base/7 font-semibold tracking-tight text-white">
+            {eventName}
+          </h3>
+          <p className="text-sm/6 text-gray-400">
+            {dayjs(eventTime).format("dddd, MMMM D, YYYY h:mm A")}
+          </p>
+          <p className="text-sm/6 text-gray-400">Price: {ticketPrice}</p>
+          <p className="text-sm/6 text-gray-400">Status: {ticketStatus}</p>
+          <div className="mt-6">
+            <p className="text-sm/6 font-semibold text-gray-400">
+              Ticket Number:
+              <span className="ml-1 text-white">{ticketNumber}</span>
+            </p>
           </div>
-
-          {/* Ticket Bottom Part */}
-          <figcaption className="text-base lg:col-start-1 lg:row-start-3">
-            <div className="font-semibold text-gray-900">
-              Ticket # <span className="text-gray-500">{ticketNumber}</span>
-            </div>
-            <div className="font-semibold text-gray-900">
-              Status: <span className="text-gray-500">{ticketStatus}</span>
-            </div>
-          </figcaption>
-        </figure>
+        </div>
       </div>
-    </section>
+    </div>
   );
 };
 

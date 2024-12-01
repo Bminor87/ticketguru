@@ -19,12 +19,15 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  minWidth: 480,
-  width: "80%",
+  minWidth: "320px",
+  width: "100%",
+  maxWidth: "1024px",
   bgcolor: "background.paper",
-  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
+  borderRadius: "8px",
+  overflow: "scroll",
+  maxHeight: "100vh",
 };
 
 export default function TicketScanner() {
@@ -94,7 +97,6 @@ export default function TicketScanner() {
       await fetchAdditionalData(response);
       return response;
     } catch (error) {
-      console.error("Error fetching ticket data:", error);
       setTicketData(null);
       clearErrorMessage();
       setTicketMessage("Ticket not found. Please try again.");
@@ -102,7 +104,6 @@ export default function TicketScanner() {
   };
 
   const fetchAdditionalData = async (ticket) => {
-    console.log("Fetching additional data for ticket:", ticket);
     try {
       const TheTicketType = findTicketType(ticket.ticketTypeId, ticketTypes);
       const TheEvent = findEvent(TheTicketType.eventId, events);
@@ -160,7 +161,6 @@ export default function TicketScanner() {
     setBarcodeLoading(true);
     const response = await fetchTicketData(barcode);
     setBarcodeLoading(false);
-    console.log("Response when trying to open modal", response);
     if (
       selectedEventId ===
       findTicketType(response.ticketTypeId, ticketTypes)?.eventId
@@ -169,7 +169,7 @@ export default function TicketScanner() {
   };
 
   return (
-    <div className="sm:rounded-lg">
+    <div className="sm:rounded-lg overflow-y-auto max-h-screen">
       <div className="px-4 py-5 sm:p-6">
         <p className="text-sm mb-4 text-gray-500 dark:text-white">
           Scan tickets for the selected event.
@@ -209,14 +209,24 @@ export default function TicketScanner() {
                   ticketData={ticketData}
                   additionalData={additionalData}
                 />
-                <button
-                  onClick={
-                    ticketData.usedAt ? markTicketAsUnused : markTicketAsUsed
-                  }
-                  className="mt-3 inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
-                >
-                  {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
-                </button>
+                <div className="mt-3 flex flex-col sm:flex-row gap-3">
+                  <button
+                    onClick={() =>
+                      ticketData.usedAt
+                        ? markTicketAsUnused()
+                        : markTicketAsUsed()
+                    }
+                    className="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                  >
+                    {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
+                  </button>
+                  <button
+                    onClick={() => console.log("Reprint ticket clicked")}
+                    className="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600"
+                  >
+                    Reprint Ticket
+                  </button>
+                </div>
               </>
             ) : (
               <p>{ticketMessage}</p>
