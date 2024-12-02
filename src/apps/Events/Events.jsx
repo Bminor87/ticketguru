@@ -99,7 +99,6 @@ export default function Events() {
       sortable: false,
       filter: false,
       resizable: false,
-      width: 70,
       cellRenderer: (params) => (
         <EditEvent currentEvent={params.data} getEvents={getEvents} />
       ),
@@ -110,7 +109,6 @@ export default function Events() {
       sortable: false,
       filter: false,
       resizable: false,
-      width: 70,
       cellRenderer: (params) => (
         <TicketTypes
           currentEventId={params.data.id}
@@ -124,7 +122,6 @@ export default function Events() {
       sortable: false,
       filter: false,
       resizable: false,
-      width: 70,
       cellRenderer: (params) => (
         <DeleteEvent currentEventId={params.data.id} getEvents={getEvents} />
       ),

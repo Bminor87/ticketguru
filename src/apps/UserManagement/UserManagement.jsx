@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useApiService } from "../../service/ApiProvider";
 import { AgGridReact } from "ag-grid-react";
 import "ag-grid-community/styles/ag-grid.css";
@@ -14,6 +14,15 @@ export default function Users() {
   const { fetchUsers, fetchRoles } = useApiService();
 
   const { darkMode } = useSettings();
+
+  const editRefs = useRef({});
+
+  const editUser = (user) => {
+    const ref = editRefs.current[user.id];
+    if (ref && ref.openEditor) {
+      ref.openEditor();
+    }
+  };
 
   const columnDefs = [
     { field: "email", headerName: "Email", minWidth: 200 },
@@ -34,6 +43,7 @@ export default function Users() {
       width: 70,
       cellRenderer: (params) => (
         <EditUsers
+          ref={(el) => (editRefs.current[params.data.id] = el)}
           currentUser={params.data}
           roles={roles}
           getUsers={getUsers}
@@ -130,6 +140,7 @@ export default function Users() {
           }}
           onGridSizeChanged={onGridSizeChanged}
           onFirstDataRendered={onFirstDataRendered}
+          onRowClicked={(params) => editUser(params.data)}
         />
       </div>
     </div>

@@ -27,7 +27,7 @@ export default function Basket({
   const defaultColumnDefs = {
     sortable: true,
     resizable: true,
-    minWidth: 100,
+    minWidth: 50,
   };
 
   const fullColumnDefs = [
@@ -47,11 +47,7 @@ export default function Basket({
       minWidth: 70,
       maxWidth: 80,
       cellRenderer: (params) => (
-        <Button
-          color="primary"
-          onClick={() => plusOneTicket(params.data)}
-          style={{ minWidth: "40px" }}
-        >
+        <Button color="primary" onClick={() => plusOneTicket(params.data)}>
           <Add />
         </Button>
       ),
@@ -64,7 +60,6 @@ export default function Basket({
         <Button
           color={params.data.quantity > 1 ? "primary" : "gray"}
           onClick={() => minusOneTicket(params.data)}
-          style={{ minWidth: "40px" }}
         >
           <Remove />
         </Button>
@@ -75,11 +70,7 @@ export default function Basket({
       minWidth: 70,
       maxWidth: 80,
       cellRenderer: (params) => (
-        <Button
-          color="error"
-          onClick={() => removeFromBasket(params.data)}
-          style={{ minWidth: "40px" }}
-        >
+        <Button color="error" onClick={() => removeFromBasket(params.data)}>
           <DeleteForever />
         </Button>
       ),
