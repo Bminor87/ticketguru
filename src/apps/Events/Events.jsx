@@ -82,7 +82,7 @@ export default function Events() {
     {
       field: "ticketSaleBegins",
       headerName: "Ticket sale begins",
-      valueFormatter: (params) => formatDateTime(params.value),
+      valueFormatter: (params) => formatDateTime(params.value) || "TBA",
     },
     {
       headerName: "Venue",

@@ -1,7 +1,35 @@
+import { useEffect, useState } from "react";
 import { Card, Box, Stack, Typography, Divider, Chip } from "@mui/material";
 import { formatDateTime } from "../../util/helperfunctions";
 
+import { useApiService } from "../../service/ApiProvider";
+
 export default function EventControl({ selectedEvent, venues }) {
+  const { fetchReport } = useApiService();
+
+  const [ticketsSold, setTicketsSold] = useState(null);
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const stats = await fetchReport();
+        if (stats) {
+          let sold = 0;
+          stats.forEach((stat) => {
+            if (stat.eventId === selectedEvent.id) {
+              sold += stat.ticketsSold;
+            }
+          });
+          setTicketsSold(sold);
+        }
+      } catch (error) {
+        console.error("Error fetching report data:", error);
+      }
+    };
+
+    loadData();
+  }, [selectedEvent]);
+
   if (!selectedEvent) {
     return (
       <Typography variant="body1" align="center">
@@ -42,7 +70,8 @@ export default function EventControl({ selectedEvent, venues }) {
       {/* Event Times */}
       <Box sx={{ p: 2 }}>
         <Typography gutterBottom variant="h6" color="success">
-          Total tickets: {selectedEvent.totalTickets || "0"}
+          Tickets available: {selectedEvent.totalTickets - ticketsSold} /{" "}
+          {selectedEvent.totalTickets || "0"}
         </Typography>
         <p>&nbsp;</p>
         <Stack direction="column" spacing={1}>
@@ -65,11 +94,9 @@ export default function EventControl({ selectedEvent, venues }) {
           </div>
 
           <div className="flex justify-between align-between">
-            <Typography sx={{ color: "text.primary" }}>
-              Tickets Open:
-            </Typography>
+            <Typography sx={{ color: "text.primary" }}>Sale Opens:</Typography>
             <Chip
-              label={formatDateTime(selectedEvent.ticketSaleBegins)}
+              label={formatDateTime(selectedEvent.ticketSaleBegins) || "TBA"}
               color="info"
               size="small"
             />
