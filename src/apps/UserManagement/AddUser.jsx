@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Button } from "@mui/material";
+import AddIcon from '@mui/icons-material/Add';
 import UserFormDialog from "./UserFormDialog";
 import { useApiService } from "../../service/ApiProvider";
 
@@ -14,7 +15,7 @@ export default function AddUser({ getUsers, roles }) {
 
   return (
     <div>
-      <Button variant="contained" color="primary" onClick={() => setOpen(true)}>
+      <Button variant="contained" startIcon={<AddIcon />} color="primary" onClick={() => setOpen(true)}>
         Add User
       </Button>
       {open && (

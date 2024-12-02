@@ -42,7 +42,7 @@ export default function AddTicketType({ currentEventId, getEventTicketTypes }) {
 
   return (
     <div>
-      <Button onClick={handleOpen} startIcon={<AddIcon />}>Add ticket type</Button>
+      <Button onClick={handleOpen} startIcon={<AddIcon />} variant="contained">Add ticket type</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a new ticket type</DialogTitle>
         <TicketTypeDialog ticketType={ticketType} handleChange={handleChange} />

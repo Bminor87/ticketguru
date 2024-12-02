@@ -48,7 +48,7 @@ export default function AddEvent({ getEvents }) {
 
   return (
     <div>
-      <Button onClick={handleOpen} startIcon={<AddIcon />}>Add event</Button>
+      <Button onClick={handleOpen} startIcon={<AddIcon />} variant="contained">Add event</Button>
       <Dialog open={open} onClose={handleClose}>
         <DialogTitle>Add a new event</DialogTitle>
         <EventDialog event={event} handleChange={handleChange} />
