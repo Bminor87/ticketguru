@@ -163,3 +163,11 @@
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
+
+.ag-theme-material,
+.ag-theme-material-dark {
+  min-height: 500;
+  height: 5000px;
+  max-height: 80vh;
+  width: 100%;
+}

@@ -43,7 +43,7 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Layout>
-                        <Container maxWidth="xl" sx={{ mt: 4, mb: 1 }}>
+                        <Container maxWidth="2xl" sx={{ mt: 4, mb: 1 }}>
                           <Routes>
                             <Route path="/" element={<FrontPage />} />
                             {menu.map((category) =>

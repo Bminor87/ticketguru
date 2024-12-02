@@ -177,7 +177,6 @@ export default function Events() {
         className={`ag-theme-material ${
           darkMode ? "ag-theme-material-dark" : ""
         }`}
-        style={{ height: "500px", width: "100%" }}
       >
         <AgGridReact
           rowData={events}

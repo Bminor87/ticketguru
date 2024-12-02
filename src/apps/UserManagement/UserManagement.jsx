@@ -36,11 +36,13 @@ export default function Users() {
     },
     {
       field: "id",
+      colId: "EditColumnId",
       headerName: "",
       sortable: false,
       filter: false,
       resizable: false,
       width: 70,
+      suppressSizeToFit: true,
       cellRenderer: (params) => (
         <EditUsers
           ref={(el) => (editRefs.current[params.data.id] = el)}
@@ -52,6 +54,7 @@ export default function Users() {
     },
     {
       field: "id",
+      colId: "DeleteColumnId",
       headerName: "",
       sortable: false,
       filter: false,
@@ -74,6 +77,12 @@ export default function Users() {
 
     if (allColumns && allColumns.length > 0) {
       allColumns.forEach((column) => {
+        // Skip the edit and delete columns from being hidden
+        if (["EditColumnId", "DeleteColumnId"].includes(column.getColId())) {
+          columnsToShow.push(column.getColId());
+          return;
+        }
+
         totalColsWidth += column.getMinWidth();
         if (totalColsWidth > gridWidth) {
           columnsToHide.push(column.getColId());
@@ -127,7 +136,6 @@ export default function Users() {
         className={`ag-theme-material ${
           darkMode ? "ag-theme-material-dark" : ""
         }`}
-        style={{ height: "500px", width: "100%" }}
       >
         <AgGridReact
           rowData={users}

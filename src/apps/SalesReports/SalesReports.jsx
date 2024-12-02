@@ -178,7 +178,6 @@ export default function SalesReports() {
           className={`ag-theme-material ${
             darkMode ? "ag-theme-material-dark" : ""
           }`}
-          style={{ height: "500px", width: "100%" }}
         >
           <AgGridReact
             rowData={reportData}
