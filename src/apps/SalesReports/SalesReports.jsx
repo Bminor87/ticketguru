@@ -75,7 +75,6 @@ export default function SalesReports() {
               eventName,
               ticketTypeName,
               ticketsSold: row.ticketsSold,
-              ticketsTotal: row.ticketsTotal,
               totalRevenue: row.totalRevenue.toFixed(2),
               isTotalRow: false,
             });
@@ -90,10 +89,10 @@ export default function SalesReports() {
                 (sum, r) => sum + r.ticketsSold,
                 0
               );
-              const eventTicketsTotal = eventRows.reduce(
-                (sum, r) => sum + r.ticketsTotal,
-                0
-              );
+              const eventTicketsTotal = findEvent(
+                row.eventId,
+                events
+              )?.totalTickets;
               const eventTotalRevenue = eventRows.reduce(
                 (sum, r) => sum + r.totalRevenue,
                 0
