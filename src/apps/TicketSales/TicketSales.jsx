@@ -65,8 +65,7 @@ export default function TicketSales() {
         </div>
         <div className="flex-1 min-w-[320px] max-w-[720px]">
           <TicketOrderControl
-            selectedEventId={selectedEventId}
-            selectedEventName={selectedEventName}
+            selectedEvent={selectedEvent}
             selectedTicketTypeId={selectedTicketTypeId}
             setSelectedTicketTypeId={setSelectedTicketTypeId}
           />
