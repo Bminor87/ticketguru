@@ -8,42 +8,48 @@
           "description": "Sell and print tickets",
           "href": "/sales",
           "icon": "CurrencyDollarIcon",
-          "component": "TicketSales"
+          "component": "TicketSales",
+          "permission": "VIEW_SALES"
         },
         {
           "name": "Ticket Scanner",
           "description": "Scan tickets during events",
           "href": "/scanner",
           "icon": "BanknotesIcon",
-          "component": "TicketScanner"
+          "component": "TicketScanner",
+          "permission": "VIEW_TICKETS"
         },
         {
           "name": "Events",
           "description": "Manage events",
           "href": "/events",
           "icon": "CalendarIcon",
-          "component": "Events"
+          "component": "Events",
+          "permission": "VIEW_EVENTS"
         },
         {
           "name": "Venues",
           "description": "Manage venues",
           "href": "/venues",
           "icon": "BuildingLibraryIcon",
-          "component": "Venues"
+          "component": "Venues",
+          "permission": "VIEW_VENUES"
         },
         {
           "name": "Sales Reports",
           "description": "View sales reports",
           "href": "/sales-reports",
           "icon": "ChartBarIcon",
-          "component": "SalesReports"
+          "component": "SalesReports",
+          "permission": "VIEW_SALES"
         },
         {
           "name": "User Management",
           "description": "Manage users",
           "href": "/user-management",
           "icon": "UserGroupIcon",
-          "component": "UserManagement"
+          "component": "UserManagement",
+          "permission": "VIEW_USERS"
         }
       ]
     }

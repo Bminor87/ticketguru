@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useApiService } from "./service/ApiProvider";
 import { useSettings } from "./SettingsContext";
 import {
@@ -30,17 +30,31 @@ function classNames(...classes) {
 }
 
 export default function Layout({ children }) {
-  const settings = useSettings();
+  const { logout, fetchAuthUser, user } = useApiService();
 
-  const { logout } = useApiService();
+  const [permissions, setPermissions] = useState([]);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation(); // Get the current location
 
-  const navigation = menuJson.menu.map((section) => ({
-    title: section.title,
-    items: section.sections.flat(),
-  }));
+  const [navigation, setNavigation] = useState([]);
+
+  useEffect(() => {
+    fetchAuthUser().then((user) => {
+      setPermissions(user?.role?.permissions);
+    });
+
+    const filteredMenu = menuJson.menu.map((section) => ({
+      title: section.title,
+      items: section.sections
+        .filter(
+          (item) => permissions?.includes(item.permission) || !item.permission
+        )
+        .flat(),
+    }));
+
+    setNavigation(filteredMenu);
+  }, [user]);
 
   return (
     <>
@@ -223,7 +237,7 @@ export default function Layout({ children }) {
                       aria-hidden="true"
                       className="ml-4 text-sm/6 font-semibold text-gray-900 dark:text-white"
                     >
-                      {settings?.userName}
+                      {user?.firstName} {user?.lastName}
                     </span>
                     <ChevronDownIcon
                       aria-hidden="true"
@@ -235,7 +249,13 @@ export default function Layout({ children }) {
                   transition
                   className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-gray-900 py-2 shadow-lg ring-1 ring-gray-900/5 transition focus:outline-none data-[closed]:scale-95 data-[closed]:transform data-[closed]:opacity-0 data-[enter]:duration-100 data-[leave]:duration-75 data-[enter]:ease-out data-[leave]:ease-in"
                 >
-                  <MenuItem key="uniqueKey">
+                  <MenuItem key="profile">
+                    <button className="m-4">
+                      Role:{" "}
+                      <span className="text-blue-500">{user?.role?.title}</span>
+                    </button>
+                  </MenuItem>
+                  <MenuItem key="logout">
                     <button
                       onClick={logout}
                       className="block px-3 py-1 text-sm/6 text-gray-900 dark:text-white data-[focus]:bg-gray-50 dark:data-[focus]:bg-gray-600 data-[focus]:outline-none"

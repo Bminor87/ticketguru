@@ -13,6 +13,7 @@ export const ApiProvider = ({ children }) => {
   const [ticketTypes, setTicketTypes] = useState(null); // State for ticket types
   const [users, setUsers] = useState(null); // State for users
   const [roles, setRoles] = useState(null); // State for roles
+  const [user, setUser] = useState(null); // State for authentication
 
   useEffect(() => {
     const setAuthHeader = () => {
@@ -383,6 +384,19 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  const fetchAuthUser = async (forceRefresh = false) => {
+    if (!user || forceRefresh) {
+      try {
+        const authUser = await makeApiCall("get", "/api/users/self");
+        setUser(authUser);
+        return authUser;
+      } catch (error) {
+        console.error("Error fetching user:", error);
+      }
+      return user;
+    }
+  };
+
   // Login API calls
   const login = async (email, password) => {
     console.log("Using the ApiProvider's Login", email, password);
@@ -400,6 +414,8 @@ export const ApiProvider = ({ children }) => {
       // Save user credentials in SettingsContext
       settings.setUserName(email);
       settings.setUserPass(password);
+
+      fetchAuthUser(true);
 
       // Save user credentials in localStorage for persistence
       localStorage.setItem(
@@ -432,6 +448,8 @@ export const ApiProvider = ({ children }) => {
     // Clear credentials from SettingsContext
     settings.setUserName(null);
     settings.setUserPass(null);
+
+    setUser(null); // Clear the user state
 
     // Remove user credentials from localStorage
     localStorage.removeItem("user");
@@ -493,9 +511,10 @@ export const ApiProvider = ({ children }) => {
         fetchReport,
         postBasketItems,
 
-        // Login
+        // Authentication
         login,
         logout,
+        fetchAuthUser,
 
         // Data
         events,
@@ -503,6 +522,7 @@ export const ApiProvider = ({ children }) => {
         ticketTypes,
         users,
         roles,
+        user,
       }}
     >
       {children}
