@@ -12,6 +12,14 @@
           "permission": "VIEW_SALES"
         },
         {
+          "name": "Transactions",
+          "description": "View ticket sales transactions",
+          "href": "/transactions",
+          "icon": "CurrencyDollarIcon",
+          "component": "TransactionsList",
+          "permssion": "VIEW_SALES"
+        },
+        {
           "name": "Ticket Scanner",
           "description": "Scan tickets during events",
           "href": "/scanner",
