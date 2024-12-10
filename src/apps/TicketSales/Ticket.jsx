@@ -1,24 +1,8 @@
 import React, { useEffect, useState } from "react";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-  Image,
-  Font,
-  Link,
-} from "@react-pdf/renderer";
-import QRCode from "qrcode";
-
-import {
-  formatDateTime,
-  findEvent,
-  findVenue,
-  findTicketType,
-} from "../../util/helperfunctions";
-
+import { Document, StyleSheet, Font } from "@react-pdf/renderer";
 import TicketPage from "./TicketPage";
+
+import { generateQRCode } from "../../util/qrCodeHelper";
 
 // Font source
 const fontNormal =
@@ -113,16 +97,6 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
 });
-
-// Generate QR code function
-const generateQRCode = async (text) => {
-  try {
-    return await QRCode.toDataURL(text, { errorCorrectionLevel: "Q" });
-  } catch (error) {
-    console.error("Error generating QR code:", error);
-    return null;
-  }
-};
 
 const Ticket = ({ tickets, events, venues, ticketTypes }) => {
   const [preparedTickets, setPreparedTickets] = useState(null);
