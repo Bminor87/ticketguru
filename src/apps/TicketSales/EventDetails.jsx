@@ -3,7 +3,7 @@ import { View, Text, Link } from "@react-pdf/renderer";
 
 import { formatDateTime } from "../../util/helperfunctions";
 
-const EventDetails = ({ event, venue, styles }) => {
+const EventDetails = ({ ticket, event, venue, styles }) => {
   return (
     <View style={styles.bottomRow}>
       <View style={styles.bottomParagraph}>
@@ -25,7 +25,7 @@ const EventDetails = ({ event, venue, styles }) => {
       </View>
       <View style={styles.bottomParagraph}>
         <Text style={styles.definitionValue}>
-          {venue?.zipcode || "Unknown Zipcode"} {/** Add City here */}
+          {venue?.zipcode || "Unknown Zipcode"} {ticket?.city || "Unknown City"}
         </Text>
       </View>
       <View style={styles.bottomParagraph}>

@@ -32,7 +32,12 @@ const TicketPage = ({ ticket, events, venues, ticketTypes, styles }) => {
           styles={styles}
         />
       </View>
-      <EventDetails event={event} venue={venue} styles={styles} />
+      <EventDetails
+        ticket={ticket}
+        event={event}
+        venue={venue}
+        styles={styles}
+      />
     </Page>
   );
 };

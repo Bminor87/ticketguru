@@ -105,7 +105,6 @@ export default function TicketScanner() {
       if (!response) {
         throw new Error("No ticket data found");
       }
-      setTicketData(response);
       await fetchAdditionalData(response);
       return response;
     } catch (error) {
@@ -131,6 +130,10 @@ export default function TicketScanner() {
         zipcode: TheVenue?.zipcode || "Unknown Zipcode",
         city: city || "Unknown City",
       };
+
+      const ticketWithCity = { ...ticket, city: city || "Unknown City" };
+      setTicketData(ticketWithCity);
+
       const ticketType = ticket.ticketType?.name || "N/A";
       setAdditionalData({ event, ticketType });
     } catch (error) {
