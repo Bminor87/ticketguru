@@ -17,7 +17,7 @@
           "href": "/transactions",
           "icon": "CurrencyDollarIcon",
           "component": "TransactionsList",
-          "permssion": "VIEW_SALES"
+          "roles" : ["ADMIN", "COORDINATOR", "SALESPERSON"]
         },
         {
           "name": "Ticket Scanner",
