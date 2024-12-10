@@ -38,7 +38,9 @@ const Ticket = ({ ticketData, additionalData }) => {
           </h2>
           <p className="mt-6 text-lg/8 text-gray-400">
             Below are the details of your ticket. Show the QR code at the event
-            entrance.
+            entrance ({additionalData.event?.address}
+            {", "}
+            {additionalData.event?.zipcode} {additionalData.event?.city}){"."}
           </p>
         </div>
         <div className="mx-auto mt-20 max-w-md rounded-2xl bg-gray-800 px-8 py-10">

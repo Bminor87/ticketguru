@@ -50,6 +50,7 @@ export default function TicketScanner() {
     fetchEvents,
     fetchAllTicketTypes,
     fetchVenues,
+    fetchCity,
   } = useApiService();
 
   const [events, setEvents] = useState([]);
@@ -120,10 +121,15 @@ export default function TicketScanner() {
       const TheEvent = findEvent(TheTicketType.eventId, events);
       const TheVenue = findVenue(TheEvent.venueId, venues);
 
+      const city = await fetchCity(TheVenue.zipcode);
+
       const event = {
         name: TheEvent?.name || "Unknown Event",
         time: TheEvent?.beginsAt || "Unknown Time",
         location: TheVenue?.name || "Unknown Location",
+        address: TheVenue?.address || "Unknown Address",
+        zipcode: TheVenue?.zipcode || "Unknown Zipcode",
+        city: city || "Unknown City",
       };
       const ticketType = ticket.ticketType?.name || "N/A";
       setAdditionalData({ event, ticketType });

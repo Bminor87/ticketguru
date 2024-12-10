@@ -18,6 +18,8 @@ import {
   findTicketType,
 } from "../../util/helperfunctions";
 
+import TicketPage from "./TicketPage";
+
 // Font source
 const fontNormal =
   "https://cdnjs.cloudflare.com/ajax/libs/ink/3.1.10/fonts/Roboto/roboto-light-webfont.ttf";
@@ -161,131 +163,14 @@ const Ticket = ({ tickets, events, venues, ticketTypes }) => {
   return (
     <Document>
       {preparedTickets.map((ticket, index) => (
-        <Page key={index} size="A4" style={styles.page}>
-          {/* Ticket Top Row */}
-          <View style={styles.ticketRow}>
-            {/* QR Code Section */}
-            <View style={styles.qrSection}>
-              {ticket.qrCode && (
-                <Image style={styles.qrCode} src={ticket.qrCode} />
-              )}
-            </View>
-
-            {/* Ticket Details Section */}
-            <View style={styles.detailsSection}>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.leftColumn}>Event:</Text>
-                <Text style={styles.rightColumn}>
-                  {findEvent(
-                    findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
-                    events
-                  )?.name || "Unknown Event"}
-                </Text>
-              </View>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.leftColumn}>Ticket Type:</Text>
-                <Text style={styles.rightColumn}>
-                  {findTicketType(ticket.ticketTypeId, ticketTypes)?.name ||
-                    "Unknown Ticket Type"}
-                </Text>
-              </View>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.leftColumn}>Venue:</Text>
-                <Text style={styles.rightColumn}>
-                  {findVenue(
-                    findEvent(
-                      findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
-                      events
-                    )?.venueId,
-                    venues
-                  )?.name || "Unknown Event"}
-                </Text>
-              </View>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.leftColumn}>Price:</Text>
-                <Text style={styles.rightColumn}>
-                  {ticket.price?.toFixed(2) || "0.00"} €
-                </Text>
-              </View>
-              <View style={styles.ticketDetails}>
-                <Text style={styles.leftColumn}>Time:</Text>
-                <Text style={styles.rightColumn}>
-                  {formatDateTime(ticket.event?.beginsAt || new Date())}
-                </Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Bottom Row */}
-          <View style={styles.bottomRow}>
-            <Text style={styles.bottomTitle}>Event Details</Text>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Event:</Text>
-              <Text style={styles.definitionValue}>
-                {findEvent(
-                  findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
-                  events
-                )?.name || "Unknown Event"}
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Venue:</Text>
-              <Text style={styles.definitionValue}>
-                {findVenue(
-                  findEvent(
-                    findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
-                    events
-                  )?.venueId,
-                  venues
-                )?.name || "Unknown Event"}
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Time:</Text>
-              <Text style={styles.definitionValue}>
-                {formatDateTime(ticket.event?.beginsAt || new Date())}
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Ticket Type:</Text>
-              <Text style={styles.definitionValue}>
-                {findTicketType(ticket.ticketTypeId, ticketTypes)?.name ||
-                  "Unknown Ticket Type"}
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Price:</Text>
-              <Text style={styles.definitionValue}>
-                {ticket.price?.toFixed(2) || "0.00"} €
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.description}>
-                {findEvent(
-                  findTicketType(ticket.ticketTypeId, ticketTypes)?.eventId,
-                  events
-                )?.description || "No description available"}
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definition}>Terms and Conditions:</Text>
-              <Text style={styles.definitionValue}>
-                The ticket is non-refundable. For further information, visit{" "}
-                <Link src="https://ticketguru.store">ticketguru.store</Link>.
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definitionValue}>
-                The ticket is only valid for the event specified above.
-              </Text>
-            </View>
-            <View style={styles.bottomParagraph}>
-              <Text style={styles.definitionValue}>
-                Ticket #: {ticket.barcode}
-              </Text>
-            </View>
-          </View>
-        </Page>
+        <TicketPage
+          key={index}
+          ticket={ticket}
+          events={events}
+          venues={venues}
+          ticketTypes={ticketTypes}
+          styles={styles}
+        />
       ))}
     </Document>
   );
