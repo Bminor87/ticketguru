@@ -26,7 +26,7 @@ export default function EventDialog({ event, handleChange }) {
 
   const handleDateChange = (name, newValue) => {
     handleChange({
-      target: { name, value: newValue.toISOString() },
+      target: { name, value: newValue.format("YYYY-MM-DDTHH:mm:ss") }, // Send as local datetime
     });
   };
 
