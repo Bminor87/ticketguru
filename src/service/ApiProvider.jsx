@@ -397,6 +397,16 @@ export const ApiProvider = ({ children }) => {
     }
   };
 
+  // Misc
+  const fetchCity = async (zipcode) => {
+    try {
+      const response = await makeApiCall("get", `/api/zipcodes/${zipcode}`);
+      return response.city;
+    } catch (error) {
+      console.error("Error fetching city:", error);
+    }
+  };
+
   // Login API calls
   const login = async (email, password) => {
     console.log("Using the ApiProvider's Login", email, password);
@@ -521,6 +531,9 @@ export const ApiProvider = ({ children }) => {
         fetchSale,
         fetchReport,
         postBasketItems,
+
+        // Misc
+        fetchCity,
 
         // Authentication
         login,

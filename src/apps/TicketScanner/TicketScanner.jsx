@@ -50,7 +50,6 @@ export default function TicketScanner() {
     fetchEvents,
     fetchAllTicketTypes,
     fetchVenues,
-    user,
   } = useApiService();
 
   const [events, setEvents] = useState([]);
@@ -185,12 +184,12 @@ export default function TicketScanner() {
   };
 
   return (
-    <div className='sm:rounded-lg overflow-y-auto max-h-screen'>
-      <div className='px-4 py-5 sm:p-6'>
-        <p className='text-sm mb-4 text-gray-500 dark:text-white'>
+    <div className="sm:rounded-lg overflow-y-auto max-h-screen">
+      <div className="px-4 py-5 sm:p-6">
+        <p className="text-sm mb-4 text-gray-500 dark:text-white">
           Scan tickets for the selected event.
         </p>
-        <div className='grid md-grid-cols-4 gap-4'>
+        <div className="grid md-grid-cols-4 gap-4">
           {isLoading ? (
             <p>Loading events...</p>
           ) : (
@@ -227,22 +226,27 @@ export default function TicketScanner() {
                   ticketData={ticketData}
                   additionalData={additionalData}
                 />
-                <div className='mt-3 flex flex-col sm:flex-row gap-3'>
-                 {(user.role.title == "TICKET_INSPECTOR" || user.role.title == "ADMIN") && <button
-                    onClick={() =>
-                      ticketData.usedAt
-                        ? markTicketAsUnused()
-                        : markTicketAsUsed()
-                    }
-                    className='inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500'>
-                    {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
-                  </button>}
+                <div className="mt-3 flex flex-col sm:flex-row gap-3">
+                  {(settings?.role == "TICKET_INSPECTOR" ||
+                    settings?.role == "ADMIN") && (
+                    <button
+                      onClick={() =>
+                        ticketData.usedAt
+                          ? markTicketAsUnused()
+                          : markTicketAsUsed()
+                      }
+                      className="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500"
+                    >
+                      {ticketData.usedAt ? "Mark as Unused" : "Mark as Used"}
+                    </button>
+                  )}
                   <button
                     onClick={() => {
                       setReprintRequested(true);
                       setOpenModal(false);
                     }}
-                    className='inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600'>
+                    className="inline-flex w-full sm:w-auto items-center justify-center rounded-md bg-gray-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-gray-600"
+                  >
                     Reprint Ticket
                   </button>
                 </div>
@@ -253,7 +257,7 @@ export default function TicketScanner() {
           </Box>
         </Modal>
         {reprintRequested && (
-          <PDFViewer width='100%' height='600px'>
+          <PDFViewer width="100%" height="600px">
             <PdfTicket
               tickets={[ticketData]}
               events={events}
