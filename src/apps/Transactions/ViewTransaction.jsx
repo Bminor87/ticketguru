@@ -6,20 +6,12 @@ import {
   DialogActions,
   Button,
 } from "@mui/material";
-import { AgGridReact } from "ag-grid-react";
-import "ag-grid-community/styles/ag-grid.css";
-import "ag-grid-community/styles/ag-theme-alpine.css";
 import { useApiService } from "../../service/ApiProvider";
+import TicketTable from "./TicketTable";
 
 export default function ViewTransaction({ sale }) {
   const { fetchTickets } = useApiService();
   const [tickets, setTickets] = useState([]);
-  const gridApiRef = useRef(null); // Ref to store grid API
-
-  const onGridReady = (params) => {
-    gridApiRef.current = params.api; // Store grid API in ref
-    setRowData(tickets); // Set initial row data
-  };
 
   const [open, setOpen] = useState(false);
 
@@ -40,29 +32,8 @@ export default function ViewTransaction({ sale }) {
     }
   };
 
-  const columnDefs = [];
-  const gridOptions = {
-    columnDefs: columnDefs,
-  };
-
-  function dynamicallyConfigureColumnsFromObject(anObject) {
-    const colDefs = gridOptions.api.getColumnDefs();
-    colDefs.length = 0;
-    const keys = Object.keys(anObject);
-    keys.forEach((key) => colDefs.push({ field: key }));
-    gridOptions.api.setColumnDefs(colDefs);
-  }
-
-  const updateGridData = (newData) => {
-    if (gridApiRef.current) {
-      gridApiRef.current.setRowData(newData);
-    }
-  };
-
   useEffect(() => {
     getTickets();
-    dynamicallyConfigureColumnsFromObject(tickets[0]);
-    updateGridData(tickets);
   }, []);
 
   return (
@@ -70,10 +41,10 @@ export default function ViewTransaction({ sale }) {
       <Button onClick={handleOpen} color="primary">
         VIEW
       </Button>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="lg">
         <DialogTitle>Sale transaction {sale.id}:</DialogTitle>
         <DialogContent>
-          <AgGridReact gridOptions={gridOptions} />
+          <TicketTable tickets={tickets} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Close</Button>
