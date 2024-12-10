@@ -8,6 +8,7 @@ import {
 } from "@heroicons/react/20/solid";
 
 import TicketSales from "../apps/TicketSales/TicketSales";
+import TransactionsList from "../apps/Transactions/TransactionsList";
 import TicketScanner from "../apps/TicketScanner/TicketScanner";
 import Events from "../apps/Events/Events";
 import Venues from "../apps/Venues/Venues";
@@ -27,6 +28,7 @@ export const iconMap = {
 // Map component names to their imports
 export const componentMap = {
   TicketSales,
+  TransactionsList,
   TicketScanner,
   Events,
   Venues,
