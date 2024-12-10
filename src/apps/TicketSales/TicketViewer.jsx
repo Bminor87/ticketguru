@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const Ticket = ({ tickets, events, venues, ticketTypes }) => {
+const TicketViewer = ({ tickets, events, venues, ticketTypes }) => {
   const [preparedTickets, setPreparedTickets] = useState(null);
 
   useEffect(() => {
@@ -150,4 +150,4 @@ const Ticket = ({ tickets, events, venues, ticketTypes }) => {
   );
 };
 
-export default Ticket;
+export default TicketViewer;

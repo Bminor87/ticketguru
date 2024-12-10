@@ -8,7 +8,7 @@ import BarcodeInput from "../../common/BarcodeInput";
 import ErrorMessage from "../../common/ErrorMessage";
 import { Modal, Box } from "@mui/material";
 
-import PdfTicket from "../TicketSales/Ticket";
+import TicketViewer from "../TicketSales/TicketViewer";
 
 import { PDFViewer } from "@react-pdf/renderer";
 
@@ -264,7 +264,7 @@ export default function TicketScanner() {
         </Modal>
         {reprintRequested && (
           <PDFViewer width="100%" height="600px">
-            <PdfTicket
+            <TicketViewer
               tickets={[ticketData]}
               events={events}
               venues={venues}

@@ -13,7 +13,7 @@ import { PDFViewer } from "@react-pdf/renderer";
 import { useApiService } from "../../service/ApiProvider";
 import { formatDateTime } from "../../util/helperfunctions";
 
-import Ticket from "./Ticket";
+import TicketViewer from "./TicketViewer";
 
 export default function SoldTicketsList({
   soldTicketsData,
@@ -78,7 +78,7 @@ export default function SoldTicketsList({
             </TableBody>
           </Table> */}
           <PDFViewer width="100%" height="600px">
-            <Ticket
+            <TicketViewer
               tickets={tickets}
               events={events}
               venues={venues}
