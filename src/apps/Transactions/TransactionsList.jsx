@@ -4,13 +4,16 @@ import { AgGridReact } from "ag-grid-react";
 import { useEffect, useState } from "react";
 import { useSettings } from "../../SettingsContext";
 import { useApiService } from "../../service/ApiProvider";
+import dayjs from "dayjs";
+import ViewTransaction from "./ViewTransaction";
 
 export default function TransactionsList() {
   const { darkMode } = useSettings();
-  const { fetchSales, fetchTickets } = useApiService();
+  const { fetchSales } = useApiService();
   const [sales, setSales] = useState([]);
 
   const currencyFormatter = (value) => {
+    if (value == null) return 0;
     return Number(value).toLocaleString("fi-FI", {
       style: "currency",
       currency: "EUR",
@@ -18,8 +21,6 @@ export default function TransactionsList() {
   };
 
   const defaultColumnDefs = {
-    filter: true,
-    floatingFilter: true,
     sortable: true,
     resizable: true,
   };
@@ -38,7 +39,12 @@ export default function TransactionsList() {
   }, []);
 
   const [columnDefs, setColumnDefs] = useState([
-    { field: "paidAt", headerName: "Transaction date and time" },
+    { field: "id", headerName: "Sale Id" },
+    {
+      field: "paidAt",
+      headerName: "Transaction date and time",
+      valueFormatter: (params) => dayjs(params.data.paidAt),
+    },
     { field: "userId", headerName: "Sales Agent" },
     {
       field: "tickets",
@@ -46,15 +52,18 @@ export default function TransactionsList() {
       valueGetter: (params) => params.data.ticketIds.length,
     },
     {
-      field: "transactionSum",
-      headerName: "Transaction Sum",
+      field: "transactionTotal",
+      headerName: "Transaction Total",
       valueFormatter: (params) =>
-        currencyFormatter(params.data.transactionSum.toFixed(2)),
+        currencyFormatter(params.data.transactionTotal),
+    },
+    {
+      cellRenderer: (params) => <ViewTransaction sale={params.data} />,
     },
   ]);
 
   const autoSizeStrategy = {
-    type: "fitGridWidth",
+    type: "fitCellContents",
     flex: 1,
   };
 
@@ -63,7 +72,7 @@ export default function TransactionsList() {
       className={`ag-theme-material ${
         darkMode ? "ag-theme-material-dark" : ""
       }`}
-      style={{ minHeight: "500px", width: "100%" }}
+      style={{ minHeight: "500px", width: "80%" }}
     >
       <AgGridReact
         rowData={sales}
