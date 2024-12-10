@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useMemo } from "react";
 
 const SettingsContext = createContext();
 
@@ -8,15 +8,21 @@ export const useSettings = () => {
 
 export const SettingsProvider = ({ children }) => {
   const [darkMode, setDarkMode] = useState(false);
+  const [userName, setUserName] = useState("");
+  const [userPass, setUserPass] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [role, setRole] = useState("");
 
   const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-    localStorage.setItem("darkMode", !darkMode);
-    applyDarkOrLightMode();
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem("darkMode", newDarkMode);
+    applyDarkOrLightMode(newDarkMode);
   };
 
-  const applyDarkOrLightMode = () => {
-    if (!darkMode) {
+  const applyDarkOrLightMode = (isDarkMode) => {
+    if (isDarkMode) {
       document.documentElement.classList.add("dark");
     } else {
       document.documentElement.classList.remove("dark");
@@ -24,32 +30,45 @@ export const SettingsProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (localStorage.getItem("darkMode") === "true") {
-      setDarkMode(true);
-    } else if (localStorage.getItem("darkMode") === "false") {
-      setDarkMode(false);
+    // Load dark mode setting from localStorage
+    const storedDarkMode = localStorage.getItem("darkMode");
+    if (storedDarkMode !== null) {
+      const isDarkMode = storedDarkMode === "true";
+      setDarkMode(isDarkMode);
+      applyDarkOrLightMode(isDarkMode);
     }
-    applyDarkOrLightMode();
-  }, []);
 
-  const setUserName = (userName) => {
-    settings.userName = userName;
-  };
+    // Load user information from localStorage
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      const user = JSON.parse(storedUser);
+      setUserName(user.userName);
+      setUserPass(user.userPass);
+      setFirstName(user.firstName);
+      setLastName(user.lastName);
+      setRole(user.role);
+    }
+  }, [darkMode]);
 
-  const setUserPass = (userPass) => {
-    settings.userPass = userPass;
-  };
-
-  const settings = {
-    url: "https://ticketguru.hellmanstudios.fi",
-    userName: "",
-    userPass: "",
-    ticketUsedErrorCode: "ERR_BAD_REQUEST",
-    darkMode,
-    toggleDarkMode,
-    setUserName,
-    setUserPass,
-  };
+  const settings = useMemo(
+    () => ({
+      url: "https://ticketguru.hellmanstudios.fi",
+      userName: userName,
+      userPass: userPass,
+      firstName: firstName,
+      lastName: lastName,
+      role: role,
+      ticketUsedErrorCode: "ERR_BAD_REQUEST",
+      darkMode,
+      toggleDarkMode,
+      setUserName,
+      setUserPass,
+      setRole,
+      setFirstName,
+      setLastName,
+    }),
+    [darkMode, userName, userPass, firstName, lastName, role]
+  );
 
   return (
     <SettingsContext.Provider value={settings}>

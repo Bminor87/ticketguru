@@ -404,7 +404,7 @@ export const ApiProvider = ({ children }) => {
 
     try {
       // Use an existing protected endpoint for credential validation
-      const response = await axios.get(`${settings.url}/api/events`, {
+      const response = await axios.get(`${settings.url}/api/users/self`, {
         headers: {
           Authorization: `Basic ${authToken}`,
           "Content-Type": "application/json",
@@ -414,13 +414,23 @@ export const ApiProvider = ({ children }) => {
       // Save user credentials in SettingsContext
       settings.setUserName(email);
       settings.setUserPass(password);
+      settings.setFirstName(response.data.firstName);
+      settings.setLastName(response.data.lastName);
+      console.log("SETTING ROLE: ", response.data);
+      settings.setRole(response.data.role.title);
 
       fetchAuthUser(true);
 
       // Save user credentials in localStorage for persistence
       localStorage.setItem(
         "user",
-        JSON.stringify({ userName: email, userPass: password })
+        JSON.stringify({
+          userName: email,
+          userPass: password,
+          role: response.data.role.title,
+          firstName: response.data.firstName,
+          lastName: response.data.lastName,
+        })
       );
 
       // Set the global Axios Authorization header
@@ -448,6 +458,7 @@ export const ApiProvider = ({ children }) => {
     // Clear credentials from SettingsContext
     settings.setUserName(null);
     settings.setUserPass(null);
+    settings.setRole(null);
 
     setUser(null); // Clear the user state
 
